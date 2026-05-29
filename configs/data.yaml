@@ -69,6 +69,16 @@ datasets:
       Meyer, G., Breuer, P., & Fürst, J. (2024). ASAG2024: A Combined Benchmark for Short
       Answer Grading. SIGCSE Virtual 2024.
 
+  powergrading:
+    enabled: true   # ranked #5 in the report; included for completeness
+    name: powergrading_basu_2013
+    url: https://download.microsoft.com/download/e/1/d/e1da2458-1af3-41c9-9515-7c9a8697e0cd/Powergrading-1.0-Corpus.zip
+    raw_subdir: powergrading
+    license: MSR-license-agreement
+    citation: |
+      Basu, S., Jacobs, C., & Vanderwende, L. (2013). Powergrading: a Clustering Approach
+      to Amplify Human Effort for Short Answer Grading. Transactions of the ACL (TACL) 2013.
+
 preprocessing:
   encoder_view:
     normalize_unicode: NFKC

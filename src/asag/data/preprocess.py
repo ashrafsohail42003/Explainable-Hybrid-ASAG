@@ -96,10 +96,45 @@ def _load_spacy(model: str):
         ) from e
 
 
+def dedupe_within_question(df: pd.DataFrame, score_col: str = "score") -> tuple[pd.DataFrame, int]:
+    """Drop exact (question_id, student_answer) duplicates within a dataset.
+
+    When duplicates differ on score, we keep the row whose score is closest
+    to the group's median (median of group scores). This avoids "best/worst
+    answer" bias from naively keeping `first`/`last`. Returns
+    (deduped_df, n_dropped).
+    """
+    if "question_id" not in df.columns or "student_answer" not in df.columns:
+        return df, 0
+    n_before = len(df)
+    work = df.copy()
+    # group median (broadcast back to row level)
+    grp_med = work.groupby(
+        ["question_id", "student_answer"], dropna=False, sort=False
+    )[score_col].transform("median")
+    work["_dist"] = (work[score_col] - grp_med).abs()
+    # Stable sort: closest to median first; ties broken by original order
+    work = work.sort_values(["question_id", "student_answer", "_dist"], kind="mergesort")
+    deduped = (
+        work.drop_duplicates(subset=["question_id", "student_answer"], keep="first")
+            .drop(columns=["_dist"])
+            .reset_index(drop=True)
+    )
+    return deduped, n_before - len(deduped)
+
+
 def _process_dataset(name: str, df: pd.DataFrame, cfg: DataConfig, nlp) -> dict:
     """Write encoder and feature views to data/processed/<name>/."""
     enc_cfg = cfg.preprocessing.encoder_view
     feat_cfg = cfg.preprocessing.feature_view
+
+    # Dedup Mohler/Powergrading (datasets with no official splits that have
+    # known exact-duplicate issues). Keep the median-score row per dup group.
+    n_dropped = 0
+    if name in {"mohler", "powergrading"}:
+        df, n_dropped = dedupe_within_question(df)
+        if n_dropped:
+            log.info(f"{name}: dropped {n_dropped} exact duplicate (question, answer) rows")
 
     df = df.copy()
     # encoder view: per-column normalized text
@@ -151,6 +186,7 @@ def _process_dataset(name: str, df: pd.DataFrame, cfg: DataConfig, nlp) -> dict:
     sidecar = {
         "dataset": name,
         "n_rows": int(len(df)),
+        "n_dropped_dedup": int(n_dropped),
         "splits": {sp: int((df["split"] == sp).sum()) for sp in sorted(df["split"].unique())},
         "encoder_view_file": str(enc_path),
         "feature_view_file": str(feat_path),

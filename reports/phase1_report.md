@@ -13,13 +13,16 @@ We are building a hybrid explainable ASAG system: SBERT/DeBERTa semantic encodin
 
 ### Dataset selection (verified 2026-05-29)
 
+The report's Section 2 specifies a 5-dataset matrix (SemEval, ASAP-SAS, Mohler, SAF, Powergrading). We acquired four of the five and have ASAP-SAS one user-action away (Kaggle rule acceptance) — see `reports/DATASETS.md` for the matrix + suitability ranking.
+
 | Dataset | Role | Status |
 |---|---|---|
 | **SemEval-2013 Task 7** (Beetle + SciEntsBank, 5-way Core) | core + official UA/UQ/UD splits | ✅ downloaded |
 | **SAF Communication Networks English** | explainability case study (feedback gold) | ✅ downloaded |
 | **Mohler 2011** (canonical, extracted from ASAG2024) | ordinal grading + skew calibration | ✅ extracted |
+| **Powergrading 1.0** (Basu 2013, MSR) | civics breadth, binary + 3-grader | ✅ downloaded |
 | **ASAG2024 unified benchmark** | row-level cross-check | ✅ downloaded |
-| **ASAP-SAS** (Hewlett) | rubric / QWK (stretch goal) | ⏸ disabled by default |
+| **ASAP-SAS** (Hewlett) | rubric / QWK (Phase 2 head-to-head) | ⏸ pending Kaggle rule acceptance (script ready) |
 
 Excluded: **EngSAF** (gated, request-only).
 
@@ -49,13 +52,15 @@ The Kaggle dataset suggested in the original plan (`mubeenfurqanahmed/automatic-
 
 ## 2. Data Stack — Final Statistics
 
-| Dataset | Domain | N_q | N_a | Mean tokens | Score range | Splits |
-|---|---|---:|---:|---:|---|---|
-| **SemEval-2013 Task 7** | electronics + science | 252 | 16,003 | 11 | 5-way categorical | train, test_ua, test_uq, test_ud |
-| **SAF Comm. Networks** | comm_networks | 31 | 2,981 | 69 | 0.0 – 3.5 | train, dev, test_ua, test_uq |
-| **Mohler (via ASAG2024)** | cs_data_structures | 21 | 1,260 | 18 | 0.0 – 5.0 | all (k=5 CV) |
+| Dataset | Domain | N_q | N_a (raw) | N_a (after dedup) | Mean tokens | Score range | Splits |
+|---|---|---:|---:|---:|---:|---|---|
+| **SemEval-2013 Task 7** | electronics + science | 252 | 16,003 | — | 11 | 5-way categorical | train, test_ua, test_uq, test_ud |
+| **SAF Comm. Networks** | comm_networks | 31 | 2,981 | — | 69 | 0.0 – 3.5 | train, dev, test_ua, test_uq |
+| **Mohler (via ASAG2024)** | cs_data_structures | 21 | 1,260 | ~616 | 18 | 0.0 – 5.0 | all (k=5 CV) |
+| **Powergrading** | civics | 20 | 13,960 | ~4,941 | 7 | 0.0 / 0.5 / 1.0 (binary, 3-grader mean) | all (k=5 CV) |
+| **ASAP-SAS** | mixed (10 prompts) | — | ~17k expected | — | — | ordinal 0–2 / 0–3 per prompt | per-prompt train |
 
-(See `reports/figures/dataset_summary.png` for the rendered table and per-dataset distribution figures.)
+(See `reports/figures/dataset_summary.png` for the rendered table and per-dataset distribution figures. SemEval / SAF do not need dedup; Mohler + Powergrading are deduped by `preprocess.dedupe_within_question` keeping the median-score row per (question_id, student_answer) group.)
 
 ### Score / label distributions (`reports/figures/score_or_label_dist.png`)
 
@@ -104,21 +109,25 @@ Both views are written per dataset to `data/processed/<dataset>/encoder.parquet`
 | semeval | 16,003 | ✅ | 527 | 0 | qid: 0 across test_uq+test_ud ✅; answer-text overlaps with train: test_ua=86, test_ud=10, test_uq=105 (natural — very short answers like "yes"/"no") |
 | saf | 2,981 | ✅ | 57 | 2 | qid: 0 across test_uq ✅; answer-text overlaps: dev=13, test_ua=8, test_uq=0 |
 | mohler | 1,260 | ✅ | 644 | 0 | n/a (no official train split) |
+| powergrading | 13,960 | ✅ | 9,019 | 0 | n/a (no official train split) |
 
 **Interpretation:**
 - **No question_id leakage in any unseen-question/unseen-domain split.** The cross-domain claim is structurally clean.
-- Student-answer text overlaps are tiny relative to dataset size and consist of common short responses — not a leakage problem.
-- The Mohler exact-dup count (644 / 1,260 = 51%) is driven by ASAG2024's row-level handling: identical (question, provided_answer) tuples appear multiple times in the unified benchmark. We will dedupe Mohler before training in Phase 2 — drop or downweight.
+- Student-answer text overlaps in SemEval/SAF are tiny relative to dataset size and consist of common short responses — not a leakage problem.
+- The Mohler exact-dup count (644 / 1,260 = 51%) is driven by ASAG2024's row-level handling: identical (question, provided_answer) tuples appear multiple times.
+- The Powergrading exact-dup count (9,019 / 13,960 = 65%) is natural: 698 students answering 20 civics questions inevitably produces many identical short responses ("the Bill of Rights", "freedom of speech").
+- **Both Mohler and Powergrading are now deduped in `preprocess.py`** via `dedupe_within_question`, which keeps the median-score row per duplicate group (avoiding "best/worst answer" bias). This addresses the report's Section 2.3 reviewer hot-button for Mohler explicitly.
 
 ---
 
 ## 6. Risks (open items for Phase 2)
 
-* **ASAG2024 Mohler size** — only 21 questions / 1,260 rows. If we need closer to original Mohler size (~80 q / 2,273 rows), Phase 2 should pursue a more authoritative Mohler mirror.
-* **Mohler exact dups (51%)** — must be removed or downweighted before training; affects sample-weight strategy.
-* **SemEval class imbalance** — `non_domain` is ~2% of labels; will need class-balanced sampling or loss weighting.
-* **Mohler score skew toward 5** — ordinal-regression head must compensate.
-* **ASAP-SAS gating** — requires manual Kaggle setup (account + accept rules + `~/.kaggle/kaggle.json`); script ready, disabled by default in `configs/data.yaml`.
+* **ASAG2024 Mohler size** — only 21 questions / 1,260 raw / ~616 deduped rows. If we need closer to original Mohler size (~80 q / 2,273 rows), Phase 2 should pursue a more authoritative Mohler mirror.
+* **Mohler exact dups (51%)** — addressed: `preprocess.dedupe_within_question` drops them keeping median-score row.
+* **Powergrading exact dups (65%)** — addressed: same dedup function.
+* **SemEval class imbalance** — `non_domain` is ~2% of labels; will need class-balanced sampling or loss weighting in Phase 2.
+* **Mohler score skew toward 5 (skew = -1.34)** — ordinal-regression head must compensate via weighted loss in Phase 2.
+* **ASAP-SAS gating** — Phase 1 pipeline is complete; one user-action remains: accept competition rules at https://www.kaggle.com/competitions/asap-sas/rules and place `kaggle.json`. Detailed steps in `reports/DATASETS.md §4` and `README.md`.
 * **License diversity** — every dataset has its own terms; redistribution is forbidden; `data/raw/**` is gitignored; users acquire under their own license acceptance.
 * **Windows non-ASCII path bug** — Python 3.11 fails to read `.pth` files via cp1252 on Arabic-path venvs; mitigated by relocating venv to ASCII path. Documented in `README.md`.
 

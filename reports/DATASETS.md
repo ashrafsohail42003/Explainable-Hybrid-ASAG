@@ -4,6 +4,33 @@ All links and licenses **independently verified on 2026-05-29** via WebFetch / W
 
 ---
 
+## Identity & Annotation Matrix (Section 2.1)
+
+| Dataset | Domain | Q / Answers | Label | Ref. ans. | Rubric | Partial credit | Verified access |
+|---|---|---|---|---|---|---|---|
+| **SemEval-2013 T7** (Beetle + SciEntsBank) | Science / electronics tutoring | 252 q (Core) / 16,003 a | 5-way categorical | ✅ | concept entailment | ✅ (categorical) | GitHub zips, HF mirror |
+| **ASAP-SAS** | 10 mixed prompts (biology / English / civics / science) | 10 / ~17k | Ordinal 0–2 / 0–3 (per prompt) | rubric-based | explicit per prompt | ✅ (ordinal) | Kaggle (gated) |
+| **Mohler 2011** | Computer Science (data structures) | 21 q / 1,260 a *(via ASAG2024 subset)* | Regression 0–5 | ✅ | ❌ | ✅ (continuous) | ASAG2024 HF (canonical Kaggle mirror rejected) |
+| **SAF** (Filighera 2022) | Communication networks (EN) | 31 q / 2,981 a | Score 0.0–3.5 + gold feedback | ✅ | gold feedback text | ✅ | HF, GitHub |
+| **Powergrading** (Basu 2013) | US citizenship / civics | 20 q / ~13,960 a | Binary (3 graders, majority) | ✅ (+ alternates) | ❌ | ❌ | Microsoft Download Center |
+
+## Suitability Matrix for THIS project (H/M/L) (Section 2.2)
+
+| Dataset | Ordinal reg. | Explainability | Semantic sim. | Rubric-aware | Cross-domain | Ablations | Popularity / Citations | Leakage risk | Q2/Q3 |
+|---|---|---|---|---|---|---|---|---|---|
+| **SemEval-2013** | M | M | H | M | **H** | H | H / H | split misuse | **H** |
+| **ASAP-SAS** | **H** | M | M | **H** | L | H | H / H | per-prompt | **H** |
+| **Mohler 2011** | **H** | M | H | L | L | H | H / H | skew + dup | M |
+| **SAF** | M | **H** | H | **H** | L | H | L / M | small test | **H** |
+| **Powergrading** | L | L | M | L | L | M | M / M | low | L |
+
+**Ranking (best → worst for this idea):** SemEval-2013 > ASAP-SAS > Mohler 2011 > SAF > Powergrading.
+**Best combination:** SemEval (all 3 splits) + ASAP-SAS + Mohler 2011 + SAF for the explainability study.
+**Most publishable setup:** SemEval (UA/UQ/UD) + ASAP-SAS QWK head-to-head.
+**Most novel:** SAF explainability evaluation (attributions vs gold feedback) + ASAG2024 cross-corpus generalization test.
+
+---
+
 ## 1. SemEval-2013 Task 7 (Beetle + SciEntsBank)
 
 | | |
@@ -70,7 +97,15 @@ All links and licenses **independently verified on 2026-05-29** via WebFetch / W
 | **Annotators** | Two graders per item (Score1, Score2); QWK between them is the IAA used in the literature. |
 | **Citation** | Hewlett Foundation (2012). *Short Answer Scoring.* Kaggle. |
 
-**Why it's in our stack (optional)**: provides rubric-aware ordinal data with dual annotations → QWK reporting. Enabled via `datasets.asap_sas.enabled: true` in `configs/data.yaml` after credential setup.
+**Why it's in our stack (optional)**: provides rubric-aware ordinal data with dual annotations → QWK reporting. The report ranks ASAP-SAS as part of the "most publishable" pairing (alongside SemEval); we therefore plan its enablement for Phase 2 evaluation, gated on the user accepting competition rules.
+
+**To enable in Phase 2** (one-time setup, ~5 minutes):
+1. Sign in at https://www.kaggle.com/ and accept rules at https://www.kaggle.com/competitions/asap-sas/rules
+2. Download API token from https://www.kaggle.com/settings/account → "Create New API Token"
+3. Place the downloaded file at `%USERPROFILE%\.kaggle\kaggle.json` (Windows) or `~/.kaggle/kaggle.json` (POSIX). Restrict permissions: `chmod 600 ~/.kaggle/kaggle.json`.
+4. Set `datasets.asap_sas.enabled: true` in `configs/data.yaml`.
+5. Re-run `make download`. `download_asap_sas` will pull the competition zip into `data/raw/asap-sas/` and extract.
+6. `load_asap_sas` materializes one row per (EssaySet, EssayText) pair with `dataset = "asap_sas_<id>"`; downstream evaluation MUST treat each prompt independently (no scale pooling).
 
 ---
 
@@ -89,13 +124,28 @@ All links and licenses **independently verified on 2026-05-29** via WebFetch / W
 
 ---
 
+## 6. Powergrading 1.0 (Basu 2013)
+
+| | |
+|---|---|
+| **Source** | https://www.microsoft.com/en-us/download/details.aspx?id=52397 (direct: https://download.microsoft.com/download/e/1/d/e1da2458-1af3-41c9-9515-7c9a8697e0cd/Powergrading-1.0-Corpus.zip) |
+| **License** | MSR License Agreement for Powergrading-1.0 Corpus (research use) |
+| **Subject** | US citizenship test (civics) — 20 questions from the USCIS 100-question list. |
+| **Size** | 698 students × 20 questions = ~13,960 graded answers (plus 100 ungraded; we skip those). |
+| **Annotators** | Three graders per response (G1, G2, G3); we report mean (mapped to 0/0.5/1) as `score` and majority vote as `label`. |
+| **Splits** | No official splits → stratified k=5 CV (in preprocessing). |
+| **Citation** | Basu, S., Jacobs, C., & Vanderwende, L. (2013). *Powergrading: a Clustering Approach to Amplify Human Effort for Short Answer Grading.* TACL 2013. |
+
+**Why included** (note: ranked #5 in the suitability matrix): adds a clean **binary / triple-annotator** civics corpus for cross-domain breadth. Limited ordinal-grading signal (binary only); kept for completeness with the report's full 5-dataset matrix.
+
+---
+
 ## Datasets considered but excluded from Phase 1
 
 | Dataset | Reason excluded |
 |---|---|
 | **EngSAF** (2024) | Gated by request-only form; conflicts with the free-availability requirement. |
 | **CU-NLP**, **DigiKlausur**, **Stita** | Available indirectly via ASAG2024; not pulled individually in Phase 1 to keep the primary stack focused. Can be added later if cross-domain breadth is needed. |
-| **Powergrading** | Civic test answers; scope misalignment (no reference answer in our intended form). |
 
 ---
 

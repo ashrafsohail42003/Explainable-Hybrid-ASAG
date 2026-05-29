@@ -12,7 +12,13 @@ import pandas as pd
 import pytest
 
 from asag.config import load_data_config
-from asag.data.loaders import UNIFIED_COLUMNS, load_mohler, load_saf, load_semeval
+from asag.data.loaders import (
+    UNIFIED_COLUMNS,
+    load_mohler,
+    load_powergrading,
+    load_saf,
+    load_semeval,
+)
 
 
 @pytest.fixture(scope="module")
@@ -52,6 +58,22 @@ def test_saf_loader(cfg):
     # score should be a valid float in [0, 4]
     s = df["score"].dropna()
     assert s.between(0, 4).all(), f"SAF score range out of bounds: [{s.min()}, {s.max()}]"
+
+
+def test_powergrading_loader(cfg):
+    pg = cfg.datasets.get("powergrading")
+    if pg is None or not pg.enabled:
+        pytest.skip("powergrading disabled in config.")
+    pg_dir = cfg.paths.raw / pg.raw_subdir
+    if not pg_dir.exists() or not (pg_dir / "studentanswers_grades_698.tsv").exists():
+        pytest.skip("Powergrading raw not present — skipping.")
+    df = load_powergrading(cfg)
+    _assert_schema(df, "powergrading")
+    assert (df["domain"] == "civics").all()
+    assert df["question_id"].nunique() == 20
+    s = df["score"].dropna()
+    assert s.between(0.0, 1.0).all(), f"PG score out of [0,1]: [{s.min()}, {s.max()}]"
+    assert set(df["label"].unique()).issubset({"correct", "incorrect"})
 
 
 def test_mohler_loader(cfg):

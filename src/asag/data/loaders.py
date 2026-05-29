@@ -274,6 +274,64 @@ def load_mohler(cfg: DataConfig | None = None) -> pd.DataFrame:
 
 # ---------------- ASAP-SAS (optional) ----------------
 
+def load_powergrading(cfg: DataConfig | None = None) -> pd.DataFrame:
+    """Load Powergrading 1.0 — 20 US-civics questions, ~13,960 graded student answers.
+
+    Three graders per response (G1, G2, G3) with values in {-1, 0, 1}. We use
+    the 698-student file (which is fully graded; the 100-student file is
+    ungraded → ``G1=G2=G3=-1``). The continuous ``score`` column is the
+    mean grade across the three graders; the ``label`` column records
+    the majority vote as ``correct`` / ``incorrect``.
+    """
+    cfg = cfg or load_data_config()
+    ds = cfg.datasets.get("powergrading")
+    if ds is None or not ds.enabled:
+        log.info("powergrading disabled — returning empty DataFrame.")
+        return _coerce(pd.DataFrame())
+
+    root = cfg.paths.raw / ds.raw_subdir
+    if not root.exists():
+        raise FileNotFoundError(f"Powergrading dir missing: {root}. Run `make download`.")
+
+    # Build question_id -> primary reference answer map. The TSV is ragged
+    # (questions with several alternate answers); we take the first answer
+    # as the canonical reference.
+    qa_path = root / "questions_answer_key.tsv"
+    qrows: dict[str, tuple[str, str, str]] = {}
+    for i, raw_line in enumerate(qa_path.read_text(encoding="utf-8").splitlines()):
+        if i == 0 or not raw_line.strip():
+            continue
+        fields = raw_line.split("\t")
+        qid, question = fields[0].strip(), fields[1].strip()
+        alt_answers = [a.strip() for a in fields[2:] if a.strip()]
+        primary = alt_answers[0] if alt_answers else ""
+        qrows[qid] = (question, primary, " | ".join(alt_answers))
+
+    sa_path = root / "studentanswers_grades_698.tsv"
+    sa = pd.read_csv(sa_path, sep="\t", dtype=str)
+    # Drop rows with any missing grade (defensive)
+    for g in ("G1", "G2", "G3"):
+        sa[g] = pd.to_numeric(sa[g], errors="coerce")
+    sa = sa.dropna(subset=["G1", "G2", "G3"]).copy()
+    # Continuous score = mean of three graders, mapped from {-1,0,1} -> {0, 0.5, 1}
+    mean_grade = (sa[["G1", "G2", "G3"]].mean(axis=1) + 1.0) / 2.0
+    # Majority-vote label: 1 if majority positive, 0 if majority negative
+    majority = (sa[["G1", "G2", "G3"]] > 0).sum(axis=1) >= 2
+
+    out = pd.DataFrame({
+        "question_id": sa["Q#"].astype(str),
+        "question": sa["Q#"].map(lambda q: qrows.get(q, ("", "", ""))[0]),
+        "reference_answer": sa["Q#"].map(lambda q: qrows.get(q, ("", "", ""))[1]),
+        "student_answer": sa["answer"].astype(str),
+        "score": mean_grade.astype(float),
+        "label": majority.map({True: "correct", False: "incorrect"}),
+        "dataset": "powergrading",
+        "domain": "civics",
+        "split": "all",
+    })
+    return _coerce(out)
+
+
 def load_asap_sas(cfg: DataConfig | None = None) -> pd.DataFrame:
     """Load ASAP-SAS train.tsv. Each prompt (EssaySet) is a separate logical sub-dataset."""
     cfg = cfg or load_data_config()
@@ -313,4 +371,6 @@ def load_all(cfg: DataConfig | None = None) -> dict[str, pd.DataFrame]:
         out["mohler"] = load_mohler(cfg)
     if cfg.datasets["asap_sas"].enabled:
         out["asap_sas"] = load_asap_sas(cfg)
+    if cfg.datasets.get("powergrading") and cfg.datasets["powergrading"].enabled:
+        out["powergrading"] = load_powergrading(cfg)
     return out

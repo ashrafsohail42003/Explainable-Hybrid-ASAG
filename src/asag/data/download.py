@@ -339,6 +339,36 @@ def download_asag2024(cfg: DataConfig) -> dict:
 
 # ---------- entrypoint ----------
 
+def download_powergrading(cfg: DataConfig) -> dict:
+    """Pull the Powergrading 1.0 corpus from Microsoft Research download center."""
+    ds = cfg.datasets.get("powergrading")
+    if ds is None or not ds.enabled:
+        log.info("powergrading disabled — skipping")
+        return {"status": "skipped"}
+
+    out_dir = cfg.paths.raw / ds.raw_subdir
+    out_dir.mkdir(parents=True, exist_ok=True)
+    url = ds.model_extra.get("url") if ds.model_extra else None
+    assert url, "configs/data.yaml: powergrading url missing"
+
+    zip_path = out_dir / "Powergrading-1.0-Corpus.zip"
+    marker = out_dir / "README.txt"
+    if marker.exists():
+        log.info("powergrading: already extracted — skipping")
+        return {"status": "ok", "out_dir": str(out_dir), "cached": True}
+
+    _http_get(url, zip_path)
+    rel = str(zip_path.relative_to(cfg.paths.raw)).replace("\\", "/")
+    _write_checksum(cfg, rel, _sha256_file(zip_path))
+    _safe_extract_zip(zip_path, out_dir)
+    for p in sorted(out_dir.rglob("*")):
+        if p.is_file() and p.suffix != ".zip":
+            r = str(p.relative_to(cfg.paths.raw)).replace("\\", "/")
+            _write_checksum(cfg, r, _sha256_file(p))
+    log.info(f"powergrading: extracted to {out_dir}")
+    return {"status": "ok", "out_dir": str(out_dir)}
+
+
 def run_all(cfg: DataConfig) -> dict:
     ensure_dirs(cfg)
     set_global_seed(cfg.seed)
@@ -348,6 +378,7 @@ def run_all(cfg: DataConfig) -> dict:
     results["mohler"] = download_mohler(cfg)
     results["asap_sas"] = download_asap_sas(cfg)
     results["asag2024"] = download_asag2024(cfg)
+    results["powergrading"] = download_powergrading(cfg)
 
     summary_path = cfg.paths.raw / "_download_summary.json"
     summary_path.write_text(json.dumps(results, indent=2), encoding="utf-8")
