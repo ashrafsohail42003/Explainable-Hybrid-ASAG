@@ -1,0 +1,56 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+.eggs/
+dist/
+build/
+
+# Virtual envs
+.venv/
+venv/
+env/
+.python-version
+
+# Tooling caches
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.ipynb_checkpoints/
+.cache/
+
+# Data — never commit raw or processed datasets (keep folders via .gitkeep)
+data/raw/*
+data/interim/*
+data/processed/*
+data/external/*
+!data/raw/.gitkeep
+!data/interim/.gitkeep
+!data/processed/.gitkeep
+!data/external/.gitkeep
+*.zip
+*.tar.gz
+*.parquet
+*.jsonl
+# Note: do NOT blanket-ignore *.csv — Mohler raw CSV stays in data/raw which is already covered above
+
+# Reports figures: keep PNGs in repo for the writeup
+!reports/figures/*.png
+
+# Jupyter outputs
+.ipynb_checkpoints/
+
+# IDE / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Claude / agents
+.claude/
+
+# Kaggle credentials — never commit
+kaggle.json
