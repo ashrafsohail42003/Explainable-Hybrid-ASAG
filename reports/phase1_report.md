@@ -13,7 +13,7 @@ We are building a hybrid explainable ASAG system: SBERT/DeBERTa semantic encodin
 
 ### Dataset selection (verified 2026-05-29)
 
-The report's Section 2 specifies a 5-dataset matrix (SemEval, ASAP-SAS, Mohler, SAF, Powergrading). We acquired four of the five and have ASAP-SAS one user-action away (Kaggle rule acceptance) — see `reports/DATASETS.md` for the matrix + suitability ranking.
+We acquired the report's full 5-dataset matrix (SemEval, ASAP-SAS, Mohler, SAF, Powergrading) and **added one new corpus**, **MIND-CA** (Kovatchev 2020, COLING), to widen cross-domain coverage with a non-STEM ordinal-graded dataset. See `reports/DATASETS.md` for the matrix + suitability ranking.
 
 | Dataset | Role | Status |
 |---|---|---|
@@ -21,10 +21,11 @@ The report's Section 2 specifies a 5-dataset matrix (SemEval, ASAP-SAS, Mohler, 
 | **SAF Communication Networks English** | explainability case study (feedback gold) | ✅ downloaded |
 | **Mohler 2011** (canonical, extracted from ASAG2024) | ordinal grading + skew calibration | ✅ extracted |
 | **Powergrading 1.0** (Basu 2013, MSR) | civics breadth, binary + 3-grader | ✅ downloaded |
+| **MIND-CA** (Kovatchev 2020, COLING) — *added beyond the report* | true 3-class ordinal 0/1/2; new non-STEM domain (mindreading / psychology); large N | ✅ downloaded |
 | **ASAG2024 unified benchmark** | row-level cross-check | ✅ downloaded |
 | **ASAP-SAS** (Hewlett) | rubric / QWK (Phase 2 head-to-head) | ⏸ pending Kaggle rule acceptance (script ready) |
 
-Excluded: **EngSAF** (gated, request-only).
+Excluded: **EngSAF** (gated, request-only); **SAS-Bench** (Chinese only); **Carousel K-12** (not publicly released yet).
 
 ### Mohler source — important discovery
 
@@ -56,11 +57,14 @@ The Kaggle dataset suggested in the original plan (`mubeenfurqanahmed/automatic-
 |---|---|---:|---:|---:|---:|---|---|
 | **SemEval-2013 Task 7** | electronics + science | 252 | 16,003 | — | 11 | 5-way categorical | train, test_ua, test_uq, test_ud |
 | **SAF Comm. Networks** | comm_networks | 31 | 2,981 | — | 69 | 0.0 – 3.5 | train, dev, test_ua, test_uq |
-| **Mohler (via ASAG2024)** | cs_data_structures | 21 | 1,260 | ~616 | 18 | 0.0 – 5.0 | all (k=5 CV) |
-| **Powergrading** | civics | 20 | 13,960 | ~4,941 | 7 | 0.0 / 0.5 / 1.0 (binary, 3-grader mean) | all (k=5 CV) |
+| **Mohler (via ASAG2024)** | cs_data_structures | 21 | 1,260 | 616 | 18 | 0.0 – 5.0 | all (k=5 CV) |
+| **Powergrading** | civics | 20 | 13,960 | 4,941 | 3 | 0.0 / 0.5 / 1.0 (binary, 3-grader mean) | all (k=5 CV) |
+| **MIND-CA** *(new domain)* | mindreading_behavioral (children 7–14) | 11 | 11,311 | 11,311 (no dups) | 10 | **0 / 1 / 2 ordinal** (skew −0.07, near-uniform) | all (k=5 CV) |
 | **ASAP-SAS** | mixed (10 prompts) | — | ~17k expected | — | — | ordinal 0–2 / 0–3 per prompt | per-prompt train |
 
-(See `reports/figures/dataset_summary.png` for the rendered table and per-dataset distribution figures. SemEval / SAF do not need dedup; Mohler + Powergrading are deduped by `preprocess.dedupe_within_question` keeping the median-score row per (question_id, student_answer) group.)
+**Totals across acquired datasets: 335 unique questions, 35,862 deduped answers, 6 distinct domains.**
+
+(See `reports/figures/dataset_summary.png` for the rendered table and per-dataset distribution figures. SemEval/SAF use their official splits as-is; Mohler/Powergrading/MIND-CA are deduped by `preprocess.dedupe_within_question` keeping the median-score row per (question_id, student_answer) group. MIND-CA had zero exact duplicates — child answers are textually varied enough that even when scores match, the text differs.)
 
 ### Score / label distributions (`reports/figures/score_or_label_dist.png`)
 
@@ -110,13 +114,15 @@ Both views are written per dataset to `data/processed/<dataset>/encoder.parquet`
 | saf | 2,981 | ✅ | 57 | 2 | qid: 0 across test_uq ✅; answer-text overlaps: dev=13, test_ua=8, test_uq=0 |
 | mohler | 1,260 | ✅ | 644 | 0 | n/a (no official train split) |
 | powergrading | 13,960 | ✅ | 9,019 | 0 | n/a (no official train split) |
+| mindreading | 11,311 | ✅ | 0 | 0 | n/a (no official train split) |
 
 **Interpretation:**
 - **No question_id leakage in any unseen-question/unseen-domain split.** The cross-domain claim is structurally clean.
 - Student-answer text overlaps in SemEval/SAF are tiny relative to dataset size and consist of common short responses — not a leakage problem.
 - The Mohler exact-dup count (644 / 1,260 = 51%) is driven by ASAG2024's row-level handling: identical (question, provided_answer) tuples appear multiple times.
 - The Powergrading exact-dup count (9,019 / 13,960 = 65%) is natural: 698 students answering 20 civics questions inevitably produces many identical short responses ("the Bill of Rights", "freedom of speech").
-- **Both Mohler and Powergrading are now deduped in `preprocess.py`** via `dedupe_within_question`, which keeps the median-score row per duplicate group (avoiding "best/worst answer" bias). This addresses the report's Section 2.3 reviewer hot-button for Mohler explicitly.
+- **MIND-CA has zero exact duplicates** despite 11,311 child responses across only 11 prompts — children produce textually varied answers even when the underlying score matches, validating the choice of corpus for ordinal-head training.
+- **Mohler, Powergrading, and MIND-CA are all deduped in `preprocess.py`** via `dedupe_within_question`, which keeps the median-score row per duplicate group (avoiding "best/worst answer" bias). This addresses the report's Section 2.3 reviewer hot-button for Mohler explicitly.
 
 ---
 

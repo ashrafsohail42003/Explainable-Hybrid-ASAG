@@ -4,7 +4,7 @@ All links and licenses **independently verified on 2026-05-29** via WebFetch / W
 
 ---
 
-## Identity & Annotation Matrix (Section 2.1)
+## Identity & Annotation Matrix (Section 2.1, extended)
 
 | Dataset | Domain | Q / Answers | Label | Ref. ans. | Rubric | Partial credit | Verified access |
 |---|---|---|---|---|---|---|---|
@@ -13,8 +13,9 @@ All links and licenses **independently verified on 2026-05-29** via WebFetch / W
 | **Mohler 2011** | Computer Science (data structures) | 21 q / 1,260 a *(via ASAG2024 subset)* | Regression 0–5 | ✅ | ❌ | ✅ (continuous) | ASAG2024 HF (canonical Kaggle mirror rejected) |
 | **SAF** (Filighera 2022) | Communication networks (EN) | 31 q / 2,981 a | Score 0.0–3.5 + gold feedback | ✅ | gold feedback text | ✅ | HF, GitHub |
 | **Powergrading** (Basu 2013) | US citizenship / civics | 20 q / ~13,960 a | Binary (3 graders, majority) | ✅ (+ alternates) | ❌ | ❌ | Microsoft Download Center |
+| **MIND-CA** (Kovatchev 2020, COLING) — *new domain* | Mindreading / behavioural psychology (children 7–14) | 11 q / 11,311 a | Ordinal 0/1/2 (true 3-class) | ❌ (copyrighted test materials) | ❌ | ✅ (ordinal) | GitHub raw |
 
-## Suitability Matrix for THIS project (H/M/L) (Section 2.2)
+## Suitability Matrix for THIS project (H/M/L) (Section 2.2, extended)
 
 | Dataset | Ordinal reg. | Explainability | Semantic sim. | Rubric-aware | Cross-domain | Ablations | Popularity / Citations | Leakage risk | Q2/Q3 |
 |---|---|---|---|---|---|---|---|---|---|
@@ -23,6 +24,7 @@ All links and licenses **independently verified on 2026-05-29** via WebFetch / W
 | **Mohler 2011** | **H** | M | H | L | L | H | H / H | skew + dup | M |
 | **SAF** | M | **H** | H | **H** | L | H | L / M | small test | **H** |
 | **Powergrading** | L | L | M | L | L | M | M / M | low | L |
+| **MIND-CA** *(new)* | **H** | L (no rubric) | M | L | **H** *(new domain)* | H | M / M | low (per-task) | M |
 
 **Ranking (best → worst for this idea):** SemEval-2013 > ASAP-SAS > Mohler 2011 > SAF > Powergrading.
 **Best combination:** SemEval (all 3 splits) + ASAP-SAS + Mohler 2011 + SAF for the explainability study.
@@ -121,6 +123,29 @@ All links and licenses **independently verified on 2026-05-29** via WebFetch / W
 | **Citation** | Meyer, Breuer, & Fürst (2024). *ASAG2024: A Combined Benchmark for Short Answer Grading.* SIGCSE Virtual 2024. |
 
 **Why it's in our stack**: used **only** to sanity-check our individually-downloaded datasets (row counts, content matches). We do NOT consume its splits because they discard the canonical UA/UQ/UD partitions our methodology depends on.
+
+---
+
+## 7. MIND-CA (Kovatchev 2020, COLING)
+
+| | |
+|---|---|
+| **Source** | https://github.com/venelink/mindreading-coling (Data/raw/*.xlsx) |
+| **License** | CC-BY-4.0 |
+| **Subject** | Mindreading / theory-of-mind / behavioural psychology assessments for children. |
+| **Tasks** | 11 prompts: 5 *Strange Stories* (Brian, Burglar, Peabody, Prisoner, Simon) + 6 *Silent Films* questions. |
+| **Population** | 1,066 children aged 7–14 (Age, Gender, Child_ID fields retained). |
+| **Size** | **11,311 child responses**. |
+| **Label scale** | True 3-class **ordinal 0 / 1 / 2** (poor / partial / full mindreading response). |
+| **Reference answer / rubric** | ❌ Not provided. The expected-answer rubrics live in copyrighted psychology test materials (Happé's *Strange Stories* and *Silent Films*); the corpus releases only student answers + scores. We populate `reference_answer = ""` and use the task name as a synthetic prompt. |
+| **Splits** | No official splits → stratified k=5 CV. |
+| **Citation** | Kovatchev, Smith, Lee, Grumley Traynor, Luque Aguilera, & Devine (2020). *"What is on your mind?" Automated Scoring of Mindreading in Childhood and Early Adolescence.* COLING 2020, pp. 6217–6228. |
+
+**Why included** (new domain, **not in the original report's 5-dataset matrix**):
+- Adds a sixth genuinely cross-domain corpus (psychology / theory-of-mind), strengthening the cross-domain generalization claim with a non-STEM, non-civics target.
+- True 3-class ordinal labels — directly calibrates the CORAL/CORN ordinal-regression head without the score-skew issue Mohler has.
+- 11,311 responses from 1,066 children — a substantial sample size that complements our smaller science / CS corpora.
+- The empty reference-answer column turns MIND-CA into a useful **ablation**: it forces the model to make decisions from `(question, student_answer)` only, isolating the semantic encoder's contribution from the rubric-coverage branch.
 
 ---
 

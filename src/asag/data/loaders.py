@@ -274,6 +274,67 @@ def load_mohler(cfg: DataConfig | None = None) -> pd.DataFrame:
 
 # ---------------- ASAP-SAS (optional) ----------------
 
+def load_mindreading(cfg: DataConfig | None = None) -> pd.DataFrame:
+    """Load MIND-CA (Kovatchev 2020): 11,311 child responses, ordinal 0/1/2 scoring.
+
+    Each xlsx file is one task with columns: Child_ID, Answer, Score, Age, Gender,
+    Question. Scoring is ordinal 0/1/2 (poor / partial / full mindreading
+    response). Reference answers are NOT provided — these are open-ended
+    psychology assessment items where rubrics live in copyrighted test
+    materials. We leave ``reference_answer`` empty; the dataset trains the
+    ordinal-regression head and the semantic encoder branch without
+    benefiting from the rubric-coverage branch (useful as ablation).
+    """
+    cfg = cfg or load_data_config()
+    ds = cfg.datasets.get("mindreading")
+    if ds is None or not ds.enabled:
+        log.info("mindreading disabled — returning empty DataFrame.")
+        return _coerce(pd.DataFrame())
+
+    root = cfg.paths.raw / ds.raw_subdir
+    if not root.exists():
+        raise FileNotFoundError(f"MindReading dir missing: {root}. Run `make download`.")
+
+    files = sorted(root.glob("*.xlsx"))
+    if not files:
+        raise FileNotFoundError(f"MindReading: no xlsx under {root}.")
+
+    frames: list[pd.DataFrame] = []
+    for xlsx in files:
+        df = pd.read_excel(xlsx)
+        if not {"Child_ID", "Answer", "Score", "Question"}.issubset(df.columns):
+            log.warning(f"mindreading: unexpected columns in {xlsx.name}: {list(df.columns)}")
+            continue
+        task_id = xlsx.stem  # e.g. "SS_Brian_Text" / "SFQuestion_1_Text"
+        # Human-readable question prompt derived from the task id.
+        # The actual psychology test question text is copyrighted and
+        # not redistributed in the corpus — we use the task family +
+        # name as the prompt.
+        if task_id.startswith("SS_"):
+            short = task_id.replace("SS_", "").replace("_Text", "")
+            prompt = f"Strange Stories ({short}): explain the character's behaviour."
+        elif task_id.startswith("SFQuestion_"):
+            n = task_id.replace("SFQuestion_", "").replace("_Text", "")
+            prompt = f"Silent Films Q{n}: explain what happened in the scene."
+        else:
+            prompt = task_id
+
+        out = pd.DataFrame({
+            "question_id": task_id,
+            "question": prompt,
+            "reference_answer": "",
+            "student_answer": df["Answer"].astype(str),
+            "score": pd.to_numeric(df["Score"], errors="coerce"),
+            "label": df["Score"].map(lambda s: f"score_{int(s)}" if pd.notna(s) else ""),
+            "dataset": "mindreading",
+            "domain": "mindreading_behavioral",
+            "split": "all",
+        })
+        frames.append(out)
+
+    return _coerce(pd.concat(frames, ignore_index=True))
+
+
 def load_powergrading(cfg: DataConfig | None = None) -> pd.DataFrame:
     """Load Powergrading 1.0 — 20 US-civics questions, ~13,960 graded student answers.
 
@@ -373,4 +434,6 @@ def load_all(cfg: DataConfig | None = None) -> dict[str, pd.DataFrame]:
         out["asap_sas"] = load_asap_sas(cfg)
     if cfg.datasets.get("powergrading") and cfg.datasets["powergrading"].enabled:
         out["powergrading"] = load_powergrading(cfg)
+    if cfg.datasets.get("mindreading") and cfg.datasets["mindreading"].enabled:
+        out["mindreading"] = load_mindreading(cfg)
     return out

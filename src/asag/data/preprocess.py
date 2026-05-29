@@ -128,10 +128,10 @@ def _process_dataset(name: str, df: pd.DataFrame, cfg: DataConfig, nlp) -> dict:
     enc_cfg = cfg.preprocessing.encoder_view
     feat_cfg = cfg.preprocessing.feature_view
 
-    # Dedup Mohler/Powergrading (datasets with no official splits that have
-    # known exact-duplicate issues). Keep the median-score row per dup group.
+    # Dedup datasets without official splits that have known exact-duplicate
+    # issues. Keep the median-score row per dup group.
     n_dropped = 0
-    if name in {"mohler", "powergrading"}:
+    if name in {"mohler", "powergrading", "mindreading"}:
         df, n_dropped = dedupe_within_question(df)
         if n_dropped:
             log.info(f"{name}: dropped {n_dropped} exact duplicate (question, answer) rows")

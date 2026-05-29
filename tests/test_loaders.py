@@ -14,6 +14,7 @@ import pytest
 from asag.config import load_data_config
 from asag.data.loaders import (
     UNIFIED_COLUMNS,
+    load_mindreading,
     load_mohler,
     load_powergrading,
     load_saf,
@@ -74,6 +75,23 @@ def test_powergrading_loader(cfg):
     s = df["score"].dropna()
     assert s.between(0.0, 1.0).all(), f"PG score out of [0,1]: [{s.min()}, {s.max()}]"
     assert set(df["label"].unique()).issubset({"correct", "incorrect"})
+
+
+def test_mindreading_loader(cfg):
+    mr = cfg.datasets.get("mindreading")
+    if mr is None or not mr.enabled:
+        pytest.skip("mindreading disabled in config.")
+    mr_dir = cfg.paths.raw / mr.raw_subdir
+    if not mr_dir.exists() or not any(mr_dir.glob("*.xlsx")):
+        pytest.skip("MindReading raw not present — skipping.")
+    df = load_mindreading(cfg)
+    _assert_schema(df, "mindreading")
+    assert (df["domain"] == "mindreading_behavioral").all()
+    assert df["question_id"].nunique() == 11, f"expected 11 tasks, got {df['question_id'].nunique()}"
+    s = df["score"].dropna()
+    assert set(s.unique()).issubset({0.0, 1.0, 2.0}), f"unexpected score values: {set(s.unique())}"
+    # reference_answer is intentionally empty for this dataset
+    assert (df["reference_answer"].astype(str) == "").all()
 
 
 def test_mohler_loader(cfg):

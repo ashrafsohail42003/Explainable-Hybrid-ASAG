@@ -79,6 +79,29 @@ datasets:
       Basu, S., Jacobs, C., & Vanderwende, L. (2013). Powergrading: a Clustering Approach
       to Amplify Human Effort for Short Answer Grading. Transactions of the ACL (TACL) 2013.
 
+  mindreading:
+    enabled: true   # MIND-CA corpus: 11,311 child responses (ages 7-14), ordinal 0/1/2
+    name: mindreading_kovatchev_2020
+    github_raw_base: https://raw.githubusercontent.com/venelink/mindreading-coling/main/Data/raw
+    files:
+      - SFQuestion_1_Text.xlsx
+      - SFQuestion_2_Text.xlsx
+      - SFQuestion_3_Text.xlsx
+      - SFQuestion_4_Text.xlsx
+      - SFQuestion_5_Text.xlsx
+      - SFQuestion_6_Text.xlsx
+      - SS_Brian_Text.xlsx
+      - SS_Burglar_Text.xlsx
+      - SS_Peabody_Text.xlsx
+      - SS_Prisoner_Text.xlsx
+      - SS_Simon_Text.xlsx
+    raw_subdir: mindreading
+    license: CC-BY-4.0
+    citation: |
+      Kovatchev, V., Smith, P., Lee, M., Grumley Traynor, I., Luque Aguilera, I., & Devine, R.
+      (2020). "What is on your mind?" Automated Scoring of Mindreading in Childhood and Early
+      Adolescence. COLING 2020, pp. 6217–6228.
+
 preprocessing:
   encoder_view:
     normalize_unicode: NFKC

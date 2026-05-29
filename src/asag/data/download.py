@@ -369,6 +369,34 @@ def download_powergrading(cfg: DataConfig) -> dict:
     return {"status": "ok", "out_dir": str(out_dir)}
 
 
+def download_mindreading(cfg: DataConfig) -> dict:
+    """Pull MIND-CA (Kovatchev 2020) xlsx files from the COLING 2020 GitHub release."""
+    ds = cfg.datasets.get("mindreading")
+    if ds is None or not ds.enabled:
+        log.info("mindreading disabled — skipping")
+        return {"status": "skipped"}
+
+    out_dir = cfg.paths.raw / ds.raw_subdir
+    out_dir.mkdir(parents=True, exist_ok=True)
+    base = ds.model_extra.get("github_raw_base") if ds.model_extra else None
+    files = ds.model_extra.get("files") if ds.model_extra else None
+    assert base and files, "configs/data.yaml: mindreading github_raw_base + files missing"
+
+    checksums = _load_checksums(cfg)
+    n_downloaded = 0
+    for fname in files:
+        dest = out_dir / fname
+        rel = str(dest.relative_to(cfg.paths.raw)).replace("\\", "/")
+        if dest.exists() and checksums.get(rel) == _sha256_file(dest):
+            log.info(f"mindreading: {fname} sha256 matches — skipping")
+            continue
+        _http_get(f"{base}/{fname}", dest)
+        _write_checksum(cfg, rel, _sha256_file(dest))
+        n_downloaded += 1
+    log.info(f"mindreading: {n_downloaded} new files; {len(files)} total in {out_dir}")
+    return {"status": "ok", "out_dir": str(out_dir), "files": len(files)}
+
+
 def run_all(cfg: DataConfig) -> dict:
     ensure_dirs(cfg)
     set_global_seed(cfg.seed)
@@ -379,6 +407,7 @@ def run_all(cfg: DataConfig) -> dict:
     results["asap_sas"] = download_asap_sas(cfg)
     results["asag2024"] = download_asag2024(cfg)
     results["powergrading"] = download_powergrading(cfg)
+    results["mindreading"] = download_mindreading(cfg)
 
     summary_path = cfg.paths.raw / "_download_summary.json"
     summary_path.write_text(json.dumps(results, indent=2), encoding="utf-8")
