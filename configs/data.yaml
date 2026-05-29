@@ -1,0 +1,110 @@
+# Phase 1 data configuration.
+# Paths are resolved relative to the project root.
+
+seed: 42
+
+paths:
+  data_root: data
+  raw: data/raw
+  interim: data/interim
+  processed: data/processed
+  external: data/external
+  reports: reports
+  figures: reports/figures
+  checksums: data/raw/CHECKSUMS.txt
+
+datasets:
+  semeval:
+    enabled: true
+    name: semeval_2013_task7
+    url_3way: https://github.com/myrosia/semeval-2013-task7/raw/main/semeval-3way.zip
+    url_5way: https://github.com/myrosia/semeval-2013-task7/raw/main/semeval-5way.zip
+    raw_subdir: semeval-2013-task7
+    license: CC-BY-SA
+    citation: |
+      Dzikovska, M.O., Nielsen, R.D., Brew, C., Leacock, C., Giampiccolo, D., Bentivogli, L.,
+      Clark, P., Dagan, I., & Dang, H.T. (2013). SemEval-2013 Task 7: The Joint Student
+      Response Analysis and 8th Recognizing Textual Entailment Challenge.
+
+  saf:
+    enabled: true
+    name: saf_communication_networks_english
+    hf_id: Short-Answer-Feedback/saf_communication_networks_english
+    raw_subdir: saf-comm-nets-en
+    license: CC-BY-4.0
+    citation: |
+      Filighera, A., Parihar, S., Steuer, T., Meuser, T., & Ochs, S. (2022). Your Answer is
+      Incorrect... Would you like to know why? Introducing a Bilingual Short Answer Feedback
+      Dataset. ACL 2022.
+
+  mohler:
+    enabled: true
+    name: mohler_2011
+    kaggle_dataset: mubeenfurqanahmed/automatic-short-answer-grading-dataset
+    asag2024_crosscheck_hf_id: Meyerger/ASAG2024
+    raw_subdir: mohler-2011
+    license: academic-research-use
+    citation: |
+      Mohler, M., Bunescu, R., & Mihalcea, R. (2011). Learning to Grade Short Answer
+      Questions using Semantic Similarity Measures and Dependency Graph Alignments. ACL 2011.
+
+  asap_sas:
+    enabled: false  # stretch goal — flip to true after Kaggle credentials + rule acceptance
+    name: asap_sas
+    kaggle_competition: asap-sas
+    raw_subdir: asap-sas
+    license: kaggle-competition-terms
+    citation: |
+      Hewlett Foundation (2012). Short Answer Scoring. Kaggle competition.
+
+  asag2024:
+    enabled: true   # used as cross-check reference only, never merged into processed dataset
+    name: asag2024_crosscheck
+    hf_id: Meyerger/ASAG2024
+    raw_subdir: asag2024
+    license: per-source-license
+    citation: |
+      Meyer, G., Breuer, P., & Fürst, J. (2024). ASAG2024: A Combined Benchmark for Short
+      Answer Grading. SIGCSE Virtual 2024.
+
+preprocessing:
+  encoder_view:
+    normalize_unicode: NFKC
+    collapse_whitespace: true
+    lowercase: false
+    remove_punctuation: false
+    remove_stopwords: false
+  feature_view:
+    spacy_model: en_core_web_sm
+    lemmatize: true
+    lowercase: true
+    remove_punctuation: true
+    remove_stopwords: true
+    preserve_negators:
+      - "not"
+      - "no"
+      - "never"
+      - "n't"
+      - "without"
+      - "neither"
+      - "nor"
+      - "none"
+      - "cannot"
+      - "can't"
+      - "won't"
+      - "don't"
+      - "doesn't"
+      - "didn't"
+      - "isn't"
+      - "wasn't"
+      - "weren't"
+      - "shouldn't"
+      - "wouldn't"
+      - "couldn't"
+
+splits:
+  cv_k_folds: 5
+  stratify_on: score  # bin score before stratifying for ordinal labels
+
+validation:
+  near_duplicate_jaccard_threshold: 0.95
