@@ -46,11 +46,20 @@ make setup
 **Without make (Windows PowerShell equivalent):**
 
 ```powershell
+$env:UV_PROJECT_ENVIRONMENT = "$env:USERPROFILE\.cache\asag-venvs\asag-py311"
+$env:PYTHONUTF8 = "1"
+$env:PYTHONIOENCODING = "utf-8"
 uv python install 3.11
-uv venv --python 3.11
-uv pip install -e ".[dev]"
-uv run python -m spacy download en_core_web_sm
+uv venv --python 3.11 $env:UV_PROJECT_ENVIRONMENT
+uv pip install . --python "$env:UV_PROJECT_ENVIRONMENT\Scripts\python.exe"
+& "$env:UV_PROJECT_ENVIRONMENT\Scripts\python.exe" -m spacy download en_core_web_sm
 ```
+
+> **Why the venv lives outside the project on Windows**: this project's path
+> includes Arabic characters. Python 3.11 reads venv `.pth` files via the
+> system code page (cp1252) and fails on non-cp1252 bytes — the venv won't
+> start. Keeping `.venv` at an ASCII path (under `~/.cache/asag-venvs/`)
+> avoids the bug. `make setup` does this automatically.
 
 ### Dataset acquisition
 

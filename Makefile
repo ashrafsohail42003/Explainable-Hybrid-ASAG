@@ -1,10 +1,19 @@
 # ASAG Phase 1 — Makefile
 # Works with GNU make. On Windows install via choco/scoop, or use the PowerShell equivalents documented in README.
+#
+# WHY UV_PROJECT_ENVIRONMENT points to %USERPROFILE%\.cache\asag-venvs:
+# This project's path contains non-ASCII characters (Arabic). Python 3.x on
+# Windows reads venv .pth files using the system code page (cp1252), which
+# fails on non-cp1252 path bytes — Python crashes at venv startup. Keeping
+# the venv at an ASCII path sidesteps the bug entirely.
 
 PYTHON ?= python
 UV ?= uv
+export UV_PROJECT_ENVIRONMENT ?= $(USERPROFILE)/.cache/asag-venvs/asag-py311
+export PYTHONUTF8 = 1
+export PYTHONIOENCODING = utf-8
 
-.PHONY: help setup download eda validate test clean check
+.PHONY: help setup download eda validate preprocess test clean check
 
 help:
 	@echo "ASAG Phase 1 targets:"
@@ -16,27 +25,32 @@ help:
 	@echo "  make check      - lint-light: import & schema sanity"
 	@echo "  make clean      - remove caches (keeps data/raw)"
 
+VENV_PY = $(UV_PROJECT_ENVIRONMENT)/Scripts/python.exe
+
 setup:
 	$(UV) python install 3.11
-	$(UV) venv --python 3.11
-	$(UV) pip install -e ".[dev]"
-	$(UV) run python -m spacy download en_core_web_sm
+	$(UV) venv --python 3.11 "$(UV_PROJECT_ENVIRONMENT)"
+	$(UV) pip install -e ".[dev]" --python "$(VENV_PY)"
+	"$(VENV_PY)" -m spacy download en_core_web_sm
 
 download:
-	$(UV) run python -m asag.data.download
+	"$(VENV_PY)" -m asag.data.download
 
 validate:
-	$(UV) run python -m asag.data.validate
+	"$(VENV_PY)" -m asag.data.validate
+
+preprocess:
+	"$(VENV_PY)" -m asag.data.preprocess
 
 eda:
-	$(UV) run jupyter nbconvert --to notebook --execute notebooks/01_eda.ipynb --output 01_eda.ipynb
+	"$(VENV_PY)" -m jupyter nbconvert --to notebook --execute notebooks/01_eda.ipynb --output 01_eda.ipynb
 
 test:
-	$(UV) run pytest -q
+	"$(VENV_PY)" -m pytest -q
 
 check:
-	$(UV) run python -c "import asag; from asag.config import load_data_config; load_data_config(); print('OK')"
+	"$(VENV_PY)" -c "import asag; from asag.config import load_data_config; load_data_config(); print('OK')"
 
 clean:
 	@echo "Removing caches (data/raw is preserved)..."
-	$(UV) run python -c "import shutil, pathlib; [shutil.rmtree(p, ignore_errors=True) for p in ['.pytest_cache', '.ipynb_checkpoints', 'src/asag/__pycache__'] ]; print('done')"
+	"$(VENV_PY)" -c "import shutil, pathlib; [shutil.rmtree(p, ignore_errors=True) for p in ['.pytest_cache', '.ipynb_checkpoints', 'src/asag/__pycache__'] ]; print('done')"
