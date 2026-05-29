@@ -19,6 +19,7 @@ on :mod:`asag.data.splits` to build stratified k-fold CV indices.
 
 from __future__ import annotations
 
+import hashlib
 from pathlib import Path
 from typing import Iterable
 from xml.etree import ElementTree as ET
@@ -60,7 +61,8 @@ def _coerce(df: pd.DataFrame) -> pd.DataFrame:
 
 _SEMEVAL_DOMAIN = {"beetle": "electronics", "sciEntsBank": "science"}
 _SEMEVAL_SPLIT_DIRS = {
-    "training": "train",
+    "train": "train",
+    "training": "train",  # legacy variant
     "test-unseen-answers": "test_ua",
     "test-unseen-questions": "test_uq",
     "test-unseen-domains": "test_ud",
@@ -70,11 +72,18 @@ _SEMEVAL_SPLIT_DIRS = {
 def _iter_semeval_files(root: Path) -> Iterable[tuple[str, str, Path]]:
     """Yield (corpus, split_label, xml_path) tuples for the 5-way semeval data.
 
-    The 5-way zip has structure::
+    Each split directory contains Core/, Extra/, and (sometimes) Dependency/
+    subdirectories. These are alternative annotation styles over the SAME
+    student responses; reading all of them produces 2-3x duplicated rows.
+    Standard practice in the ASAG literature is to use Core as the
+    canonical primary annotation, which is what we do here.
+
+    The 5-way zip layout::
 
         semeval-5way/
-          beetle/{training, test-unseen-answers, test-unseen-questions}/...xml
-          sciEntsBank/{training, test-unseen-answers, test-unseen-questions, test-unseen-domains}/...xml
+          beetle/{train, test-unseen-answers, test-unseen-questions}/{Core, Extra, Dependency}/*.xml
+          sciEntsBank/{train, test-unseen-answers, test-unseen-questions, test-unseen-domains}/{Core, Extra, Dependency}/*.xml
+          sciEntsBank/reliability/round1/...  (IAA subset; skipped)
     """
     for corpus_dir in root.glob("*/"):
         if not corpus_dir.is_dir():
@@ -86,7 +95,10 @@ def _iter_semeval_files(root: Path) -> Iterable[tuple[str, str, Path]]:
             sd = corpus_dir / split_name
             if not sd.exists():
                 continue
-            for xml_path in sd.rglob("*.xml"):
+            # Prefer Core/; fall back to the split dir root if no Core/ exists.
+            core_dir = sd / "Core"
+            scan_root = core_dir if core_dir.exists() else sd
+            for xml_path in scan_root.glob("*.xml"):
                 yield corpus_name, split_label, xml_path
 
 
@@ -188,8 +200,13 @@ def load_saf(cfg: DataConfig | None = None) -> pd.DataFrame:
         if split_name not in _SAF_SPLIT_MAP:
             continue
         df = pd.read_parquet(parquet_path)
+        # `id` is a per-row UUID; `question_id` semantically must identify
+        # the QUESTION, so we hash the question text (stable across rows).
+        qid = df["question"].astype(str).map(
+            lambda s: hashlib.md5(s.strip().encode("utf-8")).hexdigest()[:16]
+        )
         out = pd.DataFrame({
-            "question_id": df["id"].astype(str),
+            "question_id": qid,
             "question": df["question"].astype(str),
             "reference_answer": df["reference_answer"].astype(str),
             "student_answer": df["provided_answer"].astype(str),
@@ -209,47 +226,44 @@ def load_saf(cfg: DataConfig | None = None) -> pd.DataFrame:
 # ---------------- Mohler 2011 ----------------
 
 def load_mohler(cfg: DataConfig | None = None) -> pd.DataFrame:
-    """Load Mohler 2011 from the Kaggle-mirror CSV under data/raw/mohler-2011."""
+    """Load Mohler 2011.
+
+    Primary source: canonical Mohler extracted from ASAG2024 (the unified
+    benchmark; subset where ``data_source == "mohler"``) — written by the
+    downloader to ``mohler_canonical_from_asag2024.parquet``. This is the
+    real Mohler dataset.
+
+    Note: the Kaggle mirror ``mubeenfurqanahmed/automatic-short-answer-
+    grading-dataset`` is NOT actual Mohler 2011 — it contains questions
+    about plant respiration / meridians, not CS data structures. We do
+    not load it. See reports/DATASETS.md for the writeup.
+    """
     cfg = cfg or load_data_config()
     moh_dir = cfg.paths.raw / cfg.datasets["mohler"].raw_subdir
     if not moh_dir.exists():
         raise FileNotFoundError(f"Mohler dir missing: {moh_dir}. Run `make download` first.")
 
-    csvs = [p for p in moh_dir.rglob("*.csv") if "asag2024" not in p.name.lower()]
-    if not csvs:
+    canonical = moh_dir / "mohler_canonical_from_asag2024.parquet"
+    if not canonical.exists():
         raise FileNotFoundError(
-            f"Mohler: no CSV found under {moh_dir}. Inspect contents and adjust loader."
+            f"Canonical Mohler parquet missing: {canonical}. Re-run `make download` "
+            "after fixing ASAG2024 access — the canonical subset is extracted from there."
         )
-    csv = csvs[0]
-    log.info(f"mohler: loading {csv.name}")
+    log.info(f"mohler: loading canonical {canonical.name}")
+    df = pd.read_parquet(canonical)
 
-    df = pd.read_csv(csv)
-    cols = {c.lower().strip(): c for c in df.columns}
-
-    def pick(*names: str) -> str | None:
-        for n in names:
-            if n.lower() in cols:
-                return cols[n.lower()]
-        return None
-
-    qid_col = pick("question_id", "qid", "id", "question_number")
-    q_col = pick("question", "question_text", "prompt")
-    ref_col = pick("reference_answer", "desired_answer", "reference", "model_answer")
-    sa_col = pick("student_answer", "answer", "response")
-    score_col = pick("score", "score_avg", "average", "grade_avg", "average_score")
-
-    if not all([q_col, ref_col, sa_col, score_col]):
-        raise RuntimeError(
-            f"Mohler CSV at {csv} has unexpected columns: {list(df.columns)}. "
-            "Update the loader column mapping."
-        )
-
+    # ASAG2024 schema: question, provided_answer, reference_answer, grade,
+    # normalized_grade, data_source, index, weight. Use hashed question
+    # text as question_id (the source loses the original Mohler qid).
+    qid = df["question"].astype(str).map(
+        lambda s: hashlib.md5(s.strip().encode("utf-8")).hexdigest()[:16]
+    )
     out = pd.DataFrame({
-        "question_id": df[qid_col].astype(str) if qid_col else df[q_col].astype(str).str.slice(0, 24),
-        "question": df[q_col].astype(str),
-        "reference_answer": df[ref_col].astype(str),
-        "student_answer": df[sa_col].astype(str),
-        "score": pd.to_numeric(df[score_col], errors="coerce"),
+        "question_id": qid,
+        "question": df["question"].astype(str),
+        "reference_answer": df["reference_answer"].astype(str),
+        "student_answer": df["provided_answer"].astype(str),
+        "score": pd.to_numeric(df["grade"], errors="coerce"),
         "label": "",
         "dataset": "mohler",
         "domain": "cs_data_structures",

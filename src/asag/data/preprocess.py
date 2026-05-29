@@ -123,7 +123,8 @@ def _process_dataset(name: str, df: pd.DataFrame, cfg: DataConfig, nlp) -> dict:
         df[f"{col}_feat"] = feature_view_batch(df[col].tolist(), nlp, opts)
 
     # stratified k-fold for datasets without official splits
-    if (df["split"].unique() == ["all"]).all():
+    unique_splits = set(df["split"].astype(str).unique())
+    if unique_splits == {"all"}:
         df["fold"] = make_stratified_kfold(
             df, k=cfg.splits.cv_k_folds, seed=cfg.seed, stratify_on=cfg.splits.stratify_on,
         ).values

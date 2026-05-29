@@ -41,18 +41,19 @@ All links and licenses **independently verified on 2026-05-29** via WebFetch / W
 
 | | |
 |---|---|
-| **Primary source** | Kaggle mirror: https://www.kaggle.com/datasets/mubeenfurqanahmed/automatic-short-answer-grading-dataset |
-| **Original URL** | http://web.eecs.umich.edu/~mihalcea/downloads/ShortAnswerGrading_v2.0.zip — **❌ SSL verification fails on 2026-05-29**; mirror used instead. |
-| **Cross-check** | Mohler subset extracted from https://huggingface.co/datasets/Meyerger/ASAG2024 (filter `data_source == "mohler"`). |
+| **Primary source (Phase 1)** | Mohler subset extracted from https://huggingface.co/datasets/Meyerger/ASAG2024 (filter `data_source == "mohler"`); written to `data/raw/mohler-2011/mohler_canonical_from_asag2024.parquet`. |
+| **Original URL** | http://web.eecs.umich.edu/~mihalcea/downloads/ShortAnswerGrading_v2.0.zip — **❌ SSL verification fails on 2026-05-29**; not used. |
+| **Kaggle "mirror" reviewed and rejected** | `mubeenfurqanahmed/automatic-short-answer-grading-dataset` — content inspection (2026-05-29) showed questions about plant respiration, meridians, evaporation — **NOT** Mohler 2011 CS data-structures. Excluded from the pipeline. |
 | **License** | Academic research use (original publication terms). |
 | **Subject** | Introductory CS / data structures (10 assignments + 2 exams; 31 students). |
-| **Size** | 2,273 answers / ~80 questions. |
-| **Label scale** | 0–5 ordinal (average of two human graders). |
+| **Original size (literature)** | 2,273 answers / ~80 questions. |
+| **Our extracted size** | **1,260 answers / 21 unique questions** — ASAG2024's Mohler subset is smaller than the original. Recorded as a Phase 1 limitation; we may pursue a larger mirror in Phase 2. |
+| **Label scale** | 0–5 ordinal (ASAG2024 stores it on a 0–100 grade column; we keep raw). |
 | **Splits** | No official splits → we use stratified k=5 CV (see `splits.py`). |
-| **Known issue** | Heavy skew toward score 5; documented in EDA. |
+| **Known issues** | Heavy skew toward score 5 (skew = -1.34); 644 / 1,260 (51%) exact duplicates from ASAG2024 merging — addressed in Phase 2 via dedup/downweighting. |
 | **Citation** | Mohler, Bunescu, & Mihalcea (2011). *Learning to Grade Short Answer Questions using Semantic Similarity Measures and Dependency Graph Alignments.* ACL 2011. |
 
-**Why it's in our stack**: the canonical ordinal-grading ASAG dataset; calibrates the ordinal-regression head.
+**Why it's in our stack**: the canonical ordinal-grading ASAG dataset; calibrates the ordinal-regression head even at reduced size.
 
 ---
 

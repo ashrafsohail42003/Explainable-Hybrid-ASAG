@@ -56,10 +56,12 @@ def test_saf_loader(cfg):
 
 def test_mohler_loader(cfg):
     moh_dir = cfg.paths.raw / cfg.datasets["mohler"].raw_subdir
-    if not moh_dir.exists() or not any(moh_dir.rglob("*.csv")):
-        pytest.skip("Mohler raw not present — skipping.")
+    canonical = moh_dir / "mohler_canonical_from_asag2024.parquet"
+    if not canonical.exists():
+        pytest.skip("Mohler canonical parquet not present — skipping.")
     df = load_mohler(cfg)
     _assert_schema(df, "mohler")
     assert (df["domain"] == "cs_data_structures").all()
     s = df["score"].dropna()
-    assert s.between(0, 5).all(), f"Mohler score out of [0,5]: [{s.min()}, {s.max()}]"
+    # ASAG2024 uses 0..100 (normalized x 100). Allow 0..100 to cover both raw and 0..5 cases.
+    assert s.between(0, 100).all(), f"Mohler score out of [0,100]: [{s.min()}, {s.max()}]"

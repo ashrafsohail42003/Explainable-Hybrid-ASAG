@@ -178,7 +178,14 @@ def download_saf(cfg: DataConfig) -> dict:
 
 
 def download_mohler(cfg: DataConfig) -> dict:
-    """Pull Mohler from Kaggle mirror + cross-check copy from ASAG2024."""
+    """Pull canonical Mohler 2011 from the ASAG2024 unified benchmark.
+
+    We learned during Phase 1 that the Kaggle mirror suggested in the plan
+    (``mubeenfurqanahmed/automatic-short-answer-grading-dataset``) is NOT
+    actual Mohler 2011 — it contains generic science short-answer items,
+    not CS data-structures. The canonical source is ASAG2024's ``mohler``
+    subset, which we extract here.
+    """
     ds = cfg.datasets["mohler"]
     if not ds.enabled:
         log.info("mohler disabled — skipping")
@@ -187,60 +194,48 @@ def download_mohler(cfg: DataConfig) -> dict:
     out_dir = cfg.paths.raw / ds.raw_subdir
     out_dir.mkdir(parents=True, exist_ok=True)
 
-    kaggle_id = ds.model_extra.get("kaggle_dataset") if ds.model_extra else None
-    assert kaggle_id, "configs/data.yaml: mohler kaggle_dataset missing"
-
-    # primary: kaggle mirror
-    marker = out_dir / ".kaggle_downloaded"
-    if not marker.exists():
-        log.info(f"mohler: downloading via kaggle CLI ({kaggle_id})")
-        try:
-            subprocess.run(
-                ["kaggle", "datasets", "download", "-d", kaggle_id,
-                 "-p", str(out_dir), "--unzip"],
-                check=True, capture_output=True, text=True,
-            )
-            marker.write_text("ok")
-        except FileNotFoundError:
-            log.error(
-                "Kaggle CLI not found. Install with `pip install kaggle`, "
-                "then place ~/.kaggle/kaggle.json. Manual fallback: visit "
-                f"https://www.kaggle.com/datasets/{kaggle_id} and unzip into {out_dir}."
-            )
-            return {"status": "manual_required", "instructions": kaggle_id}
-        except subprocess.CalledProcessError as e:
-            log.error(f"Kaggle CLI failed: {e.stderr}")
-            log.error(
-                "Ensure ~/.kaggle/kaggle.json exists with valid credentials, and that "
-                f"the dataset {kaggle_id} is accessible to your account."
-            )
-            return {"status": "manual_required", "instructions": kaggle_id}
-    else:
-        log.info("mohler: kaggle download marker present — skipping")
-
-    # log checksums for every file present
-    for p in sorted(out_dir.rglob("*")):
-        if p.is_file() and p.name != ".kaggle_downloaded":
-            rel = str(p.relative_to(cfg.paths.raw)).replace("\\", "/")
-            _write_checksum(cfg, rel, _sha256_file(p))
-
-    # secondary: cross-check copy from ASAG2024
     crosscheck_hf = ds.model_extra.get("asag2024_crosscheck_hf_id") if ds.model_extra else None
-    if crosscheck_hf:
-        try:
-            from datasets import load_dataset
-            log.info(f"mohler: pulling cross-check subset from {crosscheck_hf}")
-            cc = load_dataset(crosscheck_hf, split="train")
-            cc_mohler = cc.filter(lambda r: (r.get("data_source") or "").lower() == "mohler")
-            cc_path = out_dir / "asag2024_mohler_crosscheck.parquet"
-            cc_mohler.to_parquet(str(cc_path))
-            rel = str(cc_path.relative_to(cfg.paths.raw)).replace("\\", "/")
-            _write_checksum(cfg, rel, _sha256_file(cc_path))
-            log.info(f"mohler: cross-check wrote {cc_path} ({len(cc_mohler)} rows)")
-        except Exception as e:
-            log.warning(f"mohler cross-check failed (non-fatal): {e}")
+    if not crosscheck_hf:
+        log.error("mohler: asag2024_crosscheck_hf_id missing in config")
+        return {"status": "error", "reason": "missing config"}
 
-    return {"status": "ok", "out_dir": str(out_dir)}
+    canonical_path = out_dir / "mohler_canonical_from_asag2024.parquet"
+    if canonical_path.exists():
+        log.info(f"mohler: canonical parquet present — skipping ({canonical_path})")
+        return {"status": "ok", "out_dir": str(out_dir), "rows": "cached"}
+
+    try:
+        from huggingface_hub import HfFileSystem, hf_hub_download
+        import pandas as pd
+        log.info(f"mohler: pulling canonical subset from {crosscheck_hf}")
+        fs = HfFileSystem()
+        parquets = [Path(p).name for p in fs.glob(f"datasets/{crosscheck_hf}/**/*.parquet")]
+        frames = []
+        for fname in parquets or ["train.parquet", "validation.parquet", "test.parquet"]:
+            try:
+                local = hf_hub_download(repo_id=crosscheck_hf, filename=fname,
+                                        repo_type="dataset")
+            except Exception:
+                continue
+            df = pd.read_parquet(local)
+            if "__index_level_0__" in df.columns:
+                df = df.drop(columns=["__index_level_0__"])
+            if "data_source" in df.columns:
+                df = df[df["data_source"].str.lower() == "mohler"]
+            if len(df):
+                frames.append(df)
+        if not frames:
+            log.error("mohler: no rows recovered from ASAG2024")
+            return {"status": "error", "reason": "no rows"}
+        mohler_all = pd.concat(frames, ignore_index=True)
+        mohler_all.to_parquet(canonical_path, index=False)
+        rel = str(canonical_path.relative_to(cfg.paths.raw)).replace("\\", "/")
+        _write_checksum(cfg, rel, _sha256_file(canonical_path))
+        log.info(f"mohler: canonical wrote {canonical_path} ({len(mohler_all)} rows)")
+        return {"status": "ok", "out_dir": str(out_dir), "rows": int(len(mohler_all))}
+    except Exception as e:
+        log.error(f"mohler canonical extraction failed: {e}")
+        return {"status": "error", "reason": str(e)}
 
 
 def download_asap_sas(cfg: DataConfig) -> dict:
@@ -287,29 +282,58 @@ def download_asap_sas(cfg: DataConfig) -> dict:
 
 
 def download_asag2024(cfg: DataConfig) -> dict:
-    """Pull the ASAG2024 unified benchmark for cross-checking only."""
+    """Pull the ASAG2024 unified benchmark for cross-checking only.
+
+    The HuggingFace dataset card declares a schema that doesn't quite
+    match the on-disk parquet files (`__index_level_0__` ghost column),
+    so ``load_dataset`` raises a CastError. We side-step that by pulling
+    the parquet files directly via ``huggingface_hub.hf_hub_download``
+    and reading them with pandas — the schema mismatch is irrelevant.
+    """
     ds = cfg.datasets["asag2024"]
     if not ds.enabled:
         log.info("asag2024 disabled — skipping")
         return {"status": "skipped"}
 
-    from datasets import load_dataset
+    from huggingface_hub import HfFileSystem, hf_hub_download
+    import pandas as pd
 
     out_dir = cfg.paths.raw / ds.raw_subdir
     out_dir.mkdir(parents=True, exist_ok=True)
     hf_id = ds.model_extra.get("hf_id") if ds.model_extra else None
     assert hf_id, "configs/data.yaml: asag2024 hf_id missing"
 
-    log.info(f"asag2024: loading {hf_id} (cross-check only)")
-    dsdict = load_dataset(hf_id)
+    log.info(f"asag2024: discovering parquet files in {hf_id}")
+    fs = HfFileSystem()
+    parquet_files = [Path(p).name for p in fs.glob(f"datasets/{hf_id}/**/*.parquet")]
+    if not parquet_files:
+        log.warning(f"asag2024: no parquet files found via fs.glob; trying default splits")
+        parquet_files = ["train.parquet", "validation.parquet", "test.parquet"]
+
     saved: dict[str, str] = {}
-    for split_name, ds_split in dsdict.items():
-        out_path = out_dir / f"{split_name}.parquet"
-        ds_split.to_parquet(str(out_path))
+    for fname in parquet_files:
+        try:
+            local = hf_hub_download(repo_id=hf_id, filename=fname, repo_type="dataset")
+        except Exception as e:
+            # try data/<fname> subpath
+            try:
+                local = hf_hub_download(repo_id=hf_id, filename=f"data/{fname}",
+                                        repo_type="dataset")
+            except Exception:
+                log.warning(f"asag2024: could not fetch {fname}: {e}")
+                continue
+        local = Path(local)
+        df = pd.read_parquet(local)
+        # drop ghost index column if present
+        for ghost in ("__index_level_0__",):
+            if ghost in df.columns:
+                df = df.drop(columns=[ghost])
+        out_path = out_dir / Path(fname).name
+        df.to_parquet(out_path, index=False)
         rel = str(out_path.relative_to(cfg.paths.raw)).replace("\\", "/")
         _write_checksum(cfg, rel, _sha256_file(out_path))
-        saved[split_name] = str(out_path)
-        log.info(f"asag2024: wrote {out_path} ({len(ds_split)} rows)")
+        saved[Path(fname).stem] = str(out_path)
+        log.info(f"asag2024: wrote {out_path} ({len(df)} rows)")
     return {"status": "ok", "splits": saved}
 
 

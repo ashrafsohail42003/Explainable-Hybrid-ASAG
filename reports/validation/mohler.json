@@ -1,0 +1,27 @@
+{
+  "name": "mohler",
+  "schema": {
+    "ok": true,
+    "missing_columns": [],
+    "extra_columns": [],
+    "n_rows": 1260,
+    "n_cols": 9
+  },
+  "missing": {
+    "question_empty": 0,
+    "reference_answer_empty": 0,
+    "student_answer_empty": 0,
+    "score_nan": 0,
+    "label_empty": 1260
+  },
+  "duplicates": {
+    "exact_duplicate_rows": 644,
+    "near_duplicate_pairs_threshold": 0.95,
+    "near_duplicate_pairs": 0,
+    "near_duplicate_samples": []
+  },
+  "leakage": {
+    "applicable": false,
+    "reason": "no official train split"
+  }
+}

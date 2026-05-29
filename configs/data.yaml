@@ -40,7 +40,9 @@ datasets:
   mohler:
     enabled: true
     name: mohler_2011
-    kaggle_dataset: mubeenfurqanahmed/automatic-short-answer-grading-dataset
+    # Primary source: Mohler subset extracted from the ASAG2024 unified benchmark.
+    # The Kaggle dataset mubeenfurqanahmed/automatic-short-answer-grading-dataset
+    # was reviewed and rejected (content is generic science Q&A, not Mohler 2011).
     asag2024_crosscheck_hf_id: Meyerger/ASAG2024
     raw_subdir: mohler-2011
     license: academic-research-use

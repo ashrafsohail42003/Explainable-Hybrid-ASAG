@@ -1,0 +1,35 @@
+{
+  "name": "semeval",
+  "schema": {
+    "ok": true,
+    "missing_columns": [],
+    "extra_columns": [],
+    "n_rows": 16003,
+    "n_cols": 9
+  },
+  "missing": {
+    "question_empty": 0,
+    "reference_answer_empty": 0,
+    "student_answer_empty": 0,
+    "score_nan": 16003,
+    "label_empty": 0
+  },
+  "duplicates": {
+    "exact_duplicate_rows": 527,
+    "near_duplicate_pairs_threshold": 0.95,
+    "near_duplicate_pairs": 0,
+    "near_duplicate_samples": []
+  },
+  "leakage": {
+    "applicable": true,
+    "student_answer_overlap_with_train": {
+      "test_ua": 86,
+      "test_ud": 10,
+      "test_uq": 105
+    },
+    "question_id_overlap_with_train_in_unseen_splits": {
+      "test_ud": 0,
+      "test_uq": 0
+    }
+  }
+}

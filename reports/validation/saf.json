@@ -1,0 +1,47 @@
+{
+  "name": "saf",
+  "schema": {
+    "ok": true,
+    "missing_columns": [],
+    "extra_columns": [],
+    "n_rows": 2981,
+    "n_cols": 9
+  },
+  "missing": {
+    "question_empty": 0,
+    "reference_answer_empty": 0,
+    "student_answer_empty": 0,
+    "score_nan": 0,
+    "label_empty": 0
+  },
+  "duplicates": {
+    "exact_duplicate_rows": 57,
+    "near_duplicate_pairs_threshold": 0.95,
+    "near_duplicate_pairs": 2,
+    "near_duplicate_samples": [
+      {
+        "question_id": "33bbf981951d8613",
+        "jaccard": 0.9783,
+        "a_index": 1153,
+        "b_index": 2668
+      },
+      {
+        "question_id": "3ccdcb61280eeccf",
+        "jaccard": 0.9545,
+        "a_index": 1026,
+        "b_index": 1587
+      }
+    ]
+  },
+  "leakage": {
+    "applicable": true,
+    "student_answer_overlap_with_train": {
+      "dev": 13,
+      "test_ua": 8,
+      "test_uq": 0
+    },
+    "question_id_overlap_with_train_in_unseen_splits": {
+      "test_uq": 0
+    }
+  }
+}
