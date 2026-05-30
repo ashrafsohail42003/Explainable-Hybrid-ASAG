@@ -51,13 +51,25 @@ datasets:
       Questions using Semantic Similarity Measures and Dependency Graph Alignments. ACL 2011.
 
   asap_sas:
-    enabled: false  # stretch goal — flip to true after Kaggle credentials + rule acceptance
+    enabled: true
     name: asap_sas
-    kaggle_competition: asap-sas
+    # The official Kaggle competition data is gated behind manual rule acceptance.
+    # We instead use the freely redistributable AERA mirror (Li et al., Findings of
+    # EMNLP 2023, CC-BY-NC-4.0), which republishes the science/biology prompts
+    # (EssaySets 1, 2, 5, 6) with BOTH human-rater scores (Score1, Score2) and —
+    # unlike the original Kaggle release — gold scores on the test split. This
+    # covers 4 of the 10 ASAP-SAS prompts: a documented Phase 1 limitation. Each
+    # split file also carries an extra ``llm_rationale`` column reserved for the
+    # Phase 2 explainability study.
+    mirror_hf_id: jiazhengli/AERA
+    mirror_config: example            # example|complex|simple differ only in rationale style
+    kaggle_competition: asap-sas      # original gated source, kept for provenance
     raw_subdir: asap-sas
-    license: kaggle-competition-terms
+    license: CC-BY-NC-4.0             # AERA mirror; original ASAP-SAS data (c) Hewlett Foundation
     citation: |
-      Hewlett Foundation (2012). Short Answer Scoring. Kaggle competition.
+      Hewlett Foundation (2012). The Hewlett Foundation: Short Answer Scoring. Kaggle.
+      Mirror: Li, J., Gui, L., Zhou, Y., West, D., Aloisi, C., & He, Y. (2023). Distilling
+      ChatGPT for Explainable Automated Student Answer Assessment. Findings of EMNLP 2023.
 
   asag2024:
     enabled: true   # used as cross-check reference only, never merged into processed dataset

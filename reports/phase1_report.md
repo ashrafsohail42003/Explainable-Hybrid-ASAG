@@ -1,6 +1,6 @@
 # Phase 1 Report — ASAG Research Project (Data & Environment)
 
-**Date:** 2026-05-29
+**Date:** 2026-05-30
 **Owner:** Belal (belalasem19991@gmail.com)
 **Scope:** Phase 1 only — reproducible env, dataset acquisition, EDA, validation, two-view preprocessing.
 **Out of scope:** any modeling, training, or hyperparameter work — these belong to Phase 2.
@@ -23,9 +23,13 @@ We acquired the report's full 5-dataset matrix (SemEval, ASAP-SAS, Mohler, SAF, 
 | **Powergrading 1.0** (Basu 2013, MSR) | civics breadth, binary + 3-grader | ✅ downloaded |
 | **MIND-CA** (Kovatchev 2020, COLING) — *added beyond the report* | true 3-class ordinal 0/1/2; new non-STEM domain (mindreading / psychology); large N | ✅ downloaded |
 | **ASAG2024 unified benchmark** | row-level cross-check | ✅ downloaded |
-| **ASAP-SAS** (Hewlett) | rubric / QWK (Phase 2 head-to-head) | ⏸ pending Kaggle rule acceptance (script ready) |
+| **ASAP-SAS** (Hewlett) — via the AERA mirror | rubric / QWK (Phase 2 head-to-head) | ✅ downloaded (science/biology subset, 4 of 10 prompts) |
 
 Excluded: **EngSAF** (gated, request-only); **SAS-Bench** (Chinese only); **Carousel K-12** (not publicly released yet).
+
+### ASAP-SAS source — free mirror instead of the gated Kaggle competition
+
+The official ASAP-SAS data ("The Hewlett Foundation: Short Answer Scoring") is gated behind manual Kaggle competition-rule acceptance. To keep Phase 1 fully reproducible without a Kaggle account, we acquire it from the **AERA** mirror (Li et al., *Distilling ChatGPT for Explainable Automated Student Answer Assessment*, Findings of EMNLP 2023; CC-BY-NC-4.0, `jiazhengli/AERA`). The mirror republishes the **science/biology prompts (EssaySets 1, 2, 5, 6 — 4 of the 10 ASAP-SAS sets)** with both human-rater scores (`Score1`, `Score2`) and, unlike the original Kaggle release, **gold scores on the test split**, which we map to `test_ua`. It also ships an `llm_rationale` column per response, reserved for the Phase 2 explainability study. **Documented limitation:** this is a 4-prompt subset, not the full 10-prompt corpus; Phase 2 can substitute the full Kaggle data if a wider QWK comparison is required (the loader reads the identical `EssaySet`/`EssayText`/`Score1` columns, so no code change is needed).
 
 ### Mohler source — important discovery
 
@@ -60,9 +64,9 @@ The Kaggle dataset suggested in the original plan (`mubeenfurqanahmed/automatic-
 | **Mohler (via ASAG2024)** | cs_data_structures | 21 | 1,260 | 616 | 18 | 0.0 – 5.0 | all (k=5 CV) |
 | **Powergrading** | civics | 20 | 13,960 | 4,941 | 3 | 0.0 / 0.5 / 1.0 (binary, 3-grader mean) | all (k=5 CV) |
 | **MIND-CA** *(new domain)* | mindreading_behavioral (children 7–14) | 11 | 11,311 | 11,311 (no dups) | 10 | **0 / 1 / 2 ordinal** (skew −0.07, near-uniform) | all (k=5 CV) |
-| **ASAP-SAS** | mixed (10 prompts) | — | ~17k expected | — | — | ordinal 0–2 / 0–3 per prompt | per-prompt train |
+| **ASAP-SAS** (AERA mirror) | science + biology (4 prompts) | 4 | 8,722 | 8,722 (official splits, no dedup) | 37 | **0–3 ordinal** | train, dev, test_ua |
 
-**Totals across acquired datasets: 335 unique questions, 35,862 deduped answers, 6 distinct domains.**
+**Totals across acquired datasets: 339 unique questions, 44,574 answers (post-dedup where applicable), 7 distinct domains** (science, electronics, comm_networks, cs_data_structures, civics, mindreading_behavioral, biology).
 
 (See `reports/figures/dataset_summary.png` for the rendered table and per-dataset distribution figures. SemEval/SAF use their official splits as-is; Mohler/Powergrading/MIND-CA are deduped by `preprocess.dedupe_within_question` keeping the median-score row per (question_id, student_answer) group. MIND-CA had zero exact duplicates — child answers are textually varied enough that even when scores match, the text differs.)
 
@@ -101,7 +105,7 @@ Both views are written per dataset to `data/processed/<dataset>/encoder.parquet`
 
 * **SemEval / SAF**: official `train / dev / test_ua / test_uq / test_ud` splits recorded in the `split` column and used as-is. Never mixed.
 * **SemEval Core only**: each split directory contains `Core/`, `Extra/`, and (sometimes) `Dependency/` subdirs — these are alternative annotation styles over the **same** student responses. Reading all of them doubles rows; standard practice in the ASAG literature is to use **Core**. We restrict to `Core/`.
-* **ASAP-SAS** (when enabled): each prompt (`EssaySet`) treated independently; scoring scales never merged across prompts.
+* **ASAP-SAS** (AERA mirror): each prompt (`EssaySet`) is a distinct `question_id` (`set_1/2/5/6`); the mirror's `train`/`val`/`test` map to `train`/`dev`/`test_ua`. Because the same prompts recur across splits, `test_ua` is *unseen answers* (not unseen questions) — so prompt-id recurrence across train↔test_ua is expected and is **not** flagged as leakage (the structural `question_id` leakage check fires only on `test_uq`/`test_ud`). Scoring scales are never merged across prompts.
 * **Mohler**: no official splits → stratified k=5 CV over binned scores (`asag.data.splits.make_stratified_kfold`); the fold index is materialized in the `fold` column of `data/processed/mohler/*.parquet`.
 
 ---
@@ -113,6 +117,7 @@ Both views are written per dataset to `data/processed/<dataset>/encoder.parquet`
 | semeval | 16,003 | ✅ | 527 | 0 | qid: 0 across test_uq+test_ud ✅; answer-text overlaps with train: test_ua=86, test_ud=10, test_uq=105 (natural — very short answers like "yes"/"no") |
 | saf | 2,981 | ✅ | 57 | 2 | qid: 0 across test_uq ✅; answer-text overlaps: dev=13, test_ua=8, test_uq=0 |
 | mohler | 1,260 | ✅ | 644 | 0 | n/a (no official train split) |
+| asap_sas | 8,722 | ✅ | 31 | 0 | qid: 0 across test_uq/test_ud ✅ (test split is test_ua by design); answer-text overlaps with train: dev=9, test_ua=20 (tiny identical short answers) |
 | powergrading | 13,960 | ✅ | 9,019 | 0 | n/a (no official train split) |
 | mindreading | 11,311 | ✅ | 0 | 0 | n/a (no official train split) |
 
@@ -123,6 +128,7 @@ Both views are written per dataset to `data/processed/<dataset>/encoder.parquet`
 - The Powergrading exact-dup count (9,019 / 13,960 = 65%) is natural: 698 students answering 20 civics questions inevitably produces many identical short responses ("the Bill of Rights", "freedom of speech").
 - **MIND-CA has zero exact duplicates** despite 11,311 child responses across only 11 prompts — children produce textually varied answers even when the underlying score matches, validating the choice of corpus for ordinal-head training.
 - **Mohler, Powergrading, and MIND-CA are all deduped in `preprocess.py`** via `dedupe_within_question`, which keeps the median-score row per duplicate group (avoiding "best/worst answer" bias). This addresses the report's Section 2.3 reviewer hot-button for Mohler explicitly.
+- **ASAP-SAS has only 31 exact duplicates** (0.4%) and zero near-duplicates — these are identical short answers across official splits and are intentionally **not** deduped, since doing so would corrupt the official train/dev/test partition. The `question_id` leakage check is clean: the only recurrence is prompt ids in `test_ua`, which is correct (unseen answers, seen prompts).
 
 ---
 
@@ -133,7 +139,7 @@ Both views are written per dataset to `data/processed/<dataset>/encoder.parquet`
 * **Powergrading exact dups (65%)** — addressed: same dedup function.
 * **SemEval class imbalance** — `non_domain` is ~2% of labels; will need class-balanced sampling or loss weighting in Phase 2.
 * **Mohler score skew toward 5 (skew = -1.34)** — ordinal-regression head must compensate via weighted loss in Phase 2.
-* **ASAP-SAS gating** — Phase 1 pipeline is complete; one user-action remains: accept competition rules at https://www.kaggle.com/competitions/asap-sas/rules and place `kaggle.json`. Detailed steps in `reports/DATASETS.md §4` and `README.md`.
+* **ASAP-SAS coverage** — acquired via the AERA mirror, but only 4 of the 10 prompts (science/biology). Sufficient for a QWK comparison in Phase 2; if a broader 10-prompt comparison is needed, substitute the full Kaggle competition data (loader is column-compatible, so no code change is required). The original gated source is no longer a blocker.
 * **License diversity** — every dataset has its own terms; redistribution is forbidden; `data/raw/**` is gitignored; users acquire under their own license acceptance.
 * **Windows non-ASCII path bug** — Python 3.11 fails to read `.pth` files via cp1252 on Arabic-path venvs; mitigated by relocating venv to ASCII path. Documented in `README.md`.
 
@@ -146,5 +152,5 @@ Phase 2 will:
 1. Build the hybrid model: SBERT/DeBERTa encoder on the encoder view + linguistic + rubric features on the feature view + concept-coverage scoring against the reference answer + ordinal-regression head.
 2. Train per-dataset and evaluate **cross-domain** using the official UA/UQ/UD splits prepared here.
 3. Report Pearson / RMSE / QWK by split, plus per-feature attributions for the SAF explainability case study.
-4. Optionally enable ASAP-SAS to strengthen QWK comparison once Kaggle credentials are configured.
+4. Use ASAP-SAS (already acquired, with both rater scores) for the headline QWK comparison; optionally widen to all 10 prompts via the full Kaggle release.
 5. Address the Mohler-acquisition gap (re-acquire larger version via a stable mirror, or drop Mohler if the ASAG2024 subset turns out to be insufficient).

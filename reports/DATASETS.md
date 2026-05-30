@@ -9,7 +9,7 @@ All links and licenses **independently verified on 2026-05-29** via WebFetch / W
 | Dataset | Domain | Q / Answers | Label | Ref. ans. | Rubric | Partial credit | Verified access |
 |---|---|---|---|---|---|---|---|
 | **SemEval-2013 T7** (Beetle + SciEntsBank) | Science / electronics tutoring | 252 q (Core) / 16,003 a | 5-way categorical | ✅ | concept entailment | ✅ (categorical) | GitHub zips, HF mirror |
-| **ASAP-SAS** | 10 mixed prompts (biology / English / civics / science) | 10 / ~17k | Ordinal 0–2 / 0–3 (per prompt) | rubric-based | explicit per prompt | ✅ (ordinal) | Kaggle (gated) |
+| **ASAP-SAS** *(via AERA mirror)* | Science + biology (EssaySets 1,2,5,6 — 4 of 10 prompts) | 4 q / 8,722 a | Ordinal 0–3 (per prompt) | rubric-based (not redistributed) | explicit per prompt | ✅ (ordinal) | HF `jiazhengli/AERA` (free; Kaggle original gated) |
 | **Mohler 2011** | Computer Science (data structures) | 21 q / 1,260 a *(via ASAG2024 subset)* | Regression 0–5 | ✅ | ❌ | ✅ (continuous) | ASAG2024 HF (canonical Kaggle mirror rejected) |
 | **SAF** (Filighera 2022) | Communication networks (EN) | 31 q / 2,981 a | Score 0.0–3.5 + gold feedback | ✅ | gold feedback text | ✅ | HF, GitHub |
 | **Powergrading** (Basu 2013) | US citizenship / civics | 20 q / ~13,960 a | Binary (3 graders, majority) | ✅ (+ alternates) | ❌ | ❌ | Microsoft Download Center |
@@ -86,28 +86,29 @@ All links and licenses **independently verified on 2026-05-29** via WebFetch / W
 
 ---
 
-## 4. ASAP-SAS (Hewlett Foundation)  — stretch goal
+## 4. ASAP-SAS (Hewlett Foundation) — acquired via the AERA mirror
 
 | | |
 |---|---|
-| **Source** | https://www.kaggle.com/competitions/asap-sas |
-| **License** | Kaggle competition terms (research use; redistribution restricted) |
-| **Access** | Gated — requires (1) Kaggle account, (2) accepted competition rules, (3) `~/.kaggle/kaggle.json` credentials. |
-| **Subjects** | 10 prompts across diverse subjects (biology, English, etc.). |
-| **Size** | ~2,200 answers per prompt; ~22k total. |
+| **Source (used)** | HuggingFace `jiazhengli/AERA` (config `example`) — a free, redistributable mirror of ASAP-SAS. |
+| **Original source** | https://www.kaggle.com/competitions/asap-sas (gated; not required). |
+| **License** | **CC-BY-NC-4.0** (AERA mirror). Original ASAP-SAS data © Hewlett Foundation. Research/non-commercial use. |
+| **Access** | Free — pulled programmatically via `huggingface_hub`, no account or rule acceptance needed. |
+| **Coverage** | EssaySets **1, 2, 5, 6** (science + biology) — **4 of the 10** ASAP-SAS prompts. A documented Phase 1 limitation. |
+| **Size** | 8,722 graded answers (train 5,235 / dev 1,307 / test 2,180). |
 | **Label scale** | 0–3 ordinal per prompt; **scales are NOT comparable across prompts** — each prompt is treated independently. |
-| **Annotators** | Two graders per item (Score1, Score2); QWK between them is the IAA used in the literature. |
-| **Citation** | Hewlett Foundation (2012). *Short Answer Scoring.* Kaggle. |
+| **Annotators** | Two graders per item (`Score1`, `Score2`); QWK between them is the IAA used in the literature. We load `Score1` as the target and retain `Score2` in the raw TSV. |
+| **Bonus** | The mirror provides gold scores on the **test** split (the original Kaggle test labels were withheld) and an `llm_rationale` column per response, reserved for the Phase 2 explainability study. |
+| **Citation** | Hewlett Foundation (2012). *Short Answer Scoring.* Kaggle. Mirror: Li, J., Gui, L., Zhou, Y., West, D., Aloisi, C., & He, Y. (2023). *Distilling ChatGPT for Explainable Automated Student Answer Assessment.* Findings of EMNLP 2023. |
 
-**Why it's in our stack (optional)**: provides rubric-aware ordinal data with dual annotations → QWK reporting. The report ranks ASAP-SAS as part of the "most publishable" pairing (alongside SemEval); we therefore plan its enablement for Phase 2 evaluation, gated on the user accepting competition rules.
+**Why it's in our stack**: provides rubric-aware ordinal data with dual annotations → QWK reporting. The report ranks ASAP-SAS as part of the "most publishable" pairing (alongside SemEval).
 
-**To enable in Phase 2** (one-time setup, ~5 minutes):
-1. Sign in at https://www.kaggle.com/ and accept rules at https://www.kaggle.com/competitions/asap-sas/rules
-2. Download API token from https://www.kaggle.com/settings/account → "Create New API Token"
-3. Place the downloaded file at `%USERPROFILE%\.kaggle\kaggle.json` (Windows) or `~/.kaggle/kaggle.json` (POSIX). Restrict permissions: `chmod 600 ~/.kaggle/kaggle.json`.
-4. Set `datasets.asap_sas.enabled: true` in `configs/data.yaml`.
-5. Re-run `make download`. `download_asap_sas` will pull the competition zip into `data/raw/asap-sas/` and extract.
-6. `load_asap_sas` materializes one row per (EssaySet, EssayText) pair with `dataset = "asap_sas_<id>"`; downstream evaluation MUST treat each prompt independently (no scale pooling).
+**How it is acquired** (fully automated, no credentials):
+1. `datasets.asap_sas.enabled: true` and `mirror_hf_id: jiazhengli/AERA` are set in `configs/data.yaml`.
+2. `make download` → `download_asap_sas` pulls `example/{train,val,test}.json`, keeps `Id, EssaySet, Score1, Score2, EssayText, llm_rationale`, and writes `train.tsv` / `dev.tsv` / `test.tsv` under `data/raw/asap-sas/`.
+3. `load_asap_sas` reads the three TSVs into the unified schema: `question_id = set_<EssaySet>`, `dataset = "asap_sas"`, `domain ∈ {science, biology}`, splits `train`/`dev`/`test_ua`. Each prompt is treated independently (no scale pooling).
+
+**To widen to all 10 prompts in Phase 2** (optional): accept the Kaggle competition rules, place `kaggle.json`, and point the loader at the full `EssaySet`/`EssayText`/`Score1` TSV — the loader columns are identical, so no code change is needed.
 
 ---
 
@@ -177,5 +178,5 @@ All links and licenses **independently verified on 2026-05-29** via WebFetch / W
 ## License & redistribution summary
 
 - All datasets are **research-use compatible**.
-- **Commercial use** varies — at minimum: ASAP-SAS forbids redistribution; Mohler is academic-only; SAF/SemEval are CC-licensed.
+- **Commercial use** varies — at minimum: the ASAP-SAS AERA mirror is **CC-BY-NC** (non-commercial); the original Kaggle ASAP-SAS forbids redistribution; Mohler is academic-only; SAF/SemEval are CC-licensed.
 - We **do not redistribute** any raw data via git; `data/raw/**` is gitignored. Users download under their own license acceptance.

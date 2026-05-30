@@ -393,29 +393,53 @@ def load_powergrading(cfg: DataConfig | None = None) -> pd.DataFrame:
     return _coerce(out)
 
 
+# ASAP-SAS prompt -> sub-domain. The AERA mirror ships EssaySets 1, 2, 5, 6.
+_ASAP_DOMAIN = {"1": "science", "2": "science", "5": "biology", "6": "biology"}
+# raw split file -> unified split label. The Kaggle test labels were withheld
+# originally; the mirror restores gold test scores, mapped to test_ua (the same
+# prompts recur in train, i.e. unseen *answers*, not unseen questions).
+_ASAP_SPLIT_FILES = {"train.tsv": "train", "dev.tsv": "dev", "test.tsv": "test_ua"}
+
+
 def load_asap_sas(cfg: DataConfig | None = None) -> pd.DataFrame:
-    """Load ASAP-SAS train.tsv. Each prompt (EssaySet) is a separate logical sub-dataset."""
+    """Load the ASAP-SAS science/biology subset from the AERA mirror.
+
+    Three split files (``train.tsv``/``dev.tsv``/``test.tsv``) carry the ASAP
+    columns ``EssaySet, EssayText, Score1, Score2``. Each EssaySet (prompt) is a
+    distinct logical question (``question_id = set_<n>``). ``reference_answer``
+    and ``question`` stay blank — the ASAP rubric/prompt text lives in a
+    separate PDF not redistributed by the mirror.
+    """
     cfg = cfg or load_data_config()
-    asap_dir = cfg.paths.raw / cfg.datasets["asap_sas"].raw_subdir
-    if not asap_dir.exists() or not cfg.datasets["asap_sas"].enabled:
+    ds = cfg.datasets["asap_sas"]
+    asap_dir = cfg.paths.raw / ds.raw_subdir
+    if not asap_dir.exists() or not ds.enabled:
         log.info("asap_sas not present or disabled — returning empty DataFrame.")
         return _coerce(pd.DataFrame())
 
-    train_tsvs = list(asap_dir.rglob("train.tsv")) + list(asap_dir.rglob("train_rel_2.tsv"))
-    if not train_tsvs:
-        raise FileNotFoundError(f"ASAP-SAS: no train tsv under {asap_dir}.")
-    train = pd.read_csv(train_tsvs[0], sep="\t")
-    out = pd.DataFrame({
-        "question_id": train["EssaySet"].astype(str),
-        "question": "",                # ASAP-SAS questions live in a separate prompt PDF; left blank for Phase 1
-        "reference_answer": "",        # ditto rubric
-        "student_answer": train["EssayText"].astype(str),
-        "score": pd.to_numeric(train.get("Score1", train.iloc[:, 2]), errors="coerce"),
-        "label": "",
-        "dataset": "asap_sas_" + train["EssaySet"].astype(str),
-        "domain": "mixed",
-        "split": "train",
-    })
+    frames: list[pd.DataFrame] = []
+    for fname, split_label in _ASAP_SPLIT_FILES.items():
+        fpath = asap_dir / fname
+        if not fpath.exists():
+            continue
+        raw = pd.read_csv(fpath, sep="\t")
+        if raw.empty:
+            continue
+        sets = raw["EssaySet"].astype(str)
+        frames.append(pd.DataFrame({
+            "question_id": "set_" + sets,
+            "question": "",
+            "reference_answer": "",
+            "student_answer": raw["EssayText"].astype(str),
+            "score": pd.to_numeric(raw.get("Score1"), errors="coerce"),
+            "label": "",
+            "dataset": "asap_sas",
+            "domain": sets.map(_ASAP_DOMAIN).fillna("science"),
+            "split": split_label,
+        }))
+    if not frames:
+        raise FileNotFoundError(f"ASAP-SAS: no split tsv under {asap_dir}.")
+    out = pd.concat(frames, ignore_index=True)
     return _coerce(out)
 
 

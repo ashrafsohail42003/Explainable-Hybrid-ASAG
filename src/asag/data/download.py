@@ -239,46 +239,66 @@ def download_mohler(cfg: DataConfig) -> dict:
 
 
 def download_asap_sas(cfg: DataConfig) -> dict:
-    """Optional. Requires Kaggle credentials and accepted competition rules."""
+    """Acquire ASAP-SAS via the freely redistributable AERA mirror.
+
+    The official Kaggle competition data is gated behind manual rule
+    acceptance, so we pull the AERA dataset (Li et al., Findings of EMNLP
+    2023, CC-BY-NC-4.0) instead. It republishes the science/biology prompts
+    (EssaySets 1, 2, 5, 6) with both human-rater scores and — unlike the
+    original Kaggle release — gold scores on the test split too. We keep the
+    canonical ASAP columns (plus ``llm_rationale`` for the Phase 2
+    explainability study) and write one TSV per split under
+    ``data/raw/asap-sas/`` so the loader stays a simple tabular reader.
+    """
     ds = cfg.datasets["asap_sas"]
     if not ds.enabled:
-        log.info(
-            "asap_sas disabled. To enable:\n"
-            "  1) Create a Kaggle account.\n"
-            "  2) Accept rules at https://www.kaggle.com/competitions/asap-sas/rules\n"
-            "  3) Place credentials at ~/.kaggle/kaggle.json\n"
-            "  4) Flip datasets.asap_sas.enabled to true in configs/data.yaml\n"
-            "  5) Re-run `make download`"
-        )
+        log.info("asap_sas disabled — skipping")
+        return {"status": "skipped"}
+
+    extra = ds.model_extra or {}
+    hf_id = extra.get("mirror_hf_id")
+    config = extra.get("mirror_config", "example")
+    if not hf_id:
+        log.error("asap_sas: mirror_hf_id missing in config — cannot download.")
         return {"status": "manual_required"}
 
-    comp = ds.model_extra.get("kaggle_competition") if ds.model_extra else None
-    assert comp, "configs/data.yaml: asap_sas kaggle_competition missing"
+    from huggingface_hub import hf_hub_download
+    import pandas as pd
 
     out_dir = cfg.paths.raw / ds.raw_subdir
     out_dir.mkdir(parents=True, exist_ok=True)
-    log.info(f"asap_sas: downloading competition {comp} via kaggle CLI")
-    try:
-        subprocess.run(
-            ["kaggle", "competitions", "download", "-c", comp, "-p", str(out_dir)],
-            check=True, capture_output=True, text=True,
-        )
-        # competition downloads ship as a single zip
-        for z in out_dir.glob("*.zip"):
-            _safe_extract_zip(z, out_dir / z.stem)
-    except FileNotFoundError:
-        log.error("Kaggle CLI not found — install `pip install kaggle`.")
-        return {"status": "manual_required"}
-    except subprocess.CalledProcessError as e:
-        log.error(f"Kaggle CLI failed: {e.stderr}")
-        log.error("If '403 Forbidden', accept the competition rules first.")
-        return {"status": "manual_required"}
 
-    for p in sorted(out_dir.rglob("*")):
-        if p.is_file():
-            rel = str(p.relative_to(cfg.paths.raw)).replace("\\", "/")
-            _write_checksum(cfg, rel, _sha256_file(p))
-    return {"status": "ok", "out_dir": str(out_dir)}
+    keep_cols = ["Id", "EssaySet", "Score1", "Score2", "EssayText", "llm_rationale"]
+    # AERA source split filename -> our raw split file (loader maps val->dev, test->test_ua)
+    split_files = {"train": "train", "val": "dev", "test": "test"}
+    saved: dict[str, str] = {}
+    for src_split, out_name in split_files.items():
+        try:
+            local = hf_hub_download(
+                repo_id=hf_id, filename=f"{config}/{src_split}.json",
+                repo_type="dataset",
+            )
+        except Exception as e:
+            log.warning(f"asap_sas: could not fetch {config}/{src_split}.json: {e}")
+            continue
+        with open(local, encoding="utf-8") as f:
+            records = json.load(f)
+        df = pd.DataFrame(records)
+        for c in keep_cols:
+            if c not in df.columns:
+                df[c] = ""
+        out_path = out_dir / f"{out_name}.tsv"
+        # pandas quotes any field containing tab/newline, so the TSV round-trips safely.
+        df[keep_cols].to_csv(out_path, sep="\t", index=False)
+        rel = str(out_path.relative_to(cfg.paths.raw)).replace("\\", "/")
+        _write_checksum(cfg, rel, _sha256_file(out_path))
+        saved[out_name] = str(out_path)
+        log.info(f"asap_sas: wrote {out_path} ({len(df)} rows)")
+
+    if not saved:
+        log.error("asap_sas: no split files retrieved from mirror.")
+        return {"status": "manual_required"}
+    return {"status": "ok", "out_dir": str(out_dir), "splits": saved}
 
 
 def download_asag2024(cfg: DataConfig) -> dict:

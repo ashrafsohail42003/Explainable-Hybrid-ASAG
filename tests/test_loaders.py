@@ -14,6 +14,7 @@ import pytest
 from asag.config import load_data_config
 from asag.data.loaders import (
     UNIFIED_COLUMNS,
+    load_asap_sas,
     load_mindreading,
     load_mohler,
     load_powergrading,
@@ -92,6 +93,30 @@ def test_mindreading_loader(cfg):
     assert set(s.unique()).issubset({0.0, 1.0, 2.0}), f"unexpected score values: {set(s.unique())}"
     # reference_answer is intentionally empty for this dataset
     assert (df["reference_answer"].astype(str) == "").all()
+
+
+def test_asap_sas_loader(cfg):
+    asap = cfg.datasets.get("asap_sas")
+    if asap is None or not asap.enabled:
+        pytest.skip("asap_sas disabled in config.")
+    asap_dir = cfg.paths.raw / asap.raw_subdir
+    if not asap_dir.exists() or not (asap_dir / "train.tsv").exists():
+        pytest.skip("ASAP-SAS raw not present — skipping (run `make download`).")
+    df = load_asap_sas(cfg)
+    # question/reference_answer are intentionally blank (rubric/prompt not redistributed),
+    # so we can't use the generic _assert_schema (which requires non-empty questions).
+    assert list(df.columns) == UNIFIED_COLUMNS, df.columns.tolist()
+    assert len(df) > 0, "loader returned no rows"
+    assert df["student_answer"].str.len().gt(0).any(), "all student answers empty"
+    assert (df["dataset"] == "asap_sas").all()
+    assert set(df["domain"].unique()).issubset({"science", "biology"})
+    # AERA mirror ships EssaySets 1, 2, 5, 6 -> four logical prompts
+    assert df["question_id"].nunique() == 4, df["question_id"].unique().tolist()
+    # official splits: train + dev + test_ua (gold test scores restored by the mirror)
+    assert {"train", "dev", "test_ua"}.issubset(df["split"].unique())
+    s = df["score"].dropna()
+    assert set(s.unique()).issubset({0.0, 1.0, 2.0, 3.0}), f"unexpected ASAP scores: {set(s.unique())}"
+    assert (df["question"].astype(str) == "").all()
 
 
 def test_mohler_loader(cfg):
