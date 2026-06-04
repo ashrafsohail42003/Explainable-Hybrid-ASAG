@@ -13,13 +13,16 @@ export UV_PROJECT_ENVIRONMENT ?= $(USERPROFILE)/.cache/asag-venvs/asag-py311
 export PYTHONUTF8 = 1
 export PYTHONIOENCODING = utf-8
 
-.PHONY: help setup download eda validate preprocess test clean check
+.PHONY: help setup download eda validate preprocess tokenstats features featuresvalidate test clean check
 
 help:
 	@echo "ASAG Phase 1 targets:"
 	@echo "  make setup      - create venv (Python 3.11), install deps, download spaCy model"
 	@echo "  make download   - run idempotent dataset downloads (SemEval + SAF + Mohler; ASAP-SAS optional)"
 	@echo "  make validate   - run schema/leakage/duplicate validation, emit JSON reports"
+	@echo "  make tokenstats - Phase 2A subword token-length study (justifies max_len)"
+	@echo "  make features   - Phase 2B build feature matrices -> data/processed/<name>/features.parquet"
+	@echo "  make featuresvalidate - Phase 2B feature-validation report + figures"
 	@echo "  make eda        - execute notebooks/01_eda.ipynb and save figures"
 	@echo "  make test       - run pytest smoke tests"
 	@echo "  make check      - lint-light: import & schema sanity"
@@ -41,6 +44,15 @@ validate:
 
 preprocess:
 	"$(VENV_PY)" -m asag.data.preprocess
+
+tokenstats:
+	"$(VENV_PY)" -m asag.data.token_stats
+
+features:
+	"$(VENV_PY)" -m asag.features.build
+
+featuresvalidate:
+	"$(VENV_PY)" -m asag.features.validate_features
 
 eda:
 	"$(VENV_PY)" -m jupyter nbconvert --to notebook --execute notebooks/01_eda.ipynb --output 01_eda.ipynb

@@ -1,0 +1,7 @@
+,lex_token_overlap,lex_token_overlap_recall,lex_token_overlap_prec,lex_token_dice,lex_bigram_overlap,lex_trigram_overlap,lex_content_word_overlap_neg,len_ratio_sr,len_logratio_sr,len_student_tokens,len_student_chars,len_student_uniq_ratio,tfidf_cosine,neg_student_count,neg_student_present,neg_reference_count,neg_polarity_mismatch,neg_overlap_delta,ner_student_count,ner_student_uniq_types,ner_overlap_count,ner_overlap_jaccard,ner_ref_recall,sem_cosine,sem_abs_diff_mean,sem_hadamard_mean,rub_n_concepts,rub_mean_maxsim,rub_min_maxsim,rub_max_maxsim,rub_coverage_at_tau
+asap_sas,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0,1.0,0.9995,0.0,1.0,1.0,0.0,0.0,0.0,1.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0
+mindreading,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0,1.0,0.9899,0.0,1.0,1.0,0.0,0.0,0.0,1.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0
+mohler,1.0,1.0,0.9919,1.0,1.0,0.9416,1.0,1.0,1.0,1.0,1.0,0.9919,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,0.1445,0.0471,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0
+powergrading,1.0,1.0,0.9978,1.0,0.9427,0.6551,1.0,1.0,1.0,1.0,1.0,0.9978,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,0.4325,0.2706,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0
+saf,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,0.9064,0.847,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0
+semeval,1.0,1.0,0.9937,1.0,1.0,0.9843,1.0,1.0,1.0,1.0,1.0,0.9937,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,0.4132,0.3303,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0

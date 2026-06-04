@@ -27,6 +27,11 @@ dependencies = [
     "click==8.4.1",
     "pip>=24.0",
     "openpyxl==3.1.5",
+    # Phase 2A: tokenizer-only (no torch) for the subword token-length study.
+    # protobuf is required to build the DeBERTa-v3 SentencePiece fast tokenizer.
+    "transformers==4.46.3",
+    "sentencepiece==0.2.0",
+    "protobuf==5.28.3",
 ]
 
 [project.optional-dependencies]

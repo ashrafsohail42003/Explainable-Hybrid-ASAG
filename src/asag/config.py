@@ -44,6 +44,13 @@ class EncoderViewCfg(BaseModel):
     remove_stopwords: bool
 
 
+class NegationScopeCfg(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    enabled: bool = True
+    window: int = Field(default=4, ge=1)
+    marker: str = "prefix"  # prefix -> neg_word ; bracket reserved for future
+
+
 class FeatureViewCfg(BaseModel):
     model_config = ConfigDict(extra="forbid")
     spacy_model: str
@@ -52,6 +59,7 @@ class FeatureViewCfg(BaseModel):
     remove_punctuation: bool
     remove_stopwords: bool
     preserve_negators: list[str]
+    negation_scope: NegationScopeCfg = Field(default_factory=NegationScopeCfg)
 
 
 class PreprocessingCfg(BaseModel):
@@ -71,6 +79,54 @@ class ValidationCfg(BaseModel):
     near_duplicate_jaccard_threshold: float = Field(ge=0.0, le=1.0)
 
 
+# --- Phase 2B: feature engineering ---------------------------------------
+
+class BranchFlagsCfg(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    lexical: bool = True
+    tfidf: bool = True
+    negation: bool = True
+    entities: bool = True
+    semantic: bool = True
+    rubric: bool = True
+
+
+class TfidfCfg(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    ngram_min: int = Field(default=1, ge=1)
+    ngram_max: int = Field(default=2, ge=1)
+    min_df: int = Field(default=2, ge=1)
+
+
+class RubricCfg(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    tau: float = Field(default=0.5, ge=0.0, le=1.0)
+
+
+class NerCfg(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    spacy_model: str = "en_core_web_sm"
+
+
+class SemanticCfg(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    batch_size: int = Field(default=64, ge=1)
+    normalize: bool = True
+    save_interaction_vector: bool = False
+    use_cache: bool = True
+
+
+class FeaturesCfg(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    enabled: bool = True
+    sbert_model: str = "sentence-transformers/all-MiniLM-L6-v2"
+    branches: BranchFlagsCfg = Field(default_factory=BranchFlagsCfg)
+    tfidf: TfidfCfg = Field(default_factory=TfidfCfg)
+    rubric: RubricCfg = Field(default_factory=RubricCfg)
+    ner: NerCfg = Field(default_factory=NerCfg)
+    semantic: SemanticCfg = Field(default_factory=SemanticCfg)
+
+
 class DataConfig(BaseModel):
     model_config = ConfigDict(extra="forbid")
     seed: int
@@ -79,6 +135,7 @@ class DataConfig(BaseModel):
     preprocessing: PreprocessingCfg
     splits: SplitsCfg
     validation: ValidationCfg
+    features: FeaturesCfg = Field(default_factory=FeaturesCfg)
 
     def project_root(self) -> Path:
         return getattr(self, "_root", Path.cwd().resolve())

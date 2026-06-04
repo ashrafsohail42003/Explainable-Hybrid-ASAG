@@ -1,0 +1,280 @@
+{
+  "schema_version": "2b.1",
+  "sbert_model": "sentence-transformers/all-MiniLM-L6-v2",
+  "branches": {
+    "lexical": {
+      "input_view": "feature"
+    },
+    "tfidf": {
+      "input_view": "feature"
+    },
+    "negation": {
+      "input_view": "feature"
+    },
+    "entities": {
+      "input_view": "encoder"
+    },
+    "semantic": {
+      "input_view": "encoder"
+    },
+    "rubric": {
+      "input_view": "encoder"
+    }
+  },
+  "nan_policy": "Reference-dependent features are NaN for rows without a reference answer; use NaN-native heads (XGBoost/LightGBM/HistGBM) or impute explicitly.",
+  "dense_interaction": {
+    "file": "data/processed/<name>/semantic_interaction.parquet",
+    "layout": "sem_int_000..(d-1)=|u-v|, sem_int_d..(2d-1)=u*v",
+    "config_gate": "features.semantic.save_interaction_vector"
+  },
+  "features": {
+    "lex_token_overlap": {
+      "branch": "lexical",
+      "input_view": "feature",
+      "dtype": "float64",
+      "reference_dependent": true,
+      "nan_when": "no reference answer (asap_sas, mindreading)",
+      "description": "Jaccard of unigram content-word sets (student vs reference)"
+    },
+    "lex_token_overlap_recall": {
+      "branch": "lexical",
+      "input_view": "feature",
+      "dtype": "float64",
+      "reference_dependent": true,
+      "nan_when": "no reference answer (asap_sas, mindreading)",
+      "description": "Fraction of reference content words present in the student answer"
+    },
+    "lex_token_overlap_prec": {
+      "branch": "lexical",
+      "input_view": "feature",
+      "dtype": "float64",
+      "reference_dependent": true,
+      "nan_when": "no reference answer (asap_sas, mindreading)",
+      "description": "Fraction of student content words present in the reference"
+    },
+    "lex_token_dice": {
+      "branch": "lexical",
+      "input_view": "feature",
+      "dtype": "float64",
+      "reference_dependent": true,
+      "nan_when": "no reference answer (asap_sas, mindreading)",
+      "description": "Dice coefficient of unigram content-word sets"
+    },
+    "lex_bigram_overlap": {
+      "branch": "lexical",
+      "input_view": "feature",
+      "dtype": "float64",
+      "reference_dependent": true,
+      "nan_when": "no reference answer (asap_sas, mindreading)",
+      "description": "Jaccard of bigram sets"
+    },
+    "lex_trigram_overlap": {
+      "branch": "lexical",
+      "input_view": "feature",
+      "dtype": "float64",
+      "reference_dependent": true,
+      "nan_when": "no reference answer (asap_sas, mindreading)",
+      "description": "Jaccard of trigram sets"
+    },
+    "lex_content_word_overlap_neg": {
+      "branch": "lexical",
+      "input_view": "feature",
+      "dtype": "float64",
+      "reference_dependent": true,
+      "nan_when": "no reference answer (asap_sas, mindreading)",
+      "description": "Unigram Jaccard on the negation-scope view (polarity-aware twin)"
+    },
+    "len_ratio_sr": {
+      "branch": "lexical",
+      "input_view": "feature",
+      "dtype": "float64",
+      "reference_dependent": true,
+      "nan_when": "no reference answer (asap_sas, mindreading)",
+      "description": "student_tokens / reference_tokens"
+    },
+    "len_logratio_sr": {
+      "branch": "lexical",
+      "input_view": "feature",
+      "dtype": "float64",
+      "reference_dependent": true,
+      "nan_when": "no reference answer (asap_sas, mindreading)",
+      "description": "log((student_tokens+1)/(reference_tokens+1))"
+    },
+    "len_student_tokens": {
+      "branch": "lexical",
+      "input_view": "feature",
+      "dtype": "float64",
+      "reference_dependent": false,
+      "nan_when": "never",
+      "description": "Student content-word token count"
+    },
+    "len_student_chars": {
+      "branch": "lexical",
+      "input_view": "feature",
+      "dtype": "float64",
+      "reference_dependent": false,
+      "nan_when": "never",
+      "description": "Student answer character length (raw encoder view)"
+    },
+    "len_student_uniq_ratio": {
+      "branch": "lexical",
+      "input_view": "feature",
+      "dtype": "float64",
+      "reference_dependent": false,
+      "nan_when": "never",
+      "description": "Type-token ratio of the student answer"
+    },
+    "tfidf_cosine": {
+      "branch": "tfidf",
+      "input_view": "feature",
+      "dtype": "float64",
+      "reference_dependent": true,
+      "nan_when": "no reference answer (asap_sas, mindreading)",
+      "description": "Cosine of per-dataset TF-IDF vectors (student vs reference)"
+    },
+    "neg_student_count": {
+      "branch": "negation",
+      "input_view": "feature",
+      "dtype": "float64",
+      "reference_dependent": false,
+      "nan_when": "never",
+      "description": "Count of negation-scope-marked tokens in the student answer"
+    },
+    "neg_student_present": {
+      "branch": "negation",
+      "input_view": "feature",
+      "dtype": "float64",
+      "reference_dependent": false,
+      "nan_when": "never",
+      "description": "1 if the student answer contains any negation scope"
+    },
+    "neg_reference_count": {
+      "branch": "negation",
+      "input_view": "feature",
+      "dtype": "float64",
+      "reference_dependent": true,
+      "nan_when": "no reference answer (asap_sas, mindreading)",
+      "description": "Count of negation-scope-marked tokens in the reference"
+    },
+    "neg_polarity_mismatch": {
+      "branch": "negation",
+      "input_view": "feature",
+      "dtype": "float64",
+      "reference_dependent": true,
+      "nan_when": "no reference answer (asap_sas, mindreading)",
+      "description": "1 if exactly one of {student, reference} carries negation (XOR)"
+    },
+    "neg_overlap_delta": {
+      "branch": "negation",
+      "input_view": "feature",
+      "dtype": "float64",
+      "reference_dependent": true,
+      "nan_when": "no reference answer (asap_sas, mindreading)",
+      "description": "Plain unigram overlap minus negation-view overlap"
+    },
+    "ner_student_count": {
+      "branch": "entities",
+      "input_view": "encoder",
+      "dtype": "float64",
+      "reference_dependent": false,
+      "nan_when": "never",
+      "description": "Number of named-entity mentions in the student answer"
+    },
+    "ner_student_uniq_types": {
+      "branch": "entities",
+      "input_view": "encoder",
+      "dtype": "float64",
+      "reference_dependent": false,
+      "nan_when": "never",
+      "description": "Number of distinct entity labels in the student answer"
+    },
+    "ner_overlap_count": {
+      "branch": "entities",
+      "input_view": "encoder",
+      "dtype": "float64",
+      "reference_dependent": true,
+      "nan_when": "no reference answer (asap_sas, mindreading)",
+      "description": "Count of entity mentions shared by student and reference"
+    },
+    "ner_overlap_jaccard": {
+      "branch": "entities",
+      "input_view": "encoder",
+      "dtype": "float64",
+      "reference_dependent": true,
+      "nan_when": "no reference answer (asap_sas, mindreading)",
+      "description": "Jaccard of entity-mention sets"
+    },
+    "ner_ref_recall": {
+      "branch": "entities",
+      "input_view": "encoder",
+      "dtype": "float64",
+      "reference_dependent": true,
+      "nan_when": "no reference answer (asap_sas, mindreading)",
+      "description": "Fraction of reference entities present in the student answer"
+    },
+    "sem_cosine": {
+      "branch": "semantic",
+      "input_view": "encoder",
+      "dtype": "float64",
+      "reference_dependent": true,
+      "nan_when": "no reference answer (asap_sas, mindreading)",
+      "description": "SBERT cosine(student, reference)"
+    },
+    "sem_abs_diff_mean": {
+      "branch": "semantic",
+      "input_view": "encoder",
+      "dtype": "float64",
+      "reference_dependent": true,
+      "nan_when": "no reference answer (asap_sas, mindreading)",
+      "description": "Mean of |u-v| over SBERT dims (interaction summary)"
+    },
+    "sem_hadamard_mean": {
+      "branch": "semantic",
+      "input_view": "encoder",
+      "dtype": "float64",
+      "reference_dependent": true,
+      "nan_when": "no reference answer (asap_sas, mindreading)",
+      "description": "Mean of u*v over SBERT dims (interaction summary)"
+    },
+    "rub_n_concepts": {
+      "branch": "rubric",
+      "input_view": "encoder",
+      "dtype": "float64",
+      "reference_dependent": true,
+      "nan_when": "no reference answer (asap_sas, mindreading)",
+      "description": "Number of reference sentences treated as rubric concepts"
+    },
+    "rub_mean_maxsim": {
+      "branch": "rubric",
+      "input_view": "encoder",
+      "dtype": "float64",
+      "reference_dependent": true,
+      "nan_when": "no reference answer (asap_sas, mindreading)",
+      "description": "Mean per-concept SBERT similarity to the student answer"
+    },
+    "rub_min_maxsim": {
+      "branch": "rubric",
+      "input_view": "encoder",
+      "dtype": "float64",
+      "reference_dependent": true,
+      "nan_when": "no reference answer (asap_sas, mindreading)",
+      "description": "Weakest per-concept similarity (least-covered concept)"
+    },
+    "rub_max_maxsim": {
+      "branch": "rubric",
+      "input_view": "encoder",
+      "dtype": "float64",
+      "reference_dependent": true,
+      "nan_when": "no reference answer (asap_sas, mindreading)",
+      "description": "Strongest per-concept similarity"
+    },
+    "rub_coverage_at_tau": {
+      "branch": "rubric",
+      "input_view": "encoder",
+      "dtype": "float64",
+      "reference_dependent": true,
+      "nan_when": "no reference answer (asap_sas, mindreading)",
+      "description": "Fraction of concepts with similarity >= tau"
+    }
+  }
+}

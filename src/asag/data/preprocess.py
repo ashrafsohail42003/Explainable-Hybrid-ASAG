@@ -3,7 +3,11 @@
 * **Encoder view** (for SBERT / DeBERTa later): NFKC + whitespace normalization
   only. Casing, punctuation, stopwords are preserved.
 * **Feature view** (for handcrafted features): spaCy lemmatization + lowercase
-  + punctuation removal + stopword removal, with negators preserved.
+  + punctuation removal + stopword removal, with negators preserved. A parallel
+  **negation-scope** variant (``*_feat_neg`` columns) additionally prefixes the
+  tokens within a negator's scope with ``neg_`` (e.g. "does not forward" ->
+  "neg_forward"), stopping at a clause boundary. ``*_feat`` stays plain so the
+  marked/plain pair is an ablation knob for Phase 2B.
 
 Writes one parquet per (dataset, view) under ``data/processed/<dataset>/``,
 plus a small JSON sidecar with row counts and a sample row, for traceability.
@@ -51,29 +55,48 @@ class FeatureViewOptions:
     remove_punctuation: bool = True
     remove_stopwords: bool = True
     preserve_negators: tuple[str, ...] = ()
+    negation_scope: bool = False
+    negation_window: int = 4
 
 
 def _build_negator_set(words: Iterable[str]) -> set[str]:
     return {w.lower().strip() for w in words if w and w.strip()}
 
 
-def feature_view_batch(texts: list[str], nlp, opts: FeatureViewOptions) -> list[str]:
-    """Process a list of texts through spaCy and return processed strings.
+def feature_view_batch(
+    texts: list[str], nlp, opts: FeatureViewOptions
+) -> tuple[list[str], list[str]]:
+    """Process a list of texts through spaCy.
 
     Tokens that are alphabetic (or are negators) survive; punctuation is
     dropped; stopwords are removed unless they appear in ``preserve_negators``.
+
+    Returns ``(plain, marked)`` parallel lists. ``plain`` is the lemmatized
+    feature view; ``marked`` additionally prefixes tokens inside a negator's
+    scope with ``neg_``. A negator opens a scope of ``opts.negation_window``
+    subsequent kept tokens, closed early when a clause boundary (punctuation or
+    a coordinating conjunction) is observed. When ``opts.negation_scope`` is
+    False, ``marked`` is identical to ``plain``.
     """
     negators = _build_negator_set(opts.preserve_negators)
-    out: list[str] = []
+    plain: list[str] = []
+    marked: list[str] = []
     # spaCy nlp.pipe handles batching efficiently
     docs = nlp.pipe([t if isinstance(t, str) else "" for t in texts], batch_size=64)
     for doc in docs:
         kept: list[str] = []
+        kept_marked: list[str] = []
+        scope_left = 0  # tokens still within an open negation scope
         for tok in doc:
             if tok.is_space:
                 continue
             t_low = tok.text.lower()
             is_negator = t_low in negators or tok.lemma_.lower() in negators
+            # Clause boundary closes any open scope (before the token is dropped).
+            if opts.negation_scope and not is_negator and (
+                tok.is_punct or tok.pos_ == "CCONJ"
+            ):
+                scope_left = 0
             if opts.remove_punctuation and tok.is_punct and not is_negator:
                 continue
             if opts.remove_stopwords and tok.is_stop and not is_negator:
@@ -82,8 +105,21 @@ def feature_view_batch(texts: list[str], nlp, opts: FeatureViewOptions) -> list[
             if opts.lowercase:
                 lemma = lemma.lower()
             kept.append(lemma)
-        out.append(" ".join(kept).strip())
-    return out
+
+            if opts.negation_scope:
+                if is_negator:
+                    # The negator itself is a cue; mark it and (re)open the scope.
+                    kept_marked.append(f"neg_{lemma}")
+                    scope_left = opts.negation_window
+                elif scope_left > 0:
+                    kept_marked.append(f"neg_{lemma}")
+                    scope_left -= 1
+                else:
+                    kept_marked.append(lemma)
+
+        plain.append(" ".join(kept).strip())
+        marked.append(" ".join(kept_marked).strip() if opts.negation_scope else " ".join(kept).strip())
+    return plain, marked
 
 
 def _load_spacy(model: str):
@@ -147,15 +183,19 @@ def _process_dataset(name: str, df: pd.DataFrame, cfg: DataConfig, nlp) -> dict:
             )
         )
 
-    # feature view: only student_answer + reference_answer (questions cheap to reuse)
+    # feature view (+ parallel negation-scope variant)
     opts = FeatureViewOptions(
         lowercase=feat_cfg.lowercase,
         remove_punctuation=feat_cfg.remove_punctuation,
         remove_stopwords=feat_cfg.remove_stopwords,
         preserve_negators=tuple(feat_cfg.preserve_negators),
+        negation_scope=feat_cfg.negation_scope.enabled,
+        negation_window=feat_cfg.negation_scope.window,
     )
     for col in ("student_answer", "reference_answer", "question"):
-        df[f"{col}_feat"] = feature_view_batch(df[col].tolist(), nlp, opts)
+        plain, marked = feature_view_batch(df[col].tolist(), nlp, opts)
+        df[f"{col}_feat"] = plain
+        df[f"{col}_feat_neg"] = marked
 
     # stratified k-fold for datasets without official splits
     unique_splits = set(df["split"].astype(str).unique())
@@ -171,7 +211,9 @@ def _process_dataset(name: str, df: pd.DataFrame, cfg: DataConfig, nlp) -> dict:
 
     enc_cols = ["question_id", "question_enc", "reference_answer_enc", "student_answer_enc",
                 "score", "label", "dataset", "domain", "split", "fold"]
-    feat_cols = ["question_id", "question_feat", "reference_answer_feat", "student_answer_feat",
+    feat_cols = ["question_id",
+                 "question_feat", "reference_answer_feat", "student_answer_feat",
+                 "question_feat_neg", "reference_answer_feat_neg", "student_answer_feat_neg",
                  "score", "label", "dataset", "domain", "split", "fold"]
 
     enc_path = out_dir / "encoder.parquet"

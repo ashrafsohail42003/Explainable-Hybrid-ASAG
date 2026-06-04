@@ -148,6 +148,15 @@ preprocessing:
       - "shouldn't"
       - "wouldn't"
       - "couldn't"
+    # Explicit negation-scope cues (Phase 2A). When a negator is seen, the next
+    # `window` kept tokens are prefixed with `neg_` (e.g. "does not forward" ->
+    # "neg_forward"), stopping early at a clause boundary (punctuation / CCONJ).
+    # Written to the separate `*_feat_neg` columns; `*_feat` stays plain so
+    # Phase 2B can ablate marked vs. plain.
+    negation_scope:
+      enabled: true
+      window: 4
+      marker: prefix
 
 splits:
   cv_k_folds: 5
@@ -155,3 +164,29 @@ splits:
 
 validation:
   near_duplicate_jaccard_threshold: 0.95
+
+# Phase 2B — feature engineering (late-fusion branches). Reference-dependent
+# features emit NaN for datasets without a reference answer (asap_sas, mindreading).
+features:
+  enabled: true
+  sbert_model: sentence-transformers/all-MiniLM-L6-v2
+  branches:
+    lexical: true
+    tfidf: true
+    negation: true
+    entities: true     # spaCy NER overlap (NER re-enabled; parser stays off)
+    semantic: true      # SBERT bi-encoder (cross-encoder deferred to Phase 2C)
+    rubric: true
+  tfidf:
+    ngram_min: 1
+    ngram_max: 2
+    min_df: 2
+  rubric:
+    tau: 0.5            # concept "covered" when max student-similarity >= tau
+  ner:
+    spacy_model: en_core_web_sm
+  semantic:
+    batch_size: 64
+    normalize: true
+    save_interaction_vector: false   # 768-d |u-v|+u*v block -> separate parquet when true
+    use_cache: true
