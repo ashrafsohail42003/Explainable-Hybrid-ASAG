@@ -127,6 +127,68 @@ class FeaturesCfg(BaseModel):
     semantic: SemanticCfg = Field(default_factory=SemanticCfg)
 
 
+# --- Phase 2C: model selection & architecture ---------------------------
+
+class LightGBMCfg(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    n_estimators: int = Field(default=300, ge=1)
+    learning_rate: float = Field(default=0.05, gt=0.0)
+    num_leaves: int = Field(default=31, ge=2)
+    min_child_samples: int = Field(default=20, ge=1)
+    # Phase 2D regularization. Defaults (1.0 / 1.0 / 0 / 0) reproduce the Phase 2C
+    # head exactly — the GBM stays deterministic, so re-running 2C is unchanged.
+    # Optuna (Phase 2D) tunes subsample/colsample < 1, which makes the per-seed
+    # std honestly non-zero (the bagging RNG depends on the seed).
+    subsample: float = Field(default=1.0, gt=0.0, le=1.0)
+    colsample_bytree: float = Field(default=1.0, gt=0.0, le=1.0)
+    reg_alpha: float = Field(default=0.0, ge=0.0)
+    reg_lambda: float = Field(default=0.0, ge=0.0)
+
+
+class OrdinalCfg(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    # regression_threshold: train a regressor, then round-and-clip predictions
+    # to the integer grade range observed in the training fold (QWK-friendly).
+    strategy: str = "regression_threshold"
+
+
+# --- Phase 2D: rigorous training (HPO + significance) -------------------
+
+class HpoCfg(BaseModel):
+    """Optuna hyperparameter search over the LightGBM head (Phase 2D).
+
+    The objective uses only training-side data — the official ``dev`` split where
+    one exists, otherwise an inner ``StratifiedKFold`` carved from the training
+    rows. The held-out test splits are never touched during tuning.
+    """
+    model_config = ConfigDict(extra="forbid")
+    enabled: bool = True
+    n_trials: int = Field(default=40, ge=1)
+    inner_folds: int = Field(default=3, ge=2)
+    timeout_s: int | None = None
+    seed: int = 42
+
+
+class SignificanceCfg(BaseModel):
+    """Paired-bootstrap significance of the head vs the trivial baseline (Phase 2D)."""
+    model_config = ConfigDict(extra="forbid")
+    enabled: bool = True
+    n_boot: int = Field(default=10000, ge=100)
+    ci: float = Field(default=0.95, gt=0.0, lt=1.0)
+    seed: int = 42
+
+
+class ModelCfg(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    enabled: bool = True
+    fusion_head: str = "lightgbm"
+    seeds: list[int] = Field(default_factory=lambda: [42, 1, 2, 3, 4])
+    lightgbm: LightGBMCfg = Field(default_factory=LightGBMCfg)
+    ordinal: OrdinalCfg = Field(default_factory=OrdinalCfg)
+    hpo: HpoCfg = Field(default_factory=HpoCfg)
+    significance: SignificanceCfg = Field(default_factory=SignificanceCfg)
+
+
 class DataConfig(BaseModel):
     model_config = ConfigDict(extra="forbid")
     seed: int
@@ -136,6 +198,7 @@ class DataConfig(BaseModel):
     splits: SplitsCfg
     validation: ValidationCfg
     features: FeaturesCfg = Field(default_factory=FeaturesCfg)
+    model: ModelCfg = Field(default_factory=ModelCfg)
 
     def project_root(self) -> Path:
         return getattr(self, "_root", Path.cwd().resolve())

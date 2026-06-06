@@ -190,3 +190,39 @@ features:
     normalize: true
     save_interaction_vector: false   # 768-d |u-v|+u*v block -> separate parquet when true
     use_cache: true
+
+# Phase 2C — model selection & architecture. The late-fusion head is a NaN-native
+# gradient-boosted tree over the Phase 2B feature matrix (semantic + linguistic +
+# rubric blocks). CORAL/CORN neural head and the DeBERTa cross-encoder feature are
+# deferred (they require torch). Per-dataset task type / eval protocol live in
+# src/asag/models/tasks.py.
+model:
+  enabled: true
+  fusion_head: lightgbm
+  seeds: [42, 1, 2, 3, 4]            # >=5 seeds -> mean +/- std
+  lightgbm:
+    n_estimators: 300
+    learning_rate: 0.05
+    num_leaves: 31
+    min_child_samples: 20
+    # Phase 2D regularization. 1.0/1.0/0/0 = deterministic Phase 2C head; Optuna
+    # tunes these in Phase 2D (subsample/colsample < 1 make the seed std non-zero).
+    subsample: 1.0
+    colsample_bytree: 1.0
+    reg_alpha: 0.0
+    reg_lambda: 0.0
+  ordinal:
+    strategy: regression_threshold   # regress -> round -> clip to grade range
+  # Phase 2D — rigorous training. Optuna HPO (dev/inner-CV objective, no test
+  # peeking) + paired-bootstrap significance vs the trivial baseline.
+  hpo:
+    enabled: true
+    n_trials: 40
+    inner_folds: 3       # StratifiedKFold on train rows when no dev split exists
+    timeout_s: null
+    seed: 42
+  significance:
+    enabled: true
+    n_boot: 10000
+    ci: 0.95
+    seed: 42

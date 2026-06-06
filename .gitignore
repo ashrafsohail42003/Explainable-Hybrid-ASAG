@@ -54,3 +54,5 @@ Thumbs.db
 
 # Kaggle credentials — never commit
 kaggle.json
+
+CLAUDE.md

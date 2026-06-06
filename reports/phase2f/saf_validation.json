@@ -1,0 +1,59 @@
+{
+  "schema_version": "2f.1",
+  "result": {
+    "status": "ok",
+    "n": 854,
+    "splits": [
+      "test_ua",
+      "test_uq"
+    ],
+    "tau": 0.5,
+    "verification_counts": {
+      "Correct": 487,
+      "Partially correct": 304,
+      "Incorrect": 63
+    },
+    "signals": {
+      "rub_coverage_at_tau": {
+        "by_class": {
+          "Incorrect": 0.2242,
+          "Partially correct": 0.4755,
+          "Correct": 0.547
+        },
+        "spearman_vs_verdict": 0.188,
+        "auc_correct_vs_rest": 0.589,
+        "monotonic": true
+      },
+      "rub_mean_maxsim": {
+        "by_class": {
+          "Incorrect": 0.3988,
+          "Partially correct": 0.4884,
+          "Correct": 0.521
+        },
+        "spearman_vs_verdict": 0.198,
+        "auc_correct_vs_rest": 0.599,
+        "monotonic": true
+      },
+      "rub_min_maxsim": {
+        "by_class": {
+          "Incorrect": 0.3057,
+          "Partially correct": 0.3467,
+          "Correct": 0.3911
+        },
+        "spearman_vs_verdict": 0.139,
+        "auc_correct_vs_rest": 0.575,
+        "monotonic": true
+      },
+      "sem_cosine": {
+        "by_class": {
+          "Incorrect": 0.4598,
+          "Partially correct": 0.636,
+          "Correct": 0.6794
+        },
+        "spearman_vs_verdict": 0.255,
+        "auc_correct_vs_rest": 0.621,
+        "monotonic": true
+      }
+    }
+  }
+}

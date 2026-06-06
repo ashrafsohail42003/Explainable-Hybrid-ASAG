@@ -1,0 +1,54 @@
+{
+  "schema_version": "2d.1",
+  "datasets": {
+    "semeval": {
+      "status": "unavailable",
+      "reason": "5-way entailment labels; no second-annotator column retained"
+    },
+    "saf": {
+      "status": "unavailable",
+      "reason": "single gold score per answer; no second-grader column"
+    },
+    "asap_sas": {
+      "status": "ok",
+      "metric": "qwk",
+      "splits_used": [
+        "train",
+        "dev"
+      ],
+      "note": "Score2 is withheld on the test split; IAA measured on train+dev rater reads.",
+      "per_prompt": {
+        "set_1": {
+          "qwk": 0.9435,
+          "n": 1672
+        },
+        "set_2": {
+          "qwk": 0.9143,
+          "n": 1278
+        },
+        "set_5": {
+          "qwk": 0.9534,
+          "n": 1795
+        },
+        "set_6": {
+          "qwk": 0.9562,
+          "n": 1797
+        }
+      },
+      "macro_qwk": 0.9419,
+      "n_pairs": 6542
+    },
+    "mohler": {
+      "status": "unavailable",
+      "reason": "score is the average of two graders; per-grader reads not retained"
+    },
+    "powergrading": {
+      "status": "unavailable",
+      "reason": "binary consensus label; per-grader reads not retained"
+    },
+    "mindreading": {
+      "status": "unavailable",
+      "reason": "single ordinal annotation per response in our schema"
+    }
+  }
+}

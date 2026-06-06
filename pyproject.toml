@@ -32,6 +32,12 @@ dependencies = [
     "transformers==4.46.3",
     "sentencepiece==0.2.0",
     "protobuf==5.28.3",
+    # Phase 2C: NaN-native gradient-boosted fusion head (no torch). scipy comes
+    # transitively via scikit-learn and is used for Pearson/Spearman.
+    "lightgbm==4.5.0",
+    # Phase 2D: Optuna HPO over the LightGBM head. Pure-Python (sqlalchemy /
+    # alembic / colorlog deps only) — no torch, safe on the C:-constrained box.
+    "optuna==4.1.0",
 ]
 
 [project.optional-dependencies]

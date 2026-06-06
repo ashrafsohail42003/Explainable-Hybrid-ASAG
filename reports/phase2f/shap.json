@@ -1,0 +1,1802 @@
+{
+  "schema_version": "2f.1",
+  "datasets": {
+    "semeval": {
+      "head_source": "phase2d_tuned",
+      "task_type": "classification",
+      "n_explained": 3000,
+      "n_features": 31,
+      "shap_vs_gain_spearman": 0.856,
+      "global_importance": [
+        {
+          "feature": "lex_token_overlap_recall",
+          "mean_abs_shap": 0.1184
+        },
+        {
+          "feature": "sem_abs_diff_mean",
+          "mean_abs_shap": 0.1075
+        },
+        {
+          "feature": "rub_max_maxsim",
+          "mean_abs_shap": 0.1067
+        },
+        {
+          "feature": "lex_token_overlap",
+          "mean_abs_shap": 0.1047
+        },
+        {
+          "feature": "len_student_chars",
+          "mean_abs_shap": 0.0925
+        },
+        {
+          "feature": "tfidf_cosine",
+          "mean_abs_shap": 0.0767
+        },
+        {
+          "feature": "len_logratio_sr",
+          "mean_abs_shap": 0.0753
+        },
+        {
+          "feature": "lex_content_word_overlap_neg",
+          "mean_abs_shap": 0.0715
+        },
+        {
+          "feature": "lex_token_overlap_prec",
+          "mean_abs_shap": 0.0621
+        },
+        {
+          "feature": "sem_cosine",
+          "mean_abs_shap": 0.056
+        },
+        {
+          "feature": "len_student_tokens",
+          "mean_abs_shap": 0.0494
+        },
+        {
+          "feature": "rub_min_maxsim",
+          "mean_abs_shap": 0.0492
+        },
+        {
+          "feature": "rub_mean_maxsim",
+          "mean_abs_shap": 0.0481
+        },
+        {
+          "feature": "len_ratio_sr",
+          "mean_abs_shap": 0.0475
+        },
+        {
+          "feature": "rub_n_concepts",
+          "mean_abs_shap": 0.043
+        },
+        {
+          "feature": "neg_polarity_mismatch",
+          "mean_abs_shap": 0.0364
+        },
+        {
+          "feature": "neg_reference_count",
+          "mean_abs_shap": 0.0349
+        },
+        {
+          "feature": "lex_bigram_overlap",
+          "mean_abs_shap": 0.0339
+        },
+        {
+          "feature": "neg_overlap_delta",
+          "mean_abs_shap": 0.0298
+        },
+        {
+          "feature": "ner_overlap_jaccard",
+          "mean_abs_shap": 0.0236
+        },
+        {
+          "feature": "ner_ref_recall",
+          "mean_abs_shap": 0.0234
+        },
+        {
+          "feature": "neg_student_count",
+          "mean_abs_shap": 0.0203
+        },
+        {
+          "feature": "len_student_uniq_ratio",
+          "mean_abs_shap": 0.0194
+        },
+        {
+          "feature": "ner_student_count",
+          "mean_abs_shap": 0.0188
+        },
+        {
+          "feature": "lex_token_dice",
+          "mean_abs_shap": 0.0174
+        },
+        {
+          "feature": "lex_trigram_overlap",
+          "mean_abs_shap": 0.0161
+        },
+        {
+          "feature": "sem_hadamard_mean",
+          "mean_abs_shap": 0.0111
+        },
+        {
+          "feature": "rub_coverage_at_tau",
+          "mean_abs_shap": 0.0079
+        },
+        {
+          "feature": "ner_student_uniq_types",
+          "mean_abs_shap": 0.0044
+        },
+        {
+          "feature": "neg_student_present",
+          "mean_abs_shap": 0.003
+        },
+        {
+          "feature": "ner_overlap_count",
+          "mean_abs_shap": 0.0015
+        }
+      ],
+      "label_vocab": {
+        "0": "contradictory",
+        "1": "correct",
+        "2": "irrelevant",
+        "3": "non_domain",
+        "4": "partially_correct_incomplete"
+      },
+      "examples": [
+        {
+          "y_true": 2.0,
+          "y_pred": 2.0,
+          "top_features": [
+            {
+              "feature": "tfidf_cosine",
+              "shap": 0.4691,
+              "value": 0.4279
+            },
+            {
+              "feature": "lex_token_overlap",
+              "shap": -0.2805,
+              "value": 0.3333
+            },
+            {
+              "feature": "lex_token_overlap_prec",
+              "shap": -0.2345,
+              "value": 1.0
+            },
+            {
+              "feature": "len_student_chars",
+              "shap": 0.2252,
+              "value": 31.0
+            },
+            {
+              "feature": "lex_bigram_overlap",
+              "shap": 0.1979,
+              "value": 0.0
+            },
+            {
+              "feature": "sem_cosine",
+              "shap": 0.1974,
+              "value": 0.5293
+            }
+          ]
+        },
+        {
+          "y_true": 1.0,
+          "y_pred": 1.0,
+          "top_features": [
+            {
+              "feature": "lex_content_word_overlap_neg",
+              "shap": 0.31,
+              "value": 0.5
+            },
+            {
+              "feature": "lex_token_overlap_recall",
+              "shap": 0.2729,
+              "value": 0.6667
+            },
+            {
+              "feature": "lex_token_overlap",
+              "shap": 0.1101,
+              "value": 0.5
+            },
+            {
+              "feature": "len_student_tokens",
+              "shap": -0.0547,
+              "value": 6.0
+            },
+            {
+              "feature": "len_logratio_sr",
+              "shap": 0.0545,
+              "value": -0.1335
+            },
+            {
+              "feature": "lex_token_overlap_prec",
+              "shap": 0.0417,
+              "value": 0.6667
+            }
+          ]
+        },
+        {
+          "y_true": 2.0,
+          "y_pred": 4.0,
+          "top_features": [
+            {
+              "feature": "len_logratio_sr",
+              "shap": 0.2478,
+              "value": -1.0986
+            },
+            {
+              "feature": "lex_token_overlap_recall",
+              "shap": 0.1203,
+              "value": 0.2857
+            },
+            {
+              "feature": "len_ratio_sr",
+              "shap": 0.0647,
+              "value": 0.2727
+            },
+            {
+              "feature": "sem_cosine",
+              "shap": -0.0622,
+              "value": 0.4372
+            },
+            {
+              "feature": "lex_token_overlap",
+              "shap": 0.0452,
+              "value": 0.25
+            },
+            {
+              "feature": "rub_min_maxsim",
+              "shap": 0.0405,
+              "value": 0.4372
+            }
+          ]
+        },
+        {
+          "y_true": 0.0,
+          "y_pred": 0.0,
+          "top_features": [
+            {
+              "feature": "lex_token_overlap_recall",
+              "shap": 0.2312,
+              "value": 0.4
+            },
+            {
+              "feature": "neg_overlap_delta",
+              "shap": 0.2087,
+              "value": 0.2857
+            },
+            {
+              "feature": "tfidf_cosine",
+              "shap": 0.1831,
+              "value": 0.1009
+            },
+            {
+              "feature": "lex_token_overlap_prec",
+              "shap": 0.1509,
+              "value": 0.5
+            },
+            {
+              "feature": "lex_content_word_overlap_neg",
+              "shap": 0.1377,
+              "value": 0.0
+            },
+            {
+              "feature": "neg_reference_count",
+              "shap": 0.1012,
+              "value": 2.0
+            }
+          ]
+        },
+        {
+          "y_true": 3.0,
+          "y_pred": 3.0,
+          "top_features": [
+            {
+              "feature": "sem_abs_diff_mean",
+              "shap": 3.0937,
+              "value": 0.0559
+            },
+            {
+              "feature": "rub_max_maxsim",
+              "shap": 2.4788,
+              "value": 0.0921
+            },
+            {
+              "feature": "len_student_chars",
+              "shap": 1.8234,
+              "value": 13.0
+            },
+            {
+              "feature": "rub_mean_maxsim",
+              "shap": 0.5581,
+              "value": 0.0921
+            },
+            {
+              "feature": "len_student_tokens",
+              "shap": 0.5161,
+              "value": 2.0
+            },
+            {
+              "feature": "len_ratio_sr",
+              "shap": 0.453,
+              "value": 0.4
+            }
+          ]
+        }
+      ]
+    },
+    "saf": {
+      "head_source": "phase2d_tuned",
+      "task_type": "regression",
+      "n_explained": 2981,
+      "n_features": 31,
+      "shap_vs_gain_spearman": 0.653,
+      "global_importance": [
+        {
+          "feature": "rub_n_concepts",
+          "mean_abs_shap": 0.1297
+        },
+        {
+          "feature": "neg_reference_count",
+          "mean_abs_shap": 0.1029
+        },
+        {
+          "feature": "lex_bigram_overlap",
+          "mean_abs_shap": 0.0656
+        },
+        {
+          "feature": "rub_mean_maxsim",
+          "mean_abs_shap": 0.0585
+        },
+        {
+          "feature": "len_student_tokens",
+          "mean_abs_shap": 0.057
+        },
+        {
+          "feature": "len_student_uniq_ratio",
+          "mean_abs_shap": 0.0451
+        },
+        {
+          "feature": "ner_ref_recall",
+          "mean_abs_shap": 0.0442
+        },
+        {
+          "feature": "tfidf_cosine",
+          "mean_abs_shap": 0.0437
+        },
+        {
+          "feature": "rub_min_maxsim",
+          "mean_abs_shap": 0.0435
+        },
+        {
+          "feature": "rub_max_maxsim",
+          "mean_abs_shap": 0.0396
+        },
+        {
+          "feature": "len_logratio_sr",
+          "mean_abs_shap": 0.0372
+        },
+        {
+          "feature": "sem_cosine",
+          "mean_abs_shap": 0.0346
+        },
+        {
+          "feature": "sem_abs_diff_mean",
+          "mean_abs_shap": 0.0345
+        },
+        {
+          "feature": "lex_token_overlap_prec",
+          "mean_abs_shap": 0.0281
+        },
+        {
+          "feature": "lex_content_word_overlap_neg",
+          "mean_abs_shap": 0.0267
+        },
+        {
+          "feature": "lex_token_overlap_recall",
+          "mean_abs_shap": 0.0253
+        },
+        {
+          "feature": "len_student_chars",
+          "mean_abs_shap": 0.0239
+        },
+        {
+          "feature": "rub_coverage_at_tau",
+          "mean_abs_shap": 0.0224
+        },
+        {
+          "feature": "len_ratio_sr",
+          "mean_abs_shap": 0.0213
+        },
+        {
+          "feature": "lex_token_overlap",
+          "mean_abs_shap": 0.0172
+        },
+        {
+          "feature": "neg_student_count",
+          "mean_abs_shap": 0.0163
+        },
+        {
+          "feature": "ner_overlap_count",
+          "mean_abs_shap": 0.0155
+        },
+        {
+          "feature": "neg_overlap_delta",
+          "mean_abs_shap": 0.014
+        },
+        {
+          "feature": "ner_overlap_jaccard",
+          "mean_abs_shap": 0.014
+        },
+        {
+          "feature": "lex_trigram_overlap",
+          "mean_abs_shap": 0.0133
+        },
+        {
+          "feature": "ner_student_count",
+          "mean_abs_shap": 0.0105
+        },
+        {
+          "feature": "lex_token_dice",
+          "mean_abs_shap": 0.0083
+        },
+        {
+          "feature": "sem_hadamard_mean",
+          "mean_abs_shap": 0.0053
+        },
+        {
+          "feature": "neg_polarity_mismatch",
+          "mean_abs_shap": 0.0039
+        },
+        {
+          "feature": "ner_student_uniq_types",
+          "mean_abs_shap": 0.0032
+        },
+        {
+          "feature": "neg_student_present",
+          "mean_abs_shap": 0.0005
+        }
+      ],
+      "label_vocab": null,
+      "examples": [
+        {
+          "y_true": 0.0,
+          "y_pred": -0.0726,
+          "top_features": [
+            {
+              "feature": "sem_abs_diff_mean",
+              "shap": -0.2834,
+              "value": 0.0565
+            },
+            {
+              "feature": "tfidf_cosine",
+              "shap": -0.2768,
+              "value": 0.0
+            },
+            {
+              "feature": "lex_bigram_overlap",
+              "shap": -0.2362,
+              "value": 0.0
+            },
+            {
+              "feature": "len_student_tokens",
+              "shap": -0.1879,
+              "value": 11.0
+            },
+            {
+              "feature": "rub_mean_maxsim",
+              "shap": 0.1035,
+              "value": 0.019
+            },
+            {
+              "feature": "sem_cosine",
+              "shap": -0.0905,
+              "value": 0.019
+            }
+          ]
+        },
+        {
+          "y_true": 0.5,
+          "y_pred": 0.689,
+          "top_features": [
+            {
+              "feature": "rub_n_concepts",
+              "shap": -0.1432,
+              "value": 5.0
+            },
+            {
+              "feature": "rub_mean_maxsim",
+              "shap": -0.0793,
+              "value": 0.5941
+            },
+            {
+              "feature": "rub_max_maxsim",
+              "shap": -0.0739,
+              "value": 0.8182
+            },
+            {
+              "feature": "sem_cosine",
+              "shap": 0.0568,
+              "value": 0.8721
+            },
+            {
+              "feature": "rub_min_maxsim",
+              "shap": -0.047,
+              "value": 0.403
+            },
+            {
+              "feature": "len_student_tokens",
+              "shap": 0.0439,
+              "value": 46.0
+            }
+          ]
+        },
+        {
+          "y_true": 0.88,
+          "y_pred": 0.9328,
+          "top_features": [
+            {
+              "feature": "neg_reference_count",
+              "shap": -0.0897,
+              "value": 0.0
+            },
+            {
+              "feature": "rub_min_maxsim",
+              "shap": -0.0827,
+              "value": 0.7144
+            },
+            {
+              "feature": "rub_mean_maxsim",
+              "shap": -0.0763,
+              "value": 0.7144
+            },
+            {
+              "feature": "tfidf_cosine",
+              "shap": 0.0415,
+              "value": 0.3361
+            },
+            {
+              "feature": "ner_ref_recall",
+              "shap": 0.0338,
+              "value": 0.25
+            },
+            {
+              "feature": "rub_max_maxsim",
+              "shap": -0.026,
+              "value": 0.7144
+            }
+          ]
+        },
+        {
+          "y_true": 1.0,
+          "y_pred": 1.0159,
+          "top_features": [
+            {
+              "feature": "rub_mean_maxsim",
+              "shap": -0.0755,
+              "value": 0.5797
+            },
+            {
+              "feature": "len_student_tokens",
+              "shap": 0.0739,
+              "value": 110.0
+            },
+            {
+              "feature": "rub_min_maxsim",
+              "shap": -0.0506,
+              "value": 0.4347
+            },
+            {
+              "feature": "len_student_uniq_ratio",
+              "shap": -0.0463,
+              "value": 0.5818
+            },
+            {
+              "feature": "len_student_chars",
+              "shap": 0.0461,
+              "value": 1255.0
+            },
+            {
+              "feature": "len_ratio_sr",
+              "shap": 0.0359,
+              "value": 2.2917
+            }
+          ]
+        },
+        {
+          "y_true": 3.5,
+          "y_pred": 3.5676,
+          "top_features": [
+            {
+              "feature": "rub_n_concepts",
+              "shap": 0.5531,
+              "value": 2.0
+            },
+            {
+              "feature": "ner_ref_recall",
+              "shap": 0.3633,
+              "value": 0.2
+            },
+            {
+              "feature": "len_student_tokens",
+              "shap": 0.2258,
+              "value": 59.0
+            },
+            {
+              "feature": "rub_min_maxsim",
+              "shap": 0.1867,
+              "value": 0.247
+            },
+            {
+              "feature": "lex_bigram_overlap",
+              "shap": 0.1811,
+              "value": 0.0111
+            },
+            {
+              "feature": "lex_token_overlap_prec",
+              "shap": 0.1704,
+              "value": 0.102
+            }
+          ]
+        }
+      ]
+    },
+    "asap_sas": {
+      "head_source": "phase2d_tuned",
+      "task_type": "ordinal",
+      "n_explained": 3000,
+      "n_features": 31,
+      "shap_vs_gain_spearman": 0.998,
+      "global_importance": [
+        {
+          "feature": "len_student_chars",
+          "mean_abs_shap": 0.57
+        },
+        {
+          "feature": "len_student_tokens",
+          "mean_abs_shap": 0.0855
+        },
+        {
+          "feature": "len_student_uniq_ratio",
+          "mean_abs_shap": 0.0697
+        },
+        {
+          "feature": "ner_student_count",
+          "mean_abs_shap": 0.0506
+        },
+        {
+          "feature": "ner_student_uniq_types",
+          "mean_abs_shap": 0.0248
+        },
+        {
+          "feature": "neg_student_count",
+          "mean_abs_shap": 0.0218
+        },
+        {
+          "feature": "neg_student_present",
+          "mean_abs_shap": 0.0025
+        },
+        {
+          "feature": "lex_token_overlap",
+          "mean_abs_shap": 0.0
+        },
+        {
+          "feature": "lex_token_overlap_recall",
+          "mean_abs_shap": 0.0
+        },
+        {
+          "feature": "lex_token_overlap_prec",
+          "mean_abs_shap": 0.0
+        },
+        {
+          "feature": "lex_token_dice",
+          "mean_abs_shap": 0.0
+        },
+        {
+          "feature": "lex_bigram_overlap",
+          "mean_abs_shap": 0.0
+        },
+        {
+          "feature": "lex_trigram_overlap",
+          "mean_abs_shap": 0.0
+        },
+        {
+          "feature": "lex_content_word_overlap_neg",
+          "mean_abs_shap": 0.0
+        },
+        {
+          "feature": "len_ratio_sr",
+          "mean_abs_shap": 0.0
+        },
+        {
+          "feature": "len_logratio_sr",
+          "mean_abs_shap": 0.0
+        },
+        {
+          "feature": "tfidf_cosine",
+          "mean_abs_shap": 0.0
+        },
+        {
+          "feature": "neg_reference_count",
+          "mean_abs_shap": 0.0
+        },
+        {
+          "feature": "neg_polarity_mismatch",
+          "mean_abs_shap": 0.0
+        },
+        {
+          "feature": "neg_overlap_delta",
+          "mean_abs_shap": 0.0
+        },
+        {
+          "feature": "ner_overlap_count",
+          "mean_abs_shap": 0.0
+        },
+        {
+          "feature": "ner_overlap_jaccard",
+          "mean_abs_shap": 0.0
+        },
+        {
+          "feature": "ner_ref_recall",
+          "mean_abs_shap": 0.0
+        },
+        {
+          "feature": "sem_cosine",
+          "mean_abs_shap": 0.0
+        },
+        {
+          "feature": "sem_abs_diff_mean",
+          "mean_abs_shap": 0.0
+        },
+        {
+          "feature": "sem_hadamard_mean",
+          "mean_abs_shap": 0.0
+        },
+        {
+          "feature": "rub_n_concepts",
+          "mean_abs_shap": 0.0
+        },
+        {
+          "feature": "rub_mean_maxsim",
+          "mean_abs_shap": 0.0
+        },
+        {
+          "feature": "rub_min_maxsim",
+          "mean_abs_shap": 0.0
+        },
+        {
+          "feature": "rub_max_maxsim",
+          "mean_abs_shap": 0.0
+        },
+        {
+          "feature": "rub_coverage_at_tau",
+          "mean_abs_shap": 0.0
+        }
+      ],
+      "label_vocab": null,
+      "examples": [
+        {
+          "y_true": 0.0,
+          "y_pred": 0.0,
+          "top_features": [
+            {
+              "feature": "len_student_chars",
+              "shap": -0.7965,
+              "value": 52.0
+            },
+            {
+              "feature": "ner_student_count",
+              "shap": 0.0334,
+              "value": 0.0
+            },
+            {
+              "feature": "len_student_uniq_ratio",
+              "shap": 0.0182,
+              "value": 1.0
+            },
+            {
+              "feature": "ner_student_uniq_types",
+              "shap": 0.0065,
+              "value": 0.0
+            },
+            {
+              "feature": "len_student_tokens",
+              "shap": 0.0047,
+              "value": 7.0
+            },
+            {
+              "feature": "neg_student_count",
+              "shap": 0.0026,
+              "value": 0.0
+            }
+          ]
+        },
+        {
+          "y_true": 0.0,
+          "y_pred": 0.0,
+          "top_features": [
+            {
+              "feature": "len_student_chars",
+              "shap": -0.7825,
+              "value": 18.0
+            },
+            {
+              "feature": "len_student_tokens",
+              "shap": -0.0667,
+              "value": 1.0
+            },
+            {
+              "feature": "len_student_uniq_ratio",
+              "shap": 0.0184,
+              "value": 1.0
+            },
+            {
+              "feature": "ner_student_count",
+              "shap": -0.0097,
+              "value": 1.0
+            },
+            {
+              "feature": "neg_student_present",
+              "shap": -0.0007,
+              "value": 0.0
+            },
+            {
+              "feature": "neg_student_count",
+              "shap": -0.0002,
+              "value": 0.0
+            }
+          ]
+        },
+        {
+          "y_true": 0.0,
+          "y_pred": 1.0,
+          "top_features": [
+            {
+              "feature": "len_student_chars",
+              "shap": 0.8038,
+              "value": 347.0
+            },
+            {
+              "feature": "len_student_uniq_ratio",
+              "shap": -0.2213,
+              "value": 0.8696
+            },
+            {
+              "feature": "neg_student_count",
+              "shap": -0.1472,
+              "value": 4.0
+            },
+            {
+              "feature": "ner_student_count",
+              "shap": 0.0924,
+              "value": 0.0
+            },
+            {
+              "feature": "len_student_tokens",
+              "shap": -0.0268,
+              "value": 23.0
+            },
+            {
+              "feature": "ner_student_uniq_types",
+              "shap": 0.0197,
+              "value": 0.0
+            }
+          ]
+        },
+        {
+          "y_true": 1.0,
+          "y_pred": 1.0,
+          "top_features": [
+            {
+              "feature": "neg_student_count",
+              "shap": 0.3737,
+              "value": 5.0
+            },
+            {
+              "feature": "len_student_chars",
+              "shap": 0.3303,
+              "value": 249.0
+            },
+            {
+              "feature": "len_student_tokens",
+              "shap": -0.1668,
+              "value": 28.0
+            },
+            {
+              "feature": "len_student_uniq_ratio",
+              "shap": -0.1156,
+              "value": 0.4643
+            },
+            {
+              "feature": "neg_student_present",
+              "shap": 0.0372,
+              "value": 1.0
+            },
+            {
+              "feature": "ner_student_count",
+              "shap": -0.0147,
+              "value": 0.0
+            }
+          ]
+        },
+        {
+          "y_true": 3.0,
+          "y_pred": 3.0,
+          "top_features": [
+            {
+              "feature": "len_student_chars",
+              "shap": 1.2557,
+              "value": 395.0
+            },
+            {
+              "feature": "len_student_uniq_ratio",
+              "shap": 0.2406,
+              "value": 0.6
+            },
+            {
+              "feature": "neg_student_count",
+              "shap": 0.2163,
+              "value": 2.0
+            },
+            {
+              "feature": "len_student_tokens",
+              "shap": 0.19,
+              "value": 25.0
+            },
+            {
+              "feature": "ner_student_count",
+              "shap": 0.112,
+              "value": 0.0
+            },
+            {
+              "feature": "ner_student_uniq_types",
+              "shap": 0.0472,
+              "value": 0.0
+            }
+          ]
+        }
+      ]
+    },
+    "mohler": {
+      "head_source": "phase2d_tuned",
+      "task_type": "regression",
+      "n_explained": 616,
+      "n_features": 31,
+      "shap_vs_gain_spearman": 0.798,
+      "global_importance": [
+        {
+          "feature": "lex_token_overlap_recall",
+          "mean_abs_shap": 0.2611
+        },
+        {
+          "feature": "rub_min_maxsim",
+          "mean_abs_shap": 0.1683
+        },
+        {
+          "feature": "rub_mean_maxsim",
+          "mean_abs_shap": 0.1223
+        },
+        {
+          "feature": "len_ratio_sr",
+          "mean_abs_shap": 0.1179
+        },
+        {
+          "feature": "lex_token_overlap",
+          "mean_abs_shap": 0.1161
+        },
+        {
+          "feature": "rub_max_maxsim",
+          "mean_abs_shap": 0.1121
+        },
+        {
+          "feature": "len_student_tokens",
+          "mean_abs_shap": 0.0947
+        },
+        {
+          "feature": "ner_overlap_jaccard",
+          "mean_abs_shap": 0.0849
+        },
+        {
+          "feature": "sem_abs_diff_mean",
+          "mean_abs_shap": 0.0839
+        },
+        {
+          "feature": "len_student_uniq_ratio",
+          "mean_abs_shap": 0.0806
+        },
+        {
+          "feature": "len_logratio_sr",
+          "mean_abs_shap": 0.08
+        },
+        {
+          "feature": "len_student_chars",
+          "mean_abs_shap": 0.0664
+        },
+        {
+          "feature": "tfidf_cosine",
+          "mean_abs_shap": 0.0588
+        },
+        {
+          "feature": "neg_student_count",
+          "mean_abs_shap": 0.0424
+        },
+        {
+          "feature": "neg_overlap_delta",
+          "mean_abs_shap": 0.0423
+        },
+        {
+          "feature": "lex_bigram_overlap",
+          "mean_abs_shap": 0.0403
+        },
+        {
+          "feature": "sem_cosine",
+          "mean_abs_shap": 0.0402
+        },
+        {
+          "feature": "lex_content_word_overlap_neg",
+          "mean_abs_shap": 0.0396
+        },
+        {
+          "feature": "lex_token_overlap_prec",
+          "mean_abs_shap": 0.0395
+        },
+        {
+          "feature": "neg_student_present",
+          "mean_abs_shap": 0.0343
+        },
+        {
+          "feature": "rub_n_concepts",
+          "mean_abs_shap": 0.0299
+        },
+        {
+          "feature": "lex_trigram_overlap",
+          "mean_abs_shap": 0.0226
+        },
+        {
+          "feature": "neg_polarity_mismatch",
+          "mean_abs_shap": 0.0225
+        },
+        {
+          "feature": "sem_hadamard_mean",
+          "mean_abs_shap": 0.02
+        },
+        {
+          "feature": "lex_token_dice",
+          "mean_abs_shap": 0.016
+        },
+        {
+          "feature": "rub_coverage_at_tau",
+          "mean_abs_shap": 0.0129
+        },
+        {
+          "feature": "ner_student_count",
+          "mean_abs_shap": 0.0074
+        },
+        {
+          "feature": "ner_student_uniq_types",
+          "mean_abs_shap": 0.0063
+        },
+        {
+          "feature": "ner_ref_recall",
+          "mean_abs_shap": 0.0025
+        },
+        {
+          "feature": "neg_reference_count",
+          "mean_abs_shap": 0.0017
+        },
+        {
+          "feature": "ner_overlap_count",
+          "mean_abs_shap": 0.0
+        }
+      ],
+      "label_vocab": null,
+      "examples": [
+        {
+          "y_true": 0.0,
+          "y_pred": 0.1315,
+          "top_features": [
+            {
+              "feature": "rub_mean_maxsim",
+              "shap": -1.2079,
+              "value": 0.0549
+            },
+            {
+              "feature": "len_student_chars",
+              "shap": -0.5474,
+              "value": 12.0
+            },
+            {
+              "feature": "rub_max_maxsim",
+              "shap": -0.5064,
+              "value": 0.0549
+            },
+            {
+              "feature": "sem_cosine",
+              "shap": -0.4174,
+              "value": 0.0549
+            },
+            {
+              "feature": "lex_token_overlap_recall",
+              "shap": -0.3835,
+              "value": 0.0
+            },
+            {
+              "feature": "len_ratio_sr",
+              "shap": -0.3617,
+              "value": 0.3333
+            }
+          ]
+        },
+        {
+          "y_true": 3.5,
+          "y_pred": 3.433,
+          "top_features": [
+            {
+              "feature": "ner_overlap_jaccard",
+              "shap": -0.3476,
+              "value": 0.0
+            },
+            {
+              "feature": "lex_token_overlap_recall",
+              "shap": -0.3039,
+              "value": 0.1111
+            },
+            {
+              "feature": "sem_abs_diff_mean",
+              "shap": -0.208,
+              "value": 0.0442
+            },
+            {
+              "feature": "len_student_uniq_ratio",
+              "shap": 0.2031,
+              "value": 0.6667
+            },
+            {
+              "feature": "rub_min_maxsim",
+              "shap": 0.1616,
+              "value": 0.4144
+            },
+            {
+              "feature": "rub_max_maxsim",
+              "shap": -0.1485,
+              "value": 0.4144
+            }
+          ]
+        },
+        {
+          "y_true": 4.5,
+          "y_pred": 4.3771,
+          "top_features": [
+            {
+              "feature": "len_student_chars",
+              "shap": 0.3417,
+              "value": 18.0
+            },
+            {
+              "feature": "lex_token_overlap_recall",
+              "shap": -0.2766,
+              "value": 0.0
+            },
+            {
+              "feature": "len_student_tokens",
+              "shap": 0.2171,
+              "value": 2.0
+            },
+            {
+              "feature": "lex_trigram_overlap",
+              "shap": 0.201,
+              "value": null
+            },
+            {
+              "feature": "lex_token_overlap",
+              "shap": -0.1969,
+              "value": 0.0
+            },
+            {
+              "feature": "len_ratio_sr",
+              "shap": -0.1392,
+              "value": 1.0
+            }
+          ]
+        },
+        {
+          "y_true": 5.0,
+          "y_pred": 4.8358,
+          "top_features": [
+            {
+              "feature": "rub_min_maxsim",
+              "shap": 0.2657,
+              "value": 0.824
+            },
+            {
+              "feature": "lex_token_overlap_recall",
+              "shap": 0.1781,
+              "value": 0.625
+            },
+            {
+              "feature": "len_student_tokens",
+              "shap": -0.1335,
+              "value": 24.0
+            },
+            {
+              "feature": "neg_student_count",
+              "shap": -0.1095,
+              "value": 10.0
+            },
+            {
+              "feature": "rub_max_maxsim",
+              "shap": 0.0809,
+              "value": 0.824
+            },
+            {
+              "feature": "len_ratio_sr",
+              "shap": 0.0763,
+              "value": 3.0
+            }
+          ]
+        },
+        {
+          "y_true": 5.0,
+          "y_pred": 5.2046,
+          "top_features": [
+            {
+              "feature": "lex_token_overlap_recall",
+              "shap": 0.3044,
+              "value": 0.6667
+            },
+            {
+              "feature": "rub_min_maxsim",
+              "shap": -0.1537,
+              "value": 0.501
+            },
+            {
+              "feature": "len_student_uniq_ratio",
+              "shap": 0.1416,
+              "value": 0.7778
+            },
+            {
+              "feature": "neg_overlap_delta",
+              "shap": 0.1261,
+              "value": 0.0278
+            },
+            {
+              "feature": "lex_token_overlap",
+              "shap": 0.0973,
+              "value": 0.25
+            },
+            {
+              "feature": "lex_bigram_overlap",
+              "shap": 0.0952,
+              "value": 0.1111
+            }
+          ]
+        }
+      ]
+    },
+    "powergrading": {
+      "head_source": "phase2d_tuned",
+      "task_type": "classification",
+      "n_explained": 3000,
+      "n_features": 31,
+      "shap_vs_gain_spearman": 0.939,
+      "global_importance": [
+        {
+          "feature": "sem_abs_diff_mean",
+          "mean_abs_shap": 0.9957
+        },
+        {
+          "feature": "len_student_chars",
+          "mean_abs_shap": 0.6423
+        },
+        {
+          "feature": "sem_cosine",
+          "mean_abs_shap": 0.4926
+        },
+        {
+          "feature": "len_ratio_sr",
+          "mean_abs_shap": 0.3353
+        },
+        {
+          "feature": "ner_ref_recall",
+          "mean_abs_shap": 0.3219
+        },
+        {
+          "feature": "lex_token_overlap_prec",
+          "mean_abs_shap": 0.237
+        },
+        {
+          "feature": "ner_student_count",
+          "mean_abs_shap": 0.1634
+        },
+        {
+          "feature": "ner_overlap_jaccard",
+          "mean_abs_shap": 0.1593
+        },
+        {
+          "feature": "tfidf_cosine",
+          "mean_abs_shap": 0.1307
+        },
+        {
+          "feature": "neg_student_count",
+          "mean_abs_shap": 0.1279
+        },
+        {
+          "feature": "sem_hadamard_mean",
+          "mean_abs_shap": 0.1221
+        },
+        {
+          "feature": "lex_trigram_overlap",
+          "mean_abs_shap": 0.0941
+        },
+        {
+          "feature": "len_student_tokens",
+          "mean_abs_shap": 0.0938
+        },
+        {
+          "feature": "lex_bigram_overlap",
+          "mean_abs_shap": 0.0776
+        },
+        {
+          "feature": "len_logratio_sr",
+          "mean_abs_shap": 0.0769
+        },
+        {
+          "feature": "lex_token_overlap",
+          "mean_abs_shap": 0.071
+        },
+        {
+          "feature": "lex_token_overlap_recall",
+          "mean_abs_shap": 0.0687
+        },
+        {
+          "feature": "ner_overlap_count",
+          "mean_abs_shap": 0.057
+        },
+        {
+          "feature": "lex_content_word_overlap_neg",
+          "mean_abs_shap": 0.0403
+        },
+        {
+          "feature": "len_student_uniq_ratio",
+          "mean_abs_shap": 0.0282
+        },
+        {
+          "feature": "ner_student_uniq_types",
+          "mean_abs_shap": 0.0279
+        },
+        {
+          "feature": "neg_student_present",
+          "mean_abs_shap": 0.0235
+        },
+        {
+          "feature": "rub_mean_maxsim",
+          "mean_abs_shap": 0.0174
+        },
+        {
+          "feature": "lex_token_dice",
+          "mean_abs_shap": 0.0123
+        },
+        {
+          "feature": "neg_overlap_delta",
+          "mean_abs_shap": 0.0052
+        },
+        {
+          "feature": "neg_polarity_mismatch",
+          "mean_abs_shap": 0.0032
+        },
+        {
+          "feature": "rub_coverage_at_tau",
+          "mean_abs_shap": 0.0017
+        },
+        {
+          "feature": "rub_min_maxsim",
+          "mean_abs_shap": 0.0014
+        },
+        {
+          "feature": "neg_reference_count",
+          "mean_abs_shap": 0.0
+        },
+        {
+          "feature": "rub_n_concepts",
+          "mean_abs_shap": 0.0
+        },
+        {
+          "feature": "rub_max_maxsim",
+          "mean_abs_shap": 0.0
+        }
+      ],
+      "label_vocab": {
+        "0": "correct",
+        "1": "incorrect"
+      },
+      "examples": [
+        {
+          "y_true": 1.0,
+          "y_pred": 1.0,
+          "top_features": [
+            {
+              "feature": "sem_abs_diff_mean",
+              "shap": 2.5269,
+              "value": 0.0552
+            },
+            {
+              "feature": "sem_cosine",
+              "shap": 1.7912,
+              "value": 0.0625
+            },
+            {
+              "feature": "len_ratio_sr",
+              "shap": 0.5148,
+              "value": 1.3333
+            },
+            {
+              "feature": "len_student_chars",
+              "shap": -0.4054,
+              "value": 33.0
+            },
+            {
+              "feature": "sem_hadamard_mean",
+              "shap": 0.3464,
+              "value": 0.0002
+            },
+            {
+              "feature": "lex_trigram_overlap",
+              "shap": 0.1831,
+              "value": 0.0
+            }
+          ]
+        },
+        {
+          "y_true": 0.0,
+          "y_pred": 0.0,
+          "top_features": [
+            {
+              "feature": "ner_overlap_jaccard",
+              "shap": -1.4425,
+              "value": 1.0
+            },
+            {
+              "feature": "sem_abs_diff_mean",
+              "shap": -0.6438,
+              "value": 0.0346
+            },
+            {
+              "feature": "ner_overlap_count",
+              "shap": -0.5522,
+              "value": 1.0
+            },
+            {
+              "feature": "len_student_chars",
+              "shap": -0.5163,
+              "value": 46.0
+            },
+            {
+              "feature": "ner_ref_recall",
+              "shap": -0.3201,
+              "value": 1.0
+            },
+            {
+              "feature": "tfidf_cosine",
+              "shap": -0.3083,
+              "value": 0.3242
+            }
+          ]
+        }
+      ]
+    },
+    "mindreading": {
+      "head_source": "phase2d_tuned",
+      "task_type": "ordinal",
+      "n_explained": 3000,
+      "n_features": 31,
+      "shap_vs_gain_spearman": 0.999,
+      "global_importance": [
+        {
+          "feature": "len_student_chars",
+          "mean_abs_shap": 0.1753
+        },
+        {
+          "feature": "len_student_tokens",
+          "mean_abs_shap": 0.0823
+        },
+        {
+          "feature": "neg_student_count",
+          "mean_abs_shap": 0.0572
+        },
+        {
+          "feature": "ner_student_count",
+          "mean_abs_shap": 0.0358
+        },
+        {
+          "feature": "len_student_uniq_ratio",
+          "mean_abs_shap": 0.0339
+        },
+        {
+          "feature": "neg_student_present",
+          "mean_abs_shap": 0.0108
+        },
+        {
+          "feature": "ner_student_uniq_types",
+          "mean_abs_shap": 0.0078
+        },
+        {
+          "feature": "lex_token_overlap",
+          "mean_abs_shap": 0.0
+        },
+        {
+          "feature": "lex_token_overlap_recall",
+          "mean_abs_shap": 0.0
+        },
+        {
+          "feature": "lex_token_overlap_prec",
+          "mean_abs_shap": 0.0
+        },
+        {
+          "feature": "lex_token_dice",
+          "mean_abs_shap": 0.0
+        },
+        {
+          "feature": "lex_bigram_overlap",
+          "mean_abs_shap": 0.0
+        },
+        {
+          "feature": "lex_trigram_overlap",
+          "mean_abs_shap": 0.0
+        },
+        {
+          "feature": "lex_content_word_overlap_neg",
+          "mean_abs_shap": 0.0
+        },
+        {
+          "feature": "len_ratio_sr",
+          "mean_abs_shap": 0.0
+        },
+        {
+          "feature": "len_logratio_sr",
+          "mean_abs_shap": 0.0
+        },
+        {
+          "feature": "tfidf_cosine",
+          "mean_abs_shap": 0.0
+        },
+        {
+          "feature": "neg_reference_count",
+          "mean_abs_shap": 0.0
+        },
+        {
+          "feature": "neg_polarity_mismatch",
+          "mean_abs_shap": 0.0
+        },
+        {
+          "feature": "neg_overlap_delta",
+          "mean_abs_shap": 0.0
+        },
+        {
+          "feature": "ner_overlap_count",
+          "mean_abs_shap": 0.0
+        },
+        {
+          "feature": "ner_overlap_jaccard",
+          "mean_abs_shap": 0.0
+        },
+        {
+          "feature": "ner_ref_recall",
+          "mean_abs_shap": 0.0
+        },
+        {
+          "feature": "sem_cosine",
+          "mean_abs_shap": 0.0
+        },
+        {
+          "feature": "sem_abs_diff_mean",
+          "mean_abs_shap": 0.0
+        },
+        {
+          "feature": "sem_hadamard_mean",
+          "mean_abs_shap": 0.0
+        },
+        {
+          "feature": "rub_n_concepts",
+          "mean_abs_shap": 0.0
+        },
+        {
+          "feature": "rub_mean_maxsim",
+          "mean_abs_shap": 0.0
+        },
+        {
+          "feature": "rub_min_maxsim",
+          "mean_abs_shap": 0.0
+        },
+        {
+          "feature": "rub_max_maxsim",
+          "mean_abs_shap": 0.0
+        },
+        {
+          "feature": "rub_coverage_at_tau",
+          "mean_abs_shap": 0.0
+        }
+      ],
+      "label_vocab": null,
+      "examples": [
+        {
+          "y_true": 0.0,
+          "y_pred": 0.0,
+          "top_features": [
+            {
+              "feature": "len_student_chars",
+              "shap": -0.2281,
+              "value": 99.0
+            },
+            {
+              "feature": "ner_student_count",
+              "shap": -0.1502,
+              "value": 1.0
+            },
+            {
+              "feature": "neg_student_count",
+              "shap": -0.0741,
+              "value": 0.0
+            },
+            {
+              "feature": "len_student_tokens",
+              "shap": -0.0611,
+              "value": 8.0
+            },
+            {
+              "feature": "neg_student_present",
+              "shap": -0.0254,
+              "value": 0.0
+            },
+            {
+              "feature": "len_student_uniq_ratio",
+              "shap": -0.0133,
+              "value": 0.5
+            }
+          ]
+        },
+        {
+          "y_true": 1.0,
+          "y_pred": 1.0,
+          "top_features": [
+            {
+              "feature": "len_student_chars",
+              "shap": 0.1285,
+              "value": 68.0
+            },
+            {
+              "feature": "len_student_tokens",
+              "shap": -0.0733,
+              "value": 5.0
+            },
+            {
+              "feature": "ner_student_count",
+              "shap": -0.059,
+              "value": 0.0
+            },
+            {
+              "feature": "neg_student_count",
+              "shap": 0.0555,
+              "value": 0.0
+            },
+            {
+              "feature": "len_student_uniq_ratio",
+              "shap": -0.0338,
+              "value": 1.0
+            },
+            {
+              "feature": "ner_student_uniq_types",
+              "shap": -0.0085,
+              "value": 0.0
+            }
+          ]
+        },
+        {
+          "y_true": 0.0,
+          "y_pred": 1.0,
+          "top_features": [
+            {
+              "feature": "len_student_chars",
+              "shap": -0.2722,
+              "value": 17.0
+            },
+            {
+              "feature": "len_student_tokens",
+              "shap": -0.0397,
+              "value": 2.0
+            },
+            {
+              "feature": "neg_student_present",
+              "shap": -0.0217,
+              "value": 0.0
+            },
+            {
+              "feature": "len_student_uniq_ratio",
+              "shap": -0.0138,
+              "value": 1.0
+            },
+            {
+              "feature": "ner_student_count",
+              "shap": -0.0075,
+              "value": 0.0
+            },
+            {
+              "feature": "neg_student_count",
+              "shap": -0.0031,
+              "value": 0.0
+            }
+          ]
+        },
+        {
+          "y_true": 2.0,
+          "y_pred": 1.0,
+          "top_features": [
+            {
+              "feature": "len_student_chars",
+              "shap": 0.0395,
+              "value": 36.0
+            },
+            {
+              "feature": "len_student_uniq_ratio",
+              "shap": -0.0192,
+              "value": 1.0
+            },
+            {
+              "feature": "neg_student_count",
+              "shap": -0.0165,
+              "value": 0.0
+            },
+            {
+              "feature": "len_student_tokens",
+              "shap": -0.0146,
+              "value": 2.0
+            },
+            {
+              "feature": "ner_student_count",
+              "shap": -0.0065,
+              "value": 0.0
+            },
+            {
+              "feature": "ner_student_uniq_types",
+              "shap": -0.0028,
+              "value": 0.0
+            }
+          ]
+        },
+        {
+          "y_true": 2.0,
+          "y_pred": 2.0,
+          "top_features": [
+            {
+              "feature": "len_student_chars",
+              "shap": 0.6427,
+              "value": 108.0
+            },
+            {
+              "feature": "len_student_uniq_ratio",
+              "shap": -0.1833,
+              "value": 0.8182
+            },
+            {
+              "feature": "len_student_tokens",
+              "shap": 0.1334,
+              "value": 11.0
+            },
+            {
+              "feature": "neg_student_count",
+              "shap": 0.0548,
+              "value": 3.0
+            },
+            {
+              "feature": "ner_student_count",
+              "shap": 0.0401,
+              "value": 2.0
+            },
+            {
+              "feature": "ner_student_uniq_types",
+              "shap": 0.0233,
+              "value": 1.0
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

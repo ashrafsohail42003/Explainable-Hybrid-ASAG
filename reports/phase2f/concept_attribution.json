@@ -1,0 +1,466 @@
+{
+  "schema_version": "2f.1",
+  "datasets": {
+    "semeval": {
+      "status": "ok",
+      "tau": 0.5,
+      "n_examples": 6,
+      "examples": [
+        {
+          "question_id": "BULB_C_VOLTAGE_EXPLAIN_WHY1",
+          "score": null,
+          "student_answer": "positive battery terminal is separated by a gap from terminal 1",
+          "n_concepts": 1,
+          "n_covered": 1,
+          "coverage_fraction": 1.0,
+          "concepts": [
+            {
+              "concept": "Terminal 1 and the positive terminal are separated by the gap",
+              "similarity": 0.7889,
+              "covered": true
+            }
+          ]
+        },
+        {
+          "question_id": "CONDITIONS_FOR_BULB_TO_LIGHT",
+          "score": null,
+          "student_answer": "complete circuit",
+          "n_concepts": 1,
+          "n_covered": 0,
+          "coverage_fraction": 0.0,
+          "concepts": [
+            {
+              "concept": "there is a closed path containing both the bulb and a battery",
+              "similarity": 0.3014,
+              "covered": false
+            }
+          ]
+        },
+        {
+          "question_id": "LF_26a2",
+          "score": null,
+          "student_answer": "Pam's friend recommended to use a topographic map for the hike because in a topographic map you can see the profile of something which profile is a side view.",
+          "n_concepts": 2,
+          "n_covered": 2,
+          "coverage_fraction": 1.0,
+          "concepts": [
+            {
+              "concept": "She recommended the topographic map because the map shows the elevations along the trail.",
+              "similarity": 0.7418,
+              "covered": true
+            },
+            {
+              "concept": "Pam would know where the trail was the steepest.",
+              "similarity": 0.5356,
+              "covered": true
+            }
+          ]
+        },
+        {
+          "question_id": "ST_25b1",
+          "score": null,
+          "student_answer": "Protects the seedlings.",
+          "n_concepts": 1,
+          "n_covered": 1,
+          "coverage_fraction": 1.0,
+          "concepts": [
+            {
+              "concept": "The seed coat protects the seed until the plant begins to grow.",
+              "similarity": 0.6824,
+              "covered": true
+            }
+          ]
+        },
+        {
+          "question_id": "HB_6a",
+          "score": null,
+          "student_answer": "The main job is strength.",
+          "n_concepts": 1,
+          "n_covered": 1,
+          "coverage_fraction": 1.0,
+          "concepts": [
+            {
+              "concept": "The main job of muscles is to move bones.",
+              "similarity": 0.5303,
+              "covered": true
+            }
+          ]
+        },
+        {
+          "question_id": "WA_7b",
+          "score": null,
+          "student_answer": "The same because it is not sinking it is not way up on top of the water. Holy part is up and half is down.",
+          "n_concepts": 1,
+          "n_covered": 1,
+          "coverage_fraction": 1.0,
+          "concepts": [
+            {
+              "concept": "The block of wood floats because the wood is less dense than water.",
+              "similarity": 0.584,
+              "covered": true
+            }
+          ]
+        }
+      ]
+    },
+    "saf": {
+      "status": "ok",
+      "tau": 0.5,
+      "n_examples": 6,
+      "examples": [
+        {
+          "question_id": "968ce1d4aa187606",
+          "score": 0.0,
+          "student_answer": "1.0.0.0-126.255.255.255",
+          "n_concepts": 1,
+          "n_covered": 0,
+          "coverage_fraction": 0.0,
+          "concepts": [
+            {
+              "concept": "126 Class A nets can be addressed in classful IP addressing (1.xx.yy.zz - 126.xx.yy.zz) 127.xx.yy.zz is reserved for loopback testing 0.xx.yy.zz can be accepted if stated accordingly (definitions defer whether this is in Class A)",
+              "similarity": 0.464,
+              "covered": false
+            }
+          ]
+        },
+        {
+          "question_id": "78333444ba985906",
+          "score": 0.5,
+          "student_answer": "Frame bursting is a communication protocol feature for the principle of shared broadcast mode in gigabit ethernet. Advantage: frame bursting has a better efficiency than carrier extension. Disadvantage: needs frames wait\u2026",
+          "n_concepts": 3,
+          "n_covered": 3,
+          "coverage_fraction": 1.0,
+          "concepts": [
+            {
+              "concept": "Frame bursting reduces the overhead for transmitting small frames by concatenating a sequence of multiple frames in one single transmission, without ever releasing control of the channel.",
+              "similarity": 0.7672,
+              "covered": true
+            },
+            {
+              "concept": "Advantage :it is more efficient than carrier extension as single frames not filled up with garbage.",
+              "similarity": 0.52,
+              "covered": true
+            },
+            {
+              "concept": "Disadvantage :need frames waiting for transmission or buffering and delay of frames",
+              "similarity": 0.5963,
+              "covered": true
+            }
+          ]
+        },
+        {
+          "question_id": "33bbf981951d8613",
+          "score": 0.88,
+          "student_answer": "Phase 1: Slow start(getting to equilibrium) Phase 2: Congestion Avoidence In both phases,when timeout occurs, ss_thresh is set to 50% of the current size of the congestion window, cwnd is reset to one, and slow-start is \u2026",
+          "n_concepts": 1,
+          "n_covered": 1,
+          "coverage_fraction": 1.0,
+          "concepts": [
+            {
+              "concept": "Slow start: ss_thresh is constant, increment cwnd by one every time a segment is acknowledged until ss_tresh is reached, then slowed increase of cwnd Congestion Avoidance: cwnd is reset to 1 after adjusting ss_tresh = cwnd / 2",
+              "similarity": 0.7033,
+              "covered": true
+            }
+          ]
+        },
+        {
+          "question_id": "92f6ecb00f19c648",
+          "score": 1.0,
+          "student_answer": "Nein, denn dies f\u00fchrt zu Schwankungen, wenn es mehr als einen Pfad zwischen einem beliebigen Paar von Endsystemen im Netzwerk gibt. Das bedeutet, dass das Routing instabil ist und es gibt uneffiziente Paketumlagerungen.",
+          "n_concepts": 2,
+          "n_covered": 0,
+          "coverage_fraction": 0.0,
+          "concepts": [
+            {
+              "concept": "Yes, using the current load to find the best path can lead to fluctuations/oscillations when there is more than one path between any pair of end systems in the network (here: CF and EI).",
+              "similarity": 0.2909,
+              "covered": false
+            },
+            {
+              "concept": "This can cause packet reorderings at the receiving side.",
+              "similarity": 0.1323,
+              "covered": false
+            }
+          ]
+        },
+        {
+          "question_id": "07ead61b58876f50",
+          "score": 1.0,
+          "student_answer": "The control plane defines the routes and manages the network graphs. The data plane is responsible for forwarding the packets. The SDN controllers implements the control plane and the southbound interface to switches.",
+          "n_concepts": 6,
+          "n_covered": 5,
+          "coverage_fraction": 0.833,
+          "concepts": [
+            {
+              "concept": "Control Plane: The control plane is logically centralized, but can be physically distributed (multiple coordinating control servers for higher availability and scalability).",
+              "similarity": 0.6435,
+              "covered": true
+            },
+            {
+              "concept": "One of the following responsibilities should be given: \u25cf decides the route for the packet/data \u25cb Control servers manage the network graph, define routes, and update the flow tables of connected switches.",
+              "similarity": 0.6203,
+              "covered": true
+            },
+            {
+              "concept": "\u25cf handles unprocessed packets coming in from the data plane Data plane: Responsible for packet forwarding.",
+              "similarity": 0.5492,
+              "covered": true
+            },
+            {
+              "concept": "Individual switches just execute actions according to their flow tables decided upon by the control plane.",
+              "similarity": 0.4162,
+              "covered": false
+            },
+            {
+              "concept": "The following are the tasks taken care of by the controller: \u25cf Configuration of forwarding tables \u25cf Injecting packets \u25cf Events from switch (packet-in) \u25cf Collection/Monitoring of traffic statistics \u25cf Discovery of topology \u25cf Inventorying what devices are within the network and the capabilities of each device \u25cf Interfaces with control logic (control \u201capplication\u201d) via the northbound interface(s) \u25cf Implements a southbound interface to interact with the data plane.",
+              "similarity": 0.6547,
+              "covered": true
+            },
+            {
+              "concept": "\u25cf Implements the control plane.",
+              "similarity": 0.5384,
+              "covered": true
+            }
+          ]
+        },
+        {
+          "question_id": "aa335ad4bb22ea34",
+          "score": 3.5,
+          "student_answer": "Token Ring Reasons:1. Good throughput - even during increased utilization 2. Deterministic behavior (max. waiting time),you will know after which time, you get the axis again to the data.You are really real-time. potenti\u2026",
+          "n_concepts": 2,
+          "n_covered": 0,
+          "coverage_fraction": 0.0,
+          "concepts": [
+            {
+              "concept": "0.5 P for a sensible choice out of: Token Ring, p-persistent or non-persistent CSMA, CSMA/CD or TDMA with reservation 1P for the drawback and 1P for an advantage.",
+              "similarity": 0.4474,
+              "covered": false
+            },
+            {
+              "concept": "The following properties may be considered: Scalability, waiting time, extendability, cost effectiveness, constraints, hardware requirements, compatibility, throughput, overhead, complexity and prioritization capabilities",
+              "similarity": 0.2656,
+              "covered": false
+            }
+          ]
+        }
+      ]
+    },
+    "asap_sas": {
+      "status": "no_reference",
+      "reason": "all reference answers empty"
+    },
+    "mohler": {
+      "status": "ok",
+      "tau": 0.5,
+      "n_examples": 6,
+      "examples": [
+        {
+          "question_id": "cfe7b3269a041a6f",
+          "score": 0.0,
+          "student_answer": "not answered",
+          "n_concepts": 1,
+          "n_covered": 0,
+          "coverage_fraction": 0.0,
+          "concepts": [
+            {
+              "concept": "It makes a copy of the function code in every place where a function call is made.",
+              "similarity": 0.0653,
+              "covered": false
+            }
+          ]
+        },
+        {
+          "question_id": "8407df2ebe811df8",
+          "score": 3.0,
+          "student_answer": "a prototype declares what will be used in the program and the definition",
+          "n_concepts": 2,
+          "n_covered": 1,
+          "coverage_fraction": 0.5,
+          "concepts": [
+            {
+              "concept": "A function prototype includes the function signature, i.e., the name of the function, the return type, and the parameters' type.",
+              "similarity": 0.6894,
+              "covered": true
+            },
+            {
+              "concept": "The function definition includes the actual body of the function.",
+              "similarity": 0.4101,
+              "covered": false
+            }
+          ]
+        },
+        {
+          "question_id": "bbe3c8fda21f172b",
+          "score": 4.0,
+          "student_answer": "data members are permanent attributes of the class, local variables inside a member function are lost when the scope of the member function ends.",
+          "n_concepts": 2,
+          "n_covered": 2,
+          "coverage_fraction": 1.0,
+          "concepts": [
+            {
+              "concept": "Data members can be accessed from any member functions inside the class defintion.",
+              "similarity": 0.6829,
+              "covered": true
+            },
+            {
+              "concept": "Local variables can only be accessed inside the member function that defines them.",
+              "similarity": 0.7344,
+              "covered": true
+            }
+          ]
+        },
+        {
+          "question_id": "ee79f4744cf4e479",
+          "score": 5.0,
+          "student_answer": "Compiler selects proper function to execute based on number, types and order of arguments in the function call.",
+          "n_concepts": 2,
+          "n_covered": 1,
+          "coverage_fraction": 0.5,
+          "concepts": [
+            {
+              "concept": "Based on the function signature.",
+              "similarity": 0.4079,
+              "covered": false
+            },
+            {
+              "concept": "When an overloaded function is called, the compiler will find the function whose signature is closest to the given function call.",
+              "similarity": 0.6118,
+              "covered": true
+            }
+          ]
+        },
+        {
+          "question_id": "0a166a459f0d0ac1",
+          "score": 5.0,
+          "student_answer": "No base case, or an incorrectly written recursion step that does not converge on the base case will lead to infinite recursion.",
+          "n_concepts": 1,
+          "n_covered": 1,
+          "coverage_fraction": 1.0,
+          "concepts": [
+            {
+              "concept": "If the recursion step is defined incorrectly, or if the base case is not included.",
+              "similarity": 0.838,
+              "covered": true
+            }
+          ]
+        },
+        {
+          "question_id": "7024dc2bed723eec",
+          "score": 5.0,
+          "student_answer": "any number you want",
+          "n_concepts": 1,
+          "n_covered": 0,
+          "coverage_fraction": 0.0,
+          "concepts": [
+            {
+              "concept": "Unlimited number.",
+              "similarity": 0.482,
+              "covered": false
+            }
+          ]
+        }
+      ]
+    },
+    "powergrading": {
+      "status": "ok",
+      "tau": 0.5,
+      "n_examples": 6,
+      "examples": [
+        {
+          "question_id": "18",
+          "score": 0.0,
+          "student_answer": "ohio, mississippi",
+          "n_concepts": 1,
+          "n_covered": 1,
+          "coverage_fraction": 1.0,
+          "concepts": [
+            {
+              "concept": "Missouri",
+              "similarity": 0.5871,
+              "covered": true
+            }
+          ]
+        },
+        {
+          "question_id": "9",
+          "score": 0.0,
+          "student_answer": "the power to coin money",
+          "n_concepts": 1,
+          "n_covered": 1,
+          "coverage_fraction": 1.0,
+          "concepts": [
+            {
+              "concept": "to print money",
+              "similarity": 0.5406,
+              "covered": true
+            }
+          ]
+        },
+        {
+          "question_id": "10",
+          "score": 0.0,
+          "student_answer": "to over see voting",
+          "n_concepts": 1,
+          "n_covered": 0,
+          "coverage_fraction": 0.0,
+          "concepts": [
+            {
+              "concept": "provide schooling and education",
+              "similarity": 0.1057,
+              "covered": false
+            }
+          ]
+        },
+        {
+          "question_id": "13",
+          "score": 0.5,
+          "student_answer": "expansion and imperialism",
+          "n_concepts": 1,
+          "n_covered": 0,
+          "coverage_fraction": 0.0,
+          "concepts": [
+            {
+              "concept": "freedom",
+              "similarity": 0.282,
+              "covered": false
+            }
+          ]
+        },
+        {
+          "question_id": "7",
+          "score": 1.0,
+          "student_answer": "they're more populated",
+          "n_concepts": 1,
+          "n_covered": 0,
+          "coverage_fraction": 0.0,
+          "concepts": [
+            {
+              "concept": "the state's population",
+              "similarity": 0.4528,
+              "covered": false
+            }
+          ]
+        },
+        {
+          "question_id": "3",
+          "score": 1.0,
+          "student_answer": "declared the independence of the 13 colonies from the british.",
+          "n_concepts": 1,
+          "n_covered": 1,
+          "coverage_fraction": 1.0,
+          "concepts": [
+            {
+              "concept": "announced our independence",
+              "similarity": 0.5688,
+              "covered": true
+            }
+          ]
+        }
+      ]
+    },
+    "mindreading": {
+      "status": "no_reference",
+      "reason": "all reference answers empty"
+    }
+  }
+}
