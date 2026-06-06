@@ -13,7 +13,7 @@ export UV_PROJECT_ENVIRONMENT ?= $(USERPROFILE)/.cache/asag-venvs/asag-py311
 export PYTHONUTF8 = 1
 export PYTHONIOENCODING = utf-8
 
-.PHONY: help setup download eda validate preprocess tokenstats features featuresvalidate train train2d xai test clean check
+.PHONY: help setup download eda validate preprocess tokenstats features featuresvalidate train train2d xai ablations test clean check
 
 help:
 	@echo "ASAG Phase 1 targets:"
@@ -26,6 +26,7 @@ help:
 	@echo "  make train      - Phase 2C train+eval late-fusion GBM head -> reports/phase2c/"
 	@echo "  make train2d    - Phase 2D Optuna HPO + paired-bootstrap + IAA ceiling -> reports/phase2d/"
 	@echo "  make xai        - Phase 2F SHAP + concept coverage + SAF gold-feedback validation -> reports/phase2f/"
+	@echo "  make ablations  - Phase 3 branch (-A/-B/-C) + negation ablations -> reports/phase3/"
 	@echo "  make eda        - execute notebooks/01_eda.ipynb and save figures"
 	@echo "  make test       - run pytest smoke tests"
 	@echo "  make check      - lint-light: import & schema sanity"
@@ -65,6 +66,9 @@ train2d:
 
 xai:
 	"$(VENV_PY)" -m asag.xai.run
+
+ablations:
+	"$(VENV_PY)" -m asag.models.ablations
 
 eda:
 	"$(VENV_PY)" -m jupyter nbconvert --to notebook --execute notebooks/01_eda.ipynb --output 01_eda.ipynb
