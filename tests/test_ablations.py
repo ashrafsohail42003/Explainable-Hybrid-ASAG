@@ -4,23 +4,34 @@ from __future__ import annotations
 
 from asag.models import ablations
 
-# a representative feature_cols list covering every branch prefix
+# a representative feature_cols list covering every branch prefix (incl. neural D)
 FEATS = [
     "lex_token_overlap", "lex_content_word_overlap_neg", "len_student_chars",
     "tfidf_cosine", "neg_student_count", "neg_polarity_mismatch",
     "ner_overlap_jaccard", "sem_cosine", "sem_abs_diff_mean",
     "rub_mean_maxsim", "rub_coverage_at_tau",
+    "neural_score", "neural_pred",
 ]
 
 
 def test_branch_partition_is_complete_and_disjoint():
     g = ablations._groups(FEATS)
-    # every feature lands in exactly one branch
-    union = g["A"] + g["B"] + g["C"]
+    # every feature lands in exactly one branch (A/B/C/D)
+    union = g["A"] + g["B"] + g["C"] + g["D"]
     assert sorted(union) == sorted(FEATS)
     assert g["A"] == ["sem_cosine", "sem_abs_diff_mean"]
     assert g["C"] == ["rub_mean_maxsim", "rub_coverage_at_tau"]
-    assert set(g["B"]).isdisjoint(g["A"] + g["C"])
+    assert g["D"] == ["neural_score", "neural_pred"]
+    assert set(g["B"]).isdisjoint(g["A"] + g["C"] + g["D"])
+
+
+def test_neural_branch_d_variants():
+    # -D drops only the neural features; only-D keeps only them; branch_of tags them D.
+    assert ablations.branch_of("neural_score") == "D"
+    minus_d = ablations.variant_cols(FEATS, "-D")
+    assert "neural_score" not in minus_d and "neural_pred" not in minus_d
+    assert "sem_cosine" in minus_d and "lex_token_overlap" in minus_d
+    assert ablations.variant_cols(FEATS, "only-D") == ["neural_score", "neural_pred"]
 
 
 def test_drop_variants_remove_the_right_branch():

@@ -56,3 +56,9 @@ Thumbs.db
 kaggle.json
 
 CLAUDE.md
+
+# Excluded from the public repo (Arabic narrative report + scratch)
+reports/*.html
+reports/*.pdf
+_demo_*
+_smoke*

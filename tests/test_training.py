@@ -28,7 +28,8 @@ def _synthetic_bundle(name: str, n: int = 160, seed: int = 0) -> Bundle:
     rng = np.random.default_rng(seed)
     score = rng.integers(0, 6, size=n).astype(float)
     df = pd.DataFrame({
-        "question_id": "q",
+        # multiple question groups so grouped (leave-questions-out) inner CV is well-defined
+        "question_id": [f"q{i % 16}" for i in range(n)],
         "score": score,
         "label": "",
         "dataset": name,
@@ -107,6 +108,40 @@ def test_bootstrap_is_deterministic():
     a = significance.bootstrap_groups([(yt, head, base)], "qwk", 300, 0.95, seed=7)
     b = significance.bootstrap_groups([(yt, head, base)], "qwk", 300, 0.95, seed=7)
     assert a == b
+
+
+def test_cluster_bootstrap_widens_ci_vs_item_level():
+    # Errors are correlated within a question (whole questions are right or wrong),
+    # so i.i.d. item resampling fakes independence and yields a too-narrow CI; the
+    # honest cluster (block) bootstrap over question_id must be wider on the SAME data.
+    rng = np.random.default_rng(0)
+    n_q, per_q = 12, 25
+    qlabel = rng.integers(0, 5, n_q)
+    yt = np.repeat(qlabel, per_q).astype(float)
+    correct_q = rng.random(n_q) < 0.6                       # block-correlated errors
+    head = np.where(np.repeat(correct_q, per_q), yt, (yt + 1) % 5).astype(float)
+    base = np.full_like(yt, 2.0)
+    qid = np.repeat(np.arange(n_q), per_q).astype(str)
+
+    item = significance.bootstrap_groups([(yt, head, base)], "qwk",
+                                         500, 0.95, seed=1)
+    clus = significance.bootstrap_groups([(yt, head, base)], "qwk",
+                                         500, 0.95, seed=1, clusters=[qid])
+    assert item["resample_unit"] == "item" and item["n_clusters"] is None
+    assert clus["resample_unit"] == "question" and clus["n_clusters"] == n_q
+    assert (clus["ci_hi"] - clus["ci_lo"]) > (item["ci_hi"] - item["ci_lo"])
+
+
+def test_holm_bonferroni_orders_and_corrects():
+    # Holm adjusted p = monotone non-decreasing in rank; smallest gets (m)*p, and a
+    # borderline raw-significant p can lose significance after family correction.
+    p = {"a": 0.001, "b": 0.04, "c": 0.20, "d": 0.30}
+    out = significance.holm_bonferroni(p, alpha=0.05)
+    assert out["a"]["significant_holm"] and out["a"]["p_holm"] == pytest.approx(0.004)
+    assert not out["b"]["significant_holm"]          # 0.04 raw-sig, killed by Holm
+    adj = [out[k]["p_holm"] for k in ["a", "b", "c", "d"]]
+    assert adj == sorted(adj)                         # monotone non-decreasing
+    assert all(v <= 1.0 for v in adj)
 
 
 def test_bootstrap_degenerate_baseline_falls_back_to_head_vs_zero():

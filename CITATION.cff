@@ -1,0 +1,30 @@
+cff-version: 1.2.0
+message: "If you use this software or its findings, please cite it as below."
+title: "Explainable Hybrid ASAG: Leakage-Aware, Interpretable Feature-Fusion for Automatic Short Answer Grading"
+authors:
+  - family-names: "Kahlout"
+    given-names: "Ashraf"
+type: software
+license: MIT
+repository-code: "https://github.com/"
+abstract: >-
+  A research-grade Automatic Short Answer Grading (ASAG) system that fuses
+  interpretable linguistic, semantic, and rubric-coverage features in a
+  NaN-native gradient-boosted head, evaluated across six heterogeneous datasets
+  under a leakage-aware grouped leave-questions-out protocol. Contributions
+  include a question-leakage audit, honest feature-branch ablations,
+  TreeSHAP-based explainability validated against SAF gold feedback, and a
+  cluster-bootstrap significance analysis with family-wise correction.
+keywords:
+  - automatic short answer grading
+  - educational NLP
+  - explainability
+  - gradient boosting
+  - cross-validation leakage
+preferred-citation:
+  type: conference-paper
+  title: "Explainable Hybrid ASAG: Leakage-Aware, Interpretable Feature-Fusion for Automatic Short Answer Grading"
+  authors:
+    - family-names: "Kahlout"
+      given-names: "Ashraf"
+  year: 2026

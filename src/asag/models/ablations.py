@@ -6,19 +6,23 @@ evaluation protocol (official_split / kfold / per_prompt, multi-seed) but restri
 variants is which branch's features the head can see — the ΔQWK/Δmetric is then
 attributable to the branch, not to a protocol or HPO difference.
 
-Three branches, by feature prefix (the report's A/B/C):
+Branches, by feature prefix (the report's A/B/C, plus D when the hybrid is on):
 
 * **A — semantic**  : ``sem_*`` (SBERT cosine + interaction summaries)
 * **B — linguistic**: ``lex_ / len_ / tfidf_ / neg_ / ner_``
 * **C — rubric**    : ``rub_*`` (concept coverage)
+* **D — neural**    : ``neural_*`` (DeBERTa cross-encoder out-of-fold signals; present
+  only once ``neural_oof.parquet`` has been produced on Colab — otherwise the ``-D`` /
+  ``only-D`` variants report 0 features and are skipped). This is the ablation that
+  answers "how much does the transformer add on top of the interpretable features?".
 
-Variants: ``full``, ``-A/-B/-C`` (drop one), ``only-A/only-B/only-C`` (keep one),
+Variants: ``full``, ``-A/-B/-C/-D`` (drop one), ``only-A/.../only-D`` (keep one),
 and ``-neg`` (drop the negation-cue features — the report's preprocessing ablation).
 
 A single lightly-regularized head config (``subsample = colsample = 0.8``) is used
 for *every* variant so the comparison is fair and the seed std is honest (non-zero).
-GBM-only: encoder/head ablations (BERT/RoBERTa/DeBERTa, CORAL/CORN) need torch and
-are deferred with the neural slice.
+The encoder/head ablations (BERT/RoBERTa/DeBERTa backbone, CORAL/CORN) still need the
+torch slice; branch D captures the cross-encoder's *fused* contribution here.
 
     python -m asag.models.ablations [<name>...]      # no args = all datasets with features
 """
@@ -49,7 +53,8 @@ _B_PREFIXES = ("lex_", "len_", "tfidf_", "neg_", "ner_")
 _NEG_COLS = ("lex_content_word_overlap_neg",)
 
 # variant -> human label for reports/figures
-VARIANTS = ("full", "-A", "-B", "-C", "only-A", "only-B", "only-C", "-neg")
+VARIANTS = ("full", "-A", "-B", "-C", "-D",
+            "only-A", "only-B", "only-C", "only-D", "-neg")
 
 
 def branch_of(col: str) -> str:
@@ -57,14 +62,17 @@ def branch_of(col: str) -> str:
         return "A"
     if col.startswith("rub_"):
         return "C"
+    if col.startswith("neural_"):
+        return "D"
     return "B"
 
 
 def _groups(feature_cols: list[str]) -> dict[str, list[str]]:
     A = [c for c in feature_cols if c.startswith("sem_")]
     C = [c for c in feature_cols if c.startswith("rub_")]
+    D = [c for c in feature_cols if c.startswith("neural_")]
     B = [c for c in feature_cols if c.startswith(_B_PREFIXES)]
-    return {"A": A, "B": B, "C": C}
+    return {"A": A, "B": B, "C": C, "D": D}
 
 
 def _neg_cols(feature_cols: list[str]) -> list[str]:
@@ -81,12 +89,16 @@ def variant_cols(feature_cols: list[str], variant: str) -> list[str]:
         return [c for c in feature_cols if c not in set(g["B"])]
     if variant == "-C":
         return [c for c in feature_cols if c not in set(g["C"])]
+    if variant == "-D":
+        return [c for c in feature_cols if c not in set(g["D"])]
     if variant == "only-A":
         return list(g["A"])
     if variant == "only-B":
         return list(g["B"])
     if variant == "only-C":
         return list(g["C"])
+    if variant == "only-D":
+        return list(g["D"])
     if variant == "-neg":
         drop = set(_neg_cols(feature_cols))
         return [c for c in feature_cols if c not in drop]
@@ -202,11 +214,16 @@ def _write_figures(cfg: DataConfig, results: dict) -> None:
     fig.tight_layout(); fig.savefig(fig_dir / "phase3_branch_ablation.png", dpi=120); plt.close(fig)
 
     # 2) Δ (drop − full) per branch + negation: how much removing each branch hurts.
-    drops = ["-A", "-B", "-C", "-neg"]
+    # Include -D (neural) only when the hybrid is actually present (some dataset has
+    # neural features), else a flat 0 bar would falsely read as "neural adds nothing".
+    has_neural = any(results[n]["variants"].get("-D", {}).get("n_features", 0)
+                     for n in names)
+    drops = ["-A", "-B", "-C"] + (["-D"] if has_neural else []) + ["-neg"]
+    w2 = 0.8 / len(drops)
     fig, ax = plt.subplots(figsize=(max(8, 1.9 * len(names)), 5))
     for k, v in enumerate(drops):
         deltas = [results[n]["variants"][v].get("delta_vs_full") or 0.0 for n in names]
-        ax.bar(x + (k - 1.5) * w, deltas, w, label=v)
+        ax.bar(x + (k - (len(drops) - 1) / 2) * w2, deltas, w2, label=v)
     ax.axhline(0.0, color="#333", lw=1)
     ax.set_xticks(x); ax.set_xticklabels(names, fontsize=8)
     ax.set_ylabel("Δ headline (variant − full)")

@@ -1,0 +1,439 @@
+{
+  "datasets": {
+    "semeval": {
+      "task_type": "classification",
+      "metric": "macro_f1",
+      "split": "test_ud",
+      "head_source": "phase2d_tuned",
+      "gbm": {
+        "n": 4562,
+        "exact": 0.4649,
+        "labels": [
+          "contradictory",
+          "correct",
+          "irrelevant",
+          "non_domain",
+          "partially_correct_incomplete"
+        ],
+        "confusion_matrix": [
+          [
+            89,
+            177,
+            28,
+            1,
+            122
+          ],
+          [
+            62,
+            1438,
+            135,
+            1,
+            281
+          ],
+          [
+            121,
+            490,
+            322,
+            10,
+            279
+          ],
+          [
+            2,
+            0,
+            1,
+            15,
+            2
+          ],
+          [
+            72,
+            524,
+            132,
+            1,
+            257
+          ]
+        ],
+        "per_class": {
+          "contradictory": {
+            "precision": 0.2572,
+            "recall": 0.2134,
+            "f1": 0.2333,
+            "support": 417
+          },
+          "correct": {
+            "precision": 0.547,
+            "recall": 0.7501,
+            "f1": 0.6326,
+            "support": 1917
+          },
+          "irrelevant": {
+            "precision": 0.521,
+            "recall": 0.2635,
+            "f1": 0.35,
+            "support": 1222
+          },
+          "non_domain": {
+            "precision": 0.5357,
+            "recall": 0.75,
+            "f1": 0.625,
+            "support": 20
+          },
+          "partially_correct_incomplete": {
+            "precision": 0.2731,
+            "recall": 0.2606,
+            "f1": 0.2667,
+            "support": 986
+          }
+        },
+        "top_confused": [
+          {
+            "true": "partially_correct_incomplete",
+            "pred": "correct",
+            "count": 524
+          },
+          {
+            "true": "irrelevant",
+            "pred": "correct",
+            "count": 490
+          },
+          {
+            "true": "correct",
+            "pred": "partially_correct_incomplete",
+            "count": 281
+          },
+          {
+            "true": "irrelevant",
+            "pred": "partially_correct_incomplete",
+            "count": 279
+          },
+          {
+            "true": "contradictory",
+            "pred": "correct",
+            "count": 177
+          },
+          {
+            "true": "correct",
+            "pred": "irrelevant",
+            "count": 135
+          }
+        ]
+      },
+      "baseline": {
+        "n": 4562,
+        "exact": 0.4202,
+        "labels": [
+          "contradictory",
+          "correct",
+          "irrelevant",
+          "non_domain",
+          "partially_correct_incomplete"
+        ],
+        "confusion_matrix": [
+          [
+            0,
+            417,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            1917,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            1222,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            20,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            986,
+            0,
+            0,
+            0
+          ]
+        ],
+        "per_class": {
+          "contradictory": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 417
+          },
+          "correct": {
+            "precision": 0.4202,
+            "recall": 1.0,
+            "f1": 0.5918,
+            "support": 1917
+          },
+          "irrelevant": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 1222
+          },
+          "non_domain": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 20
+          },
+          "partially_correct_incomplete": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 986
+          }
+        },
+        "top_confused": [
+          {
+            "true": "irrelevant",
+            "pred": "correct",
+            "count": 1222
+          },
+          {
+            "true": "partially_correct_incomplete",
+            "pred": "correct",
+            "count": 986
+          },
+          {
+            "true": "contradictory",
+            "pred": "correct",
+            "count": 417
+          },
+          {
+            "true": "non_domain",
+            "pred": "correct",
+            "count": 20
+          }
+        ]
+      }
+    },
+    "saf": {
+      "task_type": "regression",
+      "metric": "pearson",
+      "split": "test_uq",
+      "head_source": "phase2d_tuned",
+      "gbm": {
+        "n": 479,
+        "within_0.5": 0.6722,
+        "within_1.0": 0.8518,
+        "gross_gt_1.0": 0.1482,
+        "bias": -0.0228,
+        "mae": 0.4544,
+        "rmse": 0.6024
+      },
+      "baseline": {
+        "n": 479,
+        "within_0.5": 0.6138,
+        "within_1.0": 0.9123,
+        "gross_gt_1.0": 0.0877,
+        "bias": 0.1276,
+        "mae": 0.3999,
+        "rmse": 0.5428
+      }
+    },
+    "asap_sas": {
+      "task_type": "ordinal",
+      "metric": "qwk",
+      "split": "test_ua",
+      "head_source": "phase2d_tuned",
+      "gbm": {
+        "n": 2180,
+        "exact": 0.5725,
+        "off_by_one": 0.355,
+        "gross": 0.0725,
+        "mean_signed_error": -0.0353,
+        "mae": 0.5032
+      },
+      "baseline": {
+        "n": 2180,
+        "exact": 0.5872,
+        "off_by_one": 0.2977,
+        "gross": 0.1151,
+        "mean_signed_error": 0.0188,
+        "mae": 0.5408
+      },
+      "per_prompt": {
+        "set_1": {
+          "n": 557,
+          "exact": 0.3285,
+          "off_by_one": 0.5476,
+          "gross": 0.1239,
+          "mean_signed_error": 0.018,
+          "mae": 0.8007
+        },
+        "set_2": {
+          "n": 426,
+          "exact": 0.3427,
+          "off_by_one": 0.5329,
+          "gross": 0.1244,
+          "mean_signed_error": -0.0047,
+          "mae": 0.784
+        },
+        "set_5": {
+          "n": 598,
+          "exact": 0.7659,
+          "off_by_one": 0.2191,
+          "gross": 0.0151,
+          "mean_signed_error": -0.092,
+          "mae": 0.2525
+        },
+        "set_6": {
+          "n": 599,
+          "exact": 0.7696,
+          "off_by_one": 0.1853,
+          "gross": 0.0451,
+          "mean_signed_error": -0.0501,
+          "mae": 0.2771
+        }
+      }
+    },
+    "mohler": {
+      "task_type": "regression",
+      "metric": "pearson",
+      "split": "cv",
+      "head_source": "phase2d_tuned",
+      "gbm": {
+        "n": 616,
+        "within_0.5": 0.5455,
+        "within_1.0": 0.7922,
+        "gross_gt_1.0": 0.2078,
+        "bias": 0.0141,
+        "mae": 0.6398,
+        "rmse": 0.9014
+      },
+      "baseline": {
+        "n": 616,
+        "within_0.5": 0.2094,
+        "within_1.0": 0.7711,
+        "gross_gt_1.0": 0.2289,
+        "bias": 0.0,
+        "mae": 0.9513,
+        "rmse": 1.1557
+      }
+    },
+    "powergrading": {
+      "task_type": "classification",
+      "metric": "macro_f1",
+      "split": "cv",
+      "head_source": "phase2d_tuned",
+      "gbm": {
+        "n": 4941,
+        "exact": 0.8506,
+        "labels": [
+          "correct",
+          "incorrect"
+        ],
+        "confusion_matrix": [
+          [
+            1345,
+            407
+          ],
+          [
+            331,
+            2858
+          ]
+        ],
+        "per_class": {
+          "correct": {
+            "precision": 0.8025,
+            "recall": 0.7677,
+            "f1": 0.7847,
+            "support": 1752
+          },
+          "incorrect": {
+            "precision": 0.8753,
+            "recall": 0.8962,
+            "f1": 0.8857,
+            "support": 3189
+          }
+        },
+        "top_confused": [
+          {
+            "true": "correct",
+            "pred": "incorrect",
+            "count": 407
+          },
+          {
+            "true": "incorrect",
+            "pred": "correct",
+            "count": 331
+          }
+        ]
+      },
+      "baseline": {
+        "n": 4941,
+        "exact": 0.6454,
+        "labels": [
+          "correct",
+          "incorrect"
+        ],
+        "confusion_matrix": [
+          [
+            0,
+            1752
+          ],
+          [
+            0,
+            3189
+          ]
+        ],
+        "per_class": {
+          "correct": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 1752
+          },
+          "incorrect": {
+            "precision": 0.6454,
+            "recall": 1.0,
+            "f1": 0.7845,
+            "support": 3189
+          }
+        },
+        "top_confused": [
+          {
+            "true": "correct",
+            "pred": "incorrect",
+            "count": 1752
+          }
+        ]
+      }
+    },
+    "mindreading": {
+      "task_type": "ordinal",
+      "metric": "qwk",
+      "split": "cv",
+      "head_source": "phase2d_tuned",
+      "gbm": {
+        "n": 10543,
+        "exact": 0.382,
+        "off_by_one": 0.5847,
+        "gross": 0.0333,
+        "mean_signed_error": 0.0092,
+        "mae": 0.6513
+      },
+      "baseline": {
+        "n": 10543,
+        "exact": 0.3334,
+        "off_by_one": 0.6666,
+        "gross": 0.0,
+        "mean_signed_error": -0.0379,
+        "mae": 0.6666
+      }
+    }
+  }
+}

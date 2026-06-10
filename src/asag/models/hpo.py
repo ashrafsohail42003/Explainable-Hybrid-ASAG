@@ -32,7 +32,7 @@ except ImportError:  # pragma: no cover
     OPTUNA_AVAILABLE = False
 
 from asag.config import DataConfig, LightGBMCfg
-from asag.data.splits import make_stratified_kfold
+from asag.data.splits import make_grouped_kfold
 from asag.models.data import Bundle, make_y
 from asag.models.evaluate import fit_predict_arrays
 from asag.models.metrics import compute_metrics
@@ -128,7 +128,11 @@ def _score_inner_cv(params: LightGBMCfg, pool, bundle: Bundle,
     spec = bundle.spec
     pool = pool.reset_index(drop=True)
     stratify_on = "label" if spec.task_type == "classification" else "score"
-    folds = make_stratified_kfold(pool, k=k, seed=seed, stratify_on=stratify_on)
+    # Grouped-by-question inner CV — mirrors the outer (unseen-question) protocol
+    # so HPO does not tune on a question-leaked objective (which would re-introduce
+    # the optimism the grouped outer protocol removes).
+    folds = make_grouped_kfold(pool, k=k, seed=seed, group_col="question_id",
+                               stratify_on=stratify_on)
     scores = []
     for f in sorted(folds.unique()):
         te = pool[folds == f]

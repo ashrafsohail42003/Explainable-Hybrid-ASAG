@@ -1,0 +1,131 @@
+{
+  "datasets": {
+    "semeval": {
+      "metric": "macro_f1",
+      "comparability": "context-only \u2014 split must be matched (we headline the hard test_ud)",
+      "claim_allowed": false,
+      "split_note": "SciEntsBank+Beetle 5-way. Our headline is the unseen-domain test_ud (the hardest split); most published 5-way macro-F1 are on unseen-answers (test_ua). A claim is only valid split-matched \u2014 report our test_ua next to test_ua numbers, not test_ud.",
+      "ours": {
+        "gbm_2c": 0.41105406516585513,
+        "gbm_2d_tuned": 0.42685944251567703,
+        "neural_2g": null
+      },
+      "published": [
+        {
+          "system": "SemEval-2013 shared task, best 5-way macro-F1 (SciEntsBank, test_ua)",
+          "value": "~0.55-0.62",
+          "cite": "Dzikovska et al. 2013, S13-2045",
+          "needs_verification": true
+        },
+        {
+          "system": "BERT fine-tuned, SciEntsBank 5-way (verify split + exact value)",
+          "value": "~0.58",
+          "cite": "Sung et al. 2019",
+          "needs_verification": true
+        }
+      ]
+    },
+    "asap_sas": {
+      "metric": "qwk",
+      "comparability": "not comparable \u2014 4/10 prompts (AERA mirror) vs all-10 published",
+      "claim_allowed": false,
+      "split_note": "EssaySets 1/2/5/6 only (the free AERA mirror). Published QWK is Fisher-averaged over all 10 prompts, so it is NOT our prompt set; the Kaggle LB (~0.78, all 10) is likewise off-limits.",
+      "ours": {
+        "gbm_2c": 0.34971781149567555,
+        "gbm_2d_tuned": 0.36299463737694626,
+        "neural_2g": null
+      },
+      "published": [
+        {
+          "system": "Neural LSTM/attention, ASAP-SAS mean QWK (Fisher-avg, all 10 prompts)",
+          "value": "~0.74",
+          "cite": "Riordan, Horbach et al. 2017, BEA W17-5017",
+          "needs_verification": true
+        },
+        {
+          "system": "Kaggle ASAP-SAS private LB top (all 10 prompts)",
+          "value": "~0.78",
+          "cite": "Kaggle 2012 (not our prompt set)",
+          "needs_verification": true
+        }
+      ]
+    },
+    "mohler": {
+      "metric": "pearson",
+      "comparability": "not comparable \u2014 ASAG2024 subset (21q) vs full corpus (80q)",
+      "claim_allowed": false,
+      "split_note": "report as an internal number only; do not claim vs Mohler-2011",
+      "ours": {
+        "gbm_2c": 0.42965558694649336,
+        "gbm_2d_tuned": 0.4903567199429233,
+        "neural_2g": null
+      },
+      "published": [
+        {
+          "system": "Mohler et al. 2011 best (full 80-question corpus)",
+          "value": "r~0.52",
+          "cite": "Mohler et al. 2011",
+          "needs_verification": true
+        }
+      ]
+    },
+    "saf": {
+      "metric": "pearson",
+      "comparability": "metric-mismatch \u2014 published reports RMSE/feedback-F1",
+      "claim_allowed": false,
+      "split_note": "we report Pearson; SAF paper centers RMSE + verification-feedback F1. We treat SAF as the explainability case study (it uniquely ships gold feedback), not an accuracy headline \u2014 our test_uq Pearson is ~0 and the gain is NOT significant (see significance.json).",
+      "ours": {
+        "gbm_2c": 0.02606103084805207,
+        "gbm_2d_tuned": 0.019284772665841568,
+        "neural_2g": null
+      },
+      "published": [
+        {
+          "system": "SAF baseline (T5 / encoder), score RMSE",
+          "value": "RMSE-based",
+          "cite": "Filighera et al. 2022",
+          "needs_verification": true
+        }
+      ]
+    },
+    "powergrading": {
+      "metric": "macro_f1",
+      "comparability": "setup-mismatch \u2014 original is clustering, not supervised F1",
+      "claim_allowed": false,
+      "split_note": "Basu 2013 frames it as answer clustering; our supervised F1 is a different task. NB: under the cluster (question-level) bootstrap the head's gain over baseline is NOT significant (only 20 questions).",
+      "ours": {
+        "gbm_2c": 0.4499753252665445,
+        "gbm_2d_tuned": 0.4862358670303113,
+        "neural_2g": null
+      },
+      "published": [
+        {
+          "system": "Powergrading clustering (Basu et al. 2013)",
+          "value": "clustering metrics",
+          "cite": "Basu et al. 2013",
+          "needs_verification": true
+        }
+      ]
+    },
+    "mindreading": {
+      "metric": "qwk",
+      "comparability": "approximate \u2014 same corpus, check exact metric/setup",
+      "claim_allowed": false,
+      "split_note": "Kovatchev 2020 reports accuracy/F1 on the 0/1/2 task; we report QWK",
+      "ours": {
+        "gbm_2c": 0.05944155493067094,
+        "gbm_2d_tuned": 0.07697291056168246,
+        "neural_2g": null
+      },
+      "published": [
+        {
+          "system": "MIND-CA baselines (Kovatchev et al. 2020)",
+          "value": "accuracy/F1 reported",
+          "cite": "Kovatchev et al. 2020",
+          "needs_verification": true
+        }
+      ]
+    }
+  },
+  "disclaimer": "Published values are recollections; verify each against its citation before submission. Comparability flags state where a direct claim is invalid (subset/metric/setup mismatch)."
+}

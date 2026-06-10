@@ -31,7 +31,7 @@ from asag.models.ceiling import ceiling_for
 from asag.models.evaluate import _flatten_rows, evaluate_dataset
 from asag.models.fusion import LIGHTGBM_AVAILABLE
 from asag.models.hpo import tune_dataset
-from asag.models.significance import paired_bootstrap
+from asag.models.significance import holm_bonferroni, paired_bootstrap
 from asag.models.data import load_bundle
 from asag.models.tasks import REGISTRY, get_spec
 from asag.utils.logging import get_logger
@@ -121,9 +121,16 @@ def _write_reports(cfg: DataConfig, hpo_summaries: dict, results: dict,
     rows = [r for name, res in results.items() for r in _flatten_rows(name, res)]
     pd.DataFrame(rows).to_csv(out_dir / "results.csv", index=False)
 
+    alpha = 1.0 - cfg.model.significance.ci
+    holm = holm_bonferroni({n: s.get("p_value") for n, s in significance.items()
+                            if s.get("status") == "ok"}, alpha=alpha)
+    for n, corr in holm.items():
+        significance[n].update(corr)
     (out_dir / "significance.json").write_text(json.dumps(
-        {"schema_version": PHASE2D_SCHEMA_VERSION, "datasets": significance},
-        indent=2, default=str), encoding="utf-8")
+        {"schema_version": PHASE2D_SCHEMA_VERSION,
+         "family_correction": {"method": "holm_bonferroni", "alpha": alpha,
+                               "n_tests": len(holm)},
+         "datasets": significance}, indent=2, default=str), encoding="utf-8")
     (out_dir / "ceiling.json").write_text(json.dumps(
         {"schema_version": PHASE2D_SCHEMA_VERSION, "datasets": ceilings},
         indent=2, default=str), encoding="utf-8")

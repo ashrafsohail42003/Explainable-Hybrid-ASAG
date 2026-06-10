@@ -187,6 +187,55 @@ class ModelCfg(BaseModel):
     ordinal: OrdinalCfg = Field(default_factory=OrdinalCfg)
     hpo: HpoCfg = Field(default_factory=HpoCfg)
     significance: SignificanceCfg = Field(default_factory=SignificanceCfg)
+    # Fold-safe per-question difficulty prior (target encoding). NaN for unseen
+    # questions, so it cannot leak under grouped CV — off by default; turn on for
+    # the question-prior transparency ablation (Phase 4).
+    qprior_enabled: bool = False
+
+
+# --- Phase 2G: neural slice (DeBERTa cross-encoder + CORAL/CORN) ---------
+
+class NeuralCfg(BaseModel):
+    """End-to-end fine-tuned transformer cross-encoder (the deferred torch slice).
+
+    A ``(premise, student)`` cross-encoder over the encoder view: premise =
+    ``reference_answer_enc`` when present, else ``question_enc``. Ordinal datasets
+    use a CORAL/CORN rank-monotonic head; regression uses MSE; classification uses
+    cross-entropy. Trained on CPU here, so the defaults are deliberately modest —
+    raise ``epochs``/``seeds`` on a GPU box. ``max_train_rows`` caps rows per fit
+    for smoke runs / staying under the time budget.
+    """
+    model_config = ConfigDict(extra="forbid")
+    enabled: bool = True
+    backbone: str = "microsoft/deberta-v3-base"
+    max_len: int = Field(default=128, ge=16)
+    max_len_overrides: dict[str, int] = Field(default_factory=lambda: {"saf": 256})
+    batch_size: int = Field(default=16, ge=1)
+    grad_accum: int = Field(default=1, ge=1)
+    epochs: int = Field(default=3, ge=1)
+    lr: float = Field(default=2e-5, gt=0.0)
+    weight_decay: float = Field(default=0.01, ge=0.0)
+    warmup_ratio: float = Field(default=0.1, ge=0.0, le=1.0)
+    dropout: float = Field(default=0.1, ge=0.0, lt=1.0)
+    ordinal_head: str = "corn"            # corn | coral
+    pooling: str = "cls"                  # cls | mean
+    seeds: list[int] = Field(default_factory=lambda: [42, 1, 2])
+    max_train_rows: int | None = None
+    device: str = "cpu"
+    num_workers: int = Field(default=0, ge=0)
+    select_on_dev: bool = True            # keep best-epoch checkpoint by dev metric
+    save_predictions: bool = True         # cache per-item preds (error analysis / hybrid)
+    # Overfitting controls for small corpora (Mohler 616, SAF 1.7k). LoRA trains
+    # <1% of params; freeze_backbone trains only the head. Both wrap self.encoder
+    # in CrossEncoderGrader; mutually exclusive (LoRA wins if both set).
+    lora_enabled: bool = False
+    lora_r: int = Field(default=8, ge=1)
+    lora_alpha: int = Field(default=16, ge=1)
+    lora_dropout: float = Field(default=0.1, ge=0.0, lt=1.0)
+    freeze_backbone: bool = False
+    llrd: float = Field(default=1.0, gt=0.0, le=1.0)   # layer-wise LR decay (1.0 = off)
+    # how many OOF embedding PCA dims to export as hybrid features
+    emb_pca_dims: int = Field(default=8, ge=0)
 
 
 class DataConfig(BaseModel):
@@ -199,6 +248,7 @@ class DataConfig(BaseModel):
     validation: ValidationCfg
     features: FeaturesCfg = Field(default_factory=FeaturesCfg)
     model: ModelCfg = Field(default_factory=ModelCfg)
+    neural: NeuralCfg = Field(default_factory=NeuralCfg)
 
     def project_root(self) -> Path:
         return getattr(self, "_root", Path.cwd().resolve())

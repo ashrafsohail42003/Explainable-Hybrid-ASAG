@@ -21,9 +21,10 @@ import numpy as np
 import pandas as pd
 
 from asag.config import DataConfig, LightGBMCfg, ensure_dirs, load_data_config
+from asag.data.splits import make_grouped_kfold, make_stratified_kfold
 from asag.models import MODELS_SCHEMA_VERSION
-from asag.models.baselines import fit_predict_baseline
-from asag.models.data import Bundle, load_bundle, make_X, make_y
+from asag.models.baselines import fit_predict_baseline, question_shortcut_predict
+from asag.models.data import Bundle, load_bundle, make_X, make_y, question_prior
 from asag.models.fusion import LIGHTGBM_AVAILABLE, LgbmFusionHead
 from asag.models.metrics import compute_metrics
 from asag.models.tasks import REGISTRY, TaskSpec, get_spec
@@ -64,6 +65,7 @@ def _mean_over(metric_dicts: list[dict[str, float]]) -> dict[str, float]:
 def fit_predict_arrays(
     train_df: pd.DataFrame, test_df: pd.DataFrame, bundle: Bundle,
     cfg: DataConfig, seed: int, head_params: LightGBMCfg | None = None,
+    with_qprior: bool | None = None,
 ) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
     """Fit head + baseline, return per-item ``(y_true, gbm_pred, base_pred)``.
 
@@ -71,12 +73,26 @@ def fit_predict_arrays(
     config; ``None`` reproduces Phase 2C). On a degenerate train split (no rows,
     or a single class) the GBM falls back to the baseline prediction so callers
     always get three aligned arrays — the significance module relies on this.
+
+    ``with_qprior`` appends the fold-safe question-difficulty prior
+    (:func:`question_prior`) as an extra feature; defaults to
+    ``cfg.model.qprior_enabled``. It is NaN for unseen questions, so it only ever
+    adds signal where test questions are also in train (the seen-question /
+    ``test_ua`` upper bound) — under the honest grouped/unseen protocol it is
+    NaN at test and contributes nothing by construction.
     """
     spec = bundle.spec
     params = head_params or cfg.model.lightgbm
+    if with_qprior is None:
+        with_qprior = getattr(cfg.model, "qprior_enabled", False)
     set_global_seed(seed)
     X_tr, y_tr = make_X(train_df, bundle.feature_cols), make_y(train_df, bundle)
     X_te, y_te = make_X(test_df, bundle.feature_cols), make_y(test_df, bundle)
+
+    if with_qprior and spec.task_type != "classification":
+        tr_prior, te_prior = question_prior(train_df, test_df, spec)
+        X_tr = X_tr.assign(qprior_train_mean=tr_prior)
+        X_te = X_te.assign(qprior_train_mean=te_prior)
 
     m = np.isfinite(y_tr)
     X_tr, y_tr = X_tr.loc[m], y_tr[m]
@@ -88,6 +104,17 @@ def fit_predict_arrays(
     head = LgbmFusionHead(spec.task_type, params, seed).fit(X_tr, y_tr)
     gbm_pred = head.predict(X_te)
     return y_te, gbm_pred, base_pred
+
+
+def _shortcut_metrics(train_df: pd.DataFrame, test_df: pd.DataFrame,
+                      bundle: Bundle) -> dict[str, float]:
+    """Per-question memorization-control metrics on one train/test split."""
+    spec = bundle.spec
+    y_tr = make_y(train_df, bundle)
+    y_te = make_y(test_df, bundle)
+    pred = question_shortcut_predict(
+        y_tr, train_df["question_id"], test_df["question_id"], spec.task_type)
+    return compute_metrics(y_te, pred, spec.metrics)
 
 
 def _fit_eval(train_df: pd.DataFrame, test_df: pd.DataFrame, bundle: Bundle,
@@ -119,6 +146,7 @@ def _eval_official(bundle: Bundle, cfg: DataConfig,
         if spec.per_prompt:
             prompts = sorted(test_df["question_id"].astype(str).unique())
             per_seed_gbm, per_seed_base = [], []
+            shortcut_p = []
             prompt_acc: dict[str, list[dict]] = defaultdict(list)
             for seed in seeds:
                 gbm_p, base_p = [], []
@@ -131,11 +159,19 @@ def _eval_official(bundle: Bundle, cfg: DataConfig,
                     gbm_p.append(gm); base_p.append(bm); prompt_acc[p].append(gm)
                 per_seed_gbm.append(_mean_over(gbm_p))
                 per_seed_base.append(_mean_over(base_p))
+            # shortcut is seed-independent (deterministic per-question stat)
+            shortcut_p = [_shortcut_metrics(
+                train_df[train_df["question_id"].astype(str) == p],
+                test_df[test_df["question_id"].astype(str) == p], bundle)
+                for p in prompts
+                if not train_df[train_df["question_id"].astype(str) == p].empty
+                and not test_df[test_df["question_id"].astype(str) == p].empty]
             evals[split] = {
                 "n_eval": int(len(test_df)),
                 "n_prompts": len(prompts),
                 "gbm": _agg(per_seed_gbm),
                 "baseline": _agg(per_seed_base),
+                "question_shortcut": _agg([_mean_over(shortcut_p)]) if shortcut_p else {},
                 "per_prompt": {p: _agg(v) for p, v in prompt_acc.items()},
             }
         else:
@@ -147,44 +183,79 @@ def _eval_official(bundle: Bundle, cfg: DataConfig,
                 "n_eval": int(len(test_df)),
                 "gbm": _agg(per_seed_gbm),
                 "baseline": _agg(per_seed_base),
+                "question_shortcut": _agg([_shortcut_metrics(train_df, test_df, bundle)]),
             }
     return evals
 
 
+def _pooled_oof(df: pd.DataFrame, fold: np.ndarray, bundle: Bundle,
+                cfg: DataConfig, head_params: LightGBMCfg | None,
+                finite: np.ndarray) -> tuple[list[dict], list[dict], list[dict]]:
+    """Pooled out-of-fold metrics over a fold assignment, per seed.
+
+    Returns ``(gbm, baseline, shortcut)`` per-seed metric-dict lists. The
+    shortcut is the per-question memorization control (see :func:`_shortcut_metrics`).
+    """
+    spec = bundle.spec
+    folds = sorted(int(f) for f in np.unique(fold) if int(f) >= 0)
+    g_seed, b_seed, s_seed = [], [], []
+    for seed in cfg.model.seeds:
+        yt, gp, bp, sc_t, sc_p = [], [], [], [], []
+        for f in folds:
+            te_m = (fold == f) & finite
+            tr_m = (fold != f) & (fold >= 0) & finite
+            tr, te = df[tr_m], df[te_m]
+            if tr.empty or te.empty:
+                continue
+            y_te, gbm_pred, base_pred = fit_predict_arrays(tr, te, bundle, cfg, seed, head_params)
+            yt.append(y_te); gp.append(gbm_pred); bp.append(base_pred)
+            sc_t.append(make_y(te, bundle))
+            sc_p.append(question_shortcut_predict(
+                make_y(tr, bundle), tr["question_id"], te["question_id"], spec.task_type))
+        if not yt:
+            continue
+        YT = np.concatenate(yt)
+        g_seed.append(compute_metrics(YT, np.concatenate(gp), spec.metrics))
+        b_seed.append(compute_metrics(YT, np.concatenate(bp), spec.metrics))
+        s_seed.append(compute_metrics(np.concatenate(sc_t), np.concatenate(sc_p), spec.metrics))
+    return g_seed, b_seed, s_seed
+
+
 def _eval_kfold(bundle: Bundle, cfg: DataConfig,
                 head_params: LightGBMCfg | None = None) -> dict:
+    """Primary = grouped (materialized ``fold``, unseen questions). Also reports a
+    transient *seen-question upper bound* (legacy score-stratified folds) and the
+    generalization gap, so the question-memorization shortcut is quantified."""
     spec, df = bundle.spec, bundle.df
     y_all = make_y(df, bundle)
     finite = np.isfinite(y_all)
-    folds = sorted(int(f) for f in df["fold"].unique() if int(f) >= 0)
+    grouped_fold = df["fold"].to_numpy()
+    folds = sorted(int(f) for f in np.unique(grouped_fold) if int(f) >= 0)
     if not folds:
         log.warning(f"{bundle.name}: no k-fold folds (fold column all -1); skipping kfold eval")
         return {"cv": {"n_eval": 0, "gbm": {}, "baseline": {}}}
 
-    per_seed_gbm, per_seed_base = [], []
     n_eval = int((finite & (df["fold"] >= 0)).sum())
-    for seed in cfg.model.seeds:
-        true_acc, gbm_acc, base_acc = [], [], []
-        for f in folds:
-            te_mask = (df["fold"] == f) & finite
-            tr_mask = (df["fold"] != f) & (df["fold"] >= 0) & finite
-            tr, te = df[tr_mask], df[te_mask]
-            if tr.empty or te.empty:
-                continue
-            y_te, gbm_pred, base_pred = fit_predict_arrays(
-                tr, te, bundle, cfg, seed, head_params)
-            true_acc.append(y_te); gbm_acc.append(gbm_pred); base_acc.append(base_pred)
-        if not true_acc:
-            continue
-        yt = np.concatenate(true_acc)
-        per_seed_gbm.append(compute_metrics(yt, np.concatenate(gbm_acc), spec.metrics))
-        per_seed_base.append(compute_metrics(yt, np.concatenate(base_acc), spec.metrics))
+    g, b, s = _pooled_oof(df, grouped_fold, bundle, cfg, head_params, finite)
 
+    # transient seen-question upper bound: legacy score-stratified folds (leak qid)
+    strat_fold = make_stratified_kfold(
+        df, k=cfg.splits.cv_k_folds, seed=cfg.seed, stratify_on=cfg.splits.stratify_on).to_numpy()
+    ub_g, _, ub_s = _pooled_oof(df, strat_fold, bundle, cfg, head_params, finite)
+
+    grouped_gbm, upper_gbm = _agg(g), _agg(ub_g)
+    gap = (upper_gbm.get(spec.headline, {}).get("mean", float("nan"))
+           - grouped_gbm.get(spec.headline, {}).get("mean", float("nan")))
     return {"cv": {
         "n_eval": n_eval,
         "n_folds": len(folds),
-        "gbm": _agg(per_seed_gbm),
-        "baseline": _agg(per_seed_base),
+        "cv_strategy": "grouped_by_question",
+        "gbm": grouped_gbm,
+        "baseline": _agg(b),
+        "question_shortcut": _agg(s),
+        "upper_bound_seen_question": upper_gbm,
+        "upper_bound_question_shortcut": _agg(ub_s),
+        "generalization_gap": round(float(gap), 4) if np.isfinite(gap) else None,
     }}
 
 
@@ -213,14 +284,29 @@ def evaluate_dataset(name: str, cfg: DataConfig,
     evals = (_eval_official(bundle, cfg, head_params) if spec.protocol == "official_split"
              else _eval_kfold(bundle, cfg, head_params))
 
-    # headline split: cross-domain / hardest for official; the CV pool for kfold
+    # headline split: cross-domain / unseen-question for official; grouped CV pool
+    # for kfold. For both, the headline is the *honest* (hardest) generalization.
     headline_split = spec.test_splits[-1] if spec.protocol == "official_split" else "cv"
     h = evals.get(headline_split, {})
+
+    # generalization gap: seen-question upper bound minus the honest headline.
+    if spec.protocol == "kfold":
+        gen_gap = h.get("generalization_gap")
+    else:
+        gen_gap = None
+        if "test_ua" in evals and headline_split != "test_ua":
+            ua = evals["test_ua"].get("gbm", {}).get(spec.headline, {}).get("mean", float("nan"))
+            hd = h.get("gbm", {}).get(spec.headline, {}).get("mean", float("nan"))
+            if np.isfinite(ua) and np.isfinite(hd):
+                gen_gap = round(float(ua - hd), 4)
+
     headline = {
         "split": headline_split,
         "metric": spec.headline,
         "gbm": h.get("gbm", {}).get(spec.headline, {}),
         "baseline": h.get("baseline", {}).get(spec.headline, {}),
+        "question_shortcut": h.get("question_shortcut", {}).get(spec.headline, {}),
+        "generalization_gap": gen_gap,
     }
     result = {
         "task_type": spec.task_type,
@@ -244,7 +330,7 @@ def evaluate_dataset(name: str, cfg: DataConfig,
 def _flatten_rows(name: str, result: dict) -> list[dict]:
     rows: list[dict] = []
     for split, ev in result["evaluations"].items():
-        for model in ("gbm", "baseline"):
+        for model in ("gbm", "baseline", "question_shortcut", "upper_bound_seen_question"):
             for metric, stats in ev.get(model, {}).items():
                 rows.append({
                     "dataset": name,

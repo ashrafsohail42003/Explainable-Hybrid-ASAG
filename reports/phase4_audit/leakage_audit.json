@@ -1,0 +1,65 @@
+{
+  "head": {
+    "n_estimators": 300,
+    "learning_rate": 0.05,
+    "num_leaves": 31,
+    "min_child_samples": 20,
+    "subsample": 1.0,
+    "colsample_bytree": 1.0,
+    "reg_alpha": 0.0,
+    "reg_lambda": 0.0
+  },
+  "datasets": {
+    "semeval": {
+      "task_type": "classification",
+      "headline": "macro_f1",
+      "between_question_eta2": NaN,
+      "length_vs_score_pearson": NaN
+    },
+    "saf": {
+      "task_type": "regression",
+      "headline": "pearson",
+      "between_question_eta2": 0.702,
+      "length_vs_score_pearson": 0.0837
+    },
+    "asap_sas": {
+      "task_type": "ordinal",
+      "headline": "qwk",
+      "between_question_eta2": 0.3877,
+      "length_vs_score_pearson": 0.5887
+    },
+    "mohler": {
+      "task_type": "regression",
+      "headline": "pearson",
+      "between_question_eta2": 0.1857,
+      "length_vs_score_pearson": 0.076,
+      "gbm_stratified": 0.5698,
+      "gbm_grouped": 0.4297,
+      "gbm_inflation": 0.1401,
+      "qshortcut_stratified": 0.3646,
+      "qshortcut_grouped": -0.1663
+    },
+    "powergrading": {
+      "task_type": "classification",
+      "headline": "macro_f1",
+      "between_question_eta2": 0.9151,
+      "length_vs_score_pearson": 0.1602,
+      "gbm_stratified": 0.8295,
+      "gbm_grouped": 0.45,
+      "gbm_inflation": 0.3795,
+      "qshortcut_stratified": 0.8733,
+      "qshortcut_grouped": 0.3923
+    },
+    "mindreading": {
+      "task_type": "ordinal",
+      "headline": "qwk",
+      "between_question_eta2": 0.1413,
+      "length_vs_score_pearson": 0.2389,
+      "gbm_stratified": 0.1206,
+      "gbm_grouped": 0.0594,
+      "gbm_inflation": 0.0612,
+      "qshortcut_stratified": 0.1636,
+      "qshortcut_grouped": 0.0
+    }
+  }
+}

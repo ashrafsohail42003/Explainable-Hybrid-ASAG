@@ -1,10 +1,18 @@
-"""Official splits + stratified k-fold scaffolding.
+"""Official splits + k-fold scaffolding.
 
   * ``get_official_splits(df)``: dict of {split_name -> DataFrame} restricted
     to the official splits already present in ``df['split']``.
-  * ``make_stratified_kfold(df, k, seed, stratify_on='score')``: for datasets
-    without an official test split (Mohler), build a stratified k-fold over
-    score bins. Returns a Series of fold indices aligned with ``df.index``.
+  * ``make_grouped_kfold(df, k, seed, group_col='question_id')``: the **primary**
+    CV for datasets without an official test split — holds out whole
+    ``question_id`` groups so the same question never appears in both train and
+    test (a *leave-questions-out* / unseen-question protocol). Stratifies the
+    held-out groups on score bins (or labels) for balance.
+  * ``make_stratified_kfold(df, k, seed, stratify_on='score')``: the legacy
+    score-stratified k-fold. **Leaks ``question_id`` across folds** (a question's
+    rows are split between train and test) so it over-estimates generalization;
+    kept only for the inflation audit and as the seen-question *upper bound*.
+
+Both return a Series of fold indices aligned with ``df.index``.
 """
 
 from __future__ import annotations
@@ -13,7 +21,7 @@ from typing import Iterable
 
 import numpy as np
 import pandas as pd
-from sklearn.model_selection import StratifiedKFold
+from sklearn.model_selection import GroupKFold, StratifiedGroupKFold, StratifiedKFold
 
 
 def get_official_splits(df: pd.DataFrame) -> dict[str, pd.DataFrame]:
@@ -61,5 +69,51 @@ def make_stratified_kfold(
     skf = StratifiedKFold(n_splits=k, shuffle=True, random_state=seed)
     folds = np.full(n, -1, dtype=int)
     for fold_idx, (_, test_idx) in enumerate(skf.split(np.zeros(n), y.values)):
+        folds[test_idx] = fold_idx
+    return pd.Series(folds, index=df.index, name="fold")
+
+
+def make_grouped_kfold(
+    df: pd.DataFrame,
+    k: int = 5,
+    seed: int = 42,
+    group_col: str = "question_id",
+    stratify_on: str = "score",
+) -> pd.Series:
+    """Leave-questions-out k-fold: no ``group_col`` value spans train and test.
+
+    Holds out whole question groups (the unseen-question protocol). The folds are
+    score-/label-stratified where possible via ``StratifiedGroupKFold``; if there
+    are fewer groups than ``k`` we fall back to ``GroupKFold(min(k, n_groups))``
+    (purely grouped, no stratification). Returns fold indices aligned to ``df.index``.
+    """
+    if k < 2:
+        raise ValueError("k must be >= 2")
+    n = len(df)
+    if n < k:
+        raise ValueError(f"cannot create {k} folds for {n} rows")
+
+    groups = df[group_col].astype(str).to_numpy()
+    n_groups = len(np.unique(groups))
+    if stratify_on == "score":
+        y = _bin_scores(df["score"]).to_numpy()
+    else:
+        y = df[stratify_on].astype("category").cat.codes.to_numpy()
+
+    folds = np.full(n, -1, dtype=int)
+    if n_groups < k:
+        k_eff = max(2, min(k, n_groups))
+        import logging
+        logging.getLogger("asag").warning(
+            f"make_grouped_kfold: only {n_groups} groups for k={k}; "
+            f"using GroupKFold(n_splits={k_eff}) without stratification"
+        )
+        gkf = GroupKFold(n_splits=k_eff)
+        splitter = gkf.split(np.zeros(n), groups=groups)
+    else:
+        sgkf = StratifiedGroupKFold(n_splits=k, shuffle=True, random_state=seed)
+        splitter = sgkf.split(np.zeros(n), y, groups)
+
+    for fold_idx, (_, test_idx) in enumerate(splitter):
         folds[test_idx] = fold_idx
     return pd.Series(folds, index=df.index, name="fold")

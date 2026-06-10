@@ -30,7 +30,7 @@ import pandas as pd
 
 from asag.config import DataConfig, ensure_dirs, load_data_config
 from asag.data.loaders import load_all
-from asag.data.splits import make_stratified_kfold
+from asag.data.splits import make_grouped_kfold
 from asag.utils.logging import get_logger
 from asag.utils.seed import set_global_seed
 
@@ -197,11 +197,15 @@ def _process_dataset(name: str, df: pd.DataFrame, cfg: DataConfig, nlp) -> dict:
         df[f"{col}_feat"] = plain
         df[f"{col}_feat_neg"] = marked
 
-    # stratified k-fold for datasets without official splits
+    # Grouped (leave-questions-out) k-fold for datasets without official splits.
+    # Holds out whole question_id groups so no question leaks across folds — the
+    # unseen-question protocol. (The legacy score-stratified k-fold leaked
+    # question_id and inflated CV scores; see reports/phase4_audit/.)
     unique_splits = set(df["split"].astype(str).unique())
     if unique_splits == {"all"}:
-        df["fold"] = make_stratified_kfold(
-            df, k=cfg.splits.cv_k_folds, seed=cfg.seed, stratify_on=cfg.splits.stratify_on,
+        df["fold"] = make_grouped_kfold(
+            df, k=cfg.splits.cv_k_folds, seed=cfg.seed, group_col="question_id",
+            stratify_on=cfg.splits.stratify_on,
         ).values
     else:
         df["fold"] = -1

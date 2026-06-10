@@ -1,0 +1,114 @@
+{
+  "target": "unified_binary_is_correct",
+  "model": "gbm_shared_features",
+  "seeds": [
+    42,
+    1,
+    2,
+    3,
+    4
+  ],
+  "shared_features": [
+    "len_logratio_sr",
+    "len_ratio_sr",
+    "len_student_chars",
+    "len_student_tokens",
+    "len_student_uniq_ratio",
+    "lex_bigram_overlap",
+    "lex_content_word_overlap_neg",
+    "lex_token_dice",
+    "lex_token_overlap",
+    "lex_token_overlap_prec",
+    "lex_token_overlap_recall",
+    "lex_trigram_overlap",
+    "neg_overlap_delta",
+    "neg_polarity_mismatch",
+    "neg_reference_count",
+    "neg_student_count",
+    "neg_student_present",
+    "ner_overlap_count",
+    "ner_overlap_jaccard",
+    "ner_ref_recall",
+    "ner_student_count",
+    "ner_student_uniq_types",
+    "rub_coverage_at_tau",
+    "rub_max_maxsim",
+    "rub_mean_maxsim",
+    "rub_min_maxsim",
+    "rub_n_concepts",
+    "sem_abs_diff_mean",
+    "sem_cosine",
+    "sem_hadamard_mean",
+    "tfidf_cosine"
+  ],
+  "label_positive": {
+    "semeval": [
+      "correct"
+    ],
+    "powergrading": [
+      "correct"
+    ]
+  },
+  "results": {
+    "semeval": {
+      "status": "ok",
+      "n_train": 27803,
+      "n_test": 16003,
+      "pos_rate_test": 0.4152,
+      "macro_f1_mean": 0.6051,
+      "macro_f1_std": 0.0,
+      "auc_mean": 0.676,
+      "auc_std": 0.0
+    },
+    "saf": {
+      "status": "ok",
+      "n_train": 40825,
+      "n_test": 2981,
+      "pos_rate_test": 0.1298,
+      "macro_f1_mean": 0.4377,
+      "macro_f1_std": 0.0,
+      "auc_mean": 0.5042,
+      "auc_std": 0.0
+    },
+    "asap_sas": {
+      "status": "ok",
+      "n_train": 35084,
+      "n_test": 8722,
+      "pos_rate_test": 0.2831,
+      "macro_f1_mean": 0.248,
+      "macro_f1_std": 0.0,
+      "auc_mean": 0.2694,
+      "auc_std": 0.0
+    },
+    "mohler": {
+      "status": "ok",
+      "n_train": 43190,
+      "n_test": 616,
+      "pos_rate_test": 0.9123,
+      "macro_f1_mean": 0.3528,
+      "macro_f1_std": 0.0,
+      "auc_mean": 0.8158,
+      "auc_std": 0.0
+    },
+    "powergrading": {
+      "status": "ok",
+      "n_train": 38865,
+      "n_test": 4941,
+      "pos_rate_test": 0.3546,
+      "macro_f1_mean": 0.6311,
+      "macro_f1_std": 0.0,
+      "auc_mean": 0.7112,
+      "auc_std": 0.0
+    },
+    "mindreading": {
+      "status": "ok",
+      "n_train": 33263,
+      "n_test": 10543,
+      "pos_rate_test": 0.6857,
+      "macro_f1_mean": 0.2392,
+      "macro_f1_std": 0.0,
+      "auc_mean": 0.6023,
+      "auc_std": 0.0
+    }
+  }
+}

@@ -1,0 +1,258 @@
+{
+  "datasets": {
+    "semeval": {
+      "task_type": "classification",
+      "between_question_eta2": NaN,
+      "length_shortcut": {},
+      "feature_availability": {
+        "n_features": 31,
+        "n_populated": 31,
+        "frac_all_nan": 0.0,
+        "populated_columns": [
+          "lex_token_overlap",
+          "lex_token_overlap_recall",
+          "lex_token_overlap_prec",
+          "lex_token_dice",
+          "lex_bigram_overlap",
+          "lex_trigram_overlap",
+          "lex_content_word_overlap_neg",
+          "len_ratio_sr",
+          "len_logratio_sr",
+          "len_student_tokens",
+          "len_student_chars",
+          "len_student_uniq_ratio",
+          "tfidf_cosine",
+          "neg_student_count",
+          "neg_student_present",
+          "neg_reference_count",
+          "neg_polarity_mismatch",
+          "neg_overlap_delta",
+          "ner_student_count",
+          "ner_student_uniq_types",
+          "ner_overlap_count",
+          "ner_overlap_jaccard",
+          "ner_ref_recall",
+          "sem_cosine",
+          "sem_abs_diff_mean",
+          "sem_hadamard_mean",
+          "rub_n_concepts",
+          "rub_mean_maxsim",
+          "rub_min_maxsim",
+          "rub_max_maxsim",
+          "rub_coverage_at_tau"
+        ]
+      }
+    },
+    "saf": {
+      "task_type": "regression",
+      "between_question_eta2": 0.702,
+      "length_shortcut": {
+        "pearson_len_vs_score": 0.0837,
+        "median_answer_chars": 348
+      },
+      "question_mean_shortcut": {
+        "test_ua": {
+          "qmean_pearson": 0.8913,
+          "frac_questions_seen": 1.0,
+          "n": 375
+        },
+        "test_uq": {
+          "qmean_pearson": NaN,
+          "frac_questions_seen": 0.0,
+          "n": 479
+        },
+        "dev": {
+          "qmean_pearson": 0.8432,
+          "frac_questions_seen": 1.0,
+          "n": 427
+        }
+      },
+      "feature_availability": {
+        "n_features": 31,
+        "n_populated": 31,
+        "frac_all_nan": 0.0,
+        "populated_columns": [
+          "lex_token_overlap",
+          "lex_token_overlap_recall",
+          "lex_token_overlap_prec",
+          "lex_token_dice",
+          "lex_bigram_overlap",
+          "lex_trigram_overlap",
+          "lex_content_word_overlap_neg",
+          "len_ratio_sr",
+          "len_logratio_sr",
+          "len_student_tokens",
+          "len_student_chars",
+          "len_student_uniq_ratio",
+          "tfidf_cosine",
+          "neg_student_count",
+          "neg_student_present",
+          "neg_reference_count",
+          "neg_polarity_mismatch",
+          "neg_overlap_delta",
+          "ner_student_count",
+          "ner_student_uniq_types",
+          "ner_overlap_count",
+          "ner_overlap_jaccard",
+          "ner_ref_recall",
+          "sem_cosine",
+          "sem_abs_diff_mean",
+          "sem_hadamard_mean",
+          "rub_n_concepts",
+          "rub_mean_maxsim",
+          "rub_min_maxsim",
+          "rub_max_maxsim",
+          "rub_coverage_at_tau"
+        ]
+      }
+    },
+    "asap_sas": {
+      "task_type": "ordinal",
+      "between_question_eta2": 0.3877,
+      "length_shortcut": {
+        "pearson_len_vs_score": 0.5887,
+        "median_answer_chars": 188
+      },
+      "question_mean_shortcut": {
+        "dev": {
+          "qmean_pearson": 0.625,
+          "frac_questions_seen": 1.0,
+          "n": 1307
+        },
+        "test_ua": {
+          "qmean_pearson": 0.6178,
+          "frac_questions_seen": 1.0,
+          "n": 2180
+        }
+      },
+      "feature_availability": {
+        "n_features": 31,
+        "n_populated": 7,
+        "frac_all_nan": 0.7742,
+        "populated_columns": [
+          "len_student_tokens",
+          "len_student_chars",
+          "len_student_uniq_ratio",
+          "neg_student_count",
+          "neg_student_present",
+          "ner_student_count",
+          "ner_student_uniq_types"
+        ]
+      }
+    },
+    "mohler": {
+      "task_type": "regression",
+      "between_question_eta2": 0.1857,
+      "length_shortcut": {
+        "pearson_len_vs_score": 0.076,
+        "median_answer_chars": 87
+      },
+      "feature_availability": {
+        "n_features": 31,
+        "n_populated": 31,
+        "frac_all_nan": 0.0,
+        "populated_columns": [
+          "lex_token_overlap",
+          "lex_token_overlap_recall",
+          "lex_token_overlap_prec",
+          "lex_token_dice",
+          "lex_bigram_overlap",
+          "lex_trigram_overlap",
+          "lex_content_word_overlap_neg",
+          "len_ratio_sr",
+          "len_logratio_sr",
+          "len_student_tokens",
+          "len_student_chars",
+          "len_student_uniq_ratio",
+          "tfidf_cosine",
+          "neg_student_count",
+          "neg_student_present",
+          "neg_reference_count",
+          "neg_polarity_mismatch",
+          "neg_overlap_delta",
+          "ner_student_count",
+          "ner_student_uniq_types",
+          "ner_overlap_count",
+          "ner_overlap_jaccard",
+          "ner_ref_recall",
+          "sem_cosine",
+          "sem_abs_diff_mean",
+          "sem_hadamard_mean",
+          "rub_n_concepts",
+          "rub_mean_maxsim",
+          "rub_min_maxsim",
+          "rub_max_maxsim",
+          "rub_coverage_at_tau"
+        ]
+      }
+    },
+    "powergrading": {
+      "task_type": "classification",
+      "between_question_eta2": 0.9151,
+      "length_shortcut": {
+        "pearson_len_vs_score": 0.1602,
+        "median_answer_chars": 29
+      },
+      "feature_availability": {
+        "n_features": 31,
+        "n_populated": 31,
+        "frac_all_nan": 0.0,
+        "populated_columns": [
+          "lex_token_overlap",
+          "lex_token_overlap_recall",
+          "lex_token_overlap_prec",
+          "lex_token_dice",
+          "lex_bigram_overlap",
+          "lex_trigram_overlap",
+          "lex_content_word_overlap_neg",
+          "len_ratio_sr",
+          "len_logratio_sr",
+          "len_student_tokens",
+          "len_student_chars",
+          "len_student_uniq_ratio",
+          "tfidf_cosine",
+          "neg_student_count",
+          "neg_student_present",
+          "neg_reference_count",
+          "neg_polarity_mismatch",
+          "neg_overlap_delta",
+          "ner_student_count",
+          "ner_student_uniq_types",
+          "ner_overlap_count",
+          "ner_overlap_jaccard",
+          "ner_ref_recall",
+          "sem_cosine",
+          "sem_abs_diff_mean",
+          "sem_hadamard_mean",
+          "rub_n_concepts",
+          "rub_mean_maxsim",
+          "rub_min_maxsim",
+          "rub_max_maxsim",
+          "rub_coverage_at_tau"
+        ]
+      }
+    },
+    "mindreading": {
+      "task_type": "ordinal",
+      "between_question_eta2": 0.1413,
+      "length_shortcut": {
+        "pearson_len_vs_score": 0.2389,
+        "median_answer_chars": 44
+      },
+      "feature_availability": {
+        "n_features": 31,
+        "n_populated": 7,
+        "frac_all_nan": 0.7742,
+        "populated_columns": [
+          "len_student_tokens",
+          "len_student_chars",
+          "len_student_uniq_ratio",
+          "neg_student_count",
+          "neg_student_present",
+          "ner_student_count",
+          "ner_student_uniq_types"
+        ]
+      }
+    }
+  }
+}

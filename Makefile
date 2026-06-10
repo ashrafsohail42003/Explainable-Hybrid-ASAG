@@ -70,6 +70,21 @@ xai:
 ablations:
 	"$(VENV_PY)" -m asag.models.ablations
 
+audit:
+	"$(VENV_PY)" -m asag.models.leakage_audit
+
+lodo:
+	"$(VENV_PY)" -m asag.models.lodo
+
+robustness:
+	"$(VENV_PY)" -m asag.models.robustness
+
+neuralfeatures:    # Phase 4 hybrid — DeBERTa OOF signals (run on Colab/GPU, see notebooks/02_neural_colab.ipynb)
+	"$(VENV_PY)" -m asag.neural.extract_features
+
+neuralcompare:     # Phase B — three-way neural-only / feature-only / hybrid (needs neural_oof.parquet from Colab)
+	"$(VENV_PY)" -m asag.models.neural_compare
+
 eda:
 	"$(VENV_PY)" -m jupyter nbconvert --to notebook --execute notebooks/01_eda.ipynb --output 01_eda.ipynb
 

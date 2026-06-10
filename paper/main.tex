@@ -1,0 +1,293 @@
+% =============================================================================
+% Explainable Hybrid ASAG — Phase A short-paper draft.
+% NOTE ON TEMPLATE: this compiles with the stock `article` class so it builds
+% anywhere. For submission, swap the preamble for the venue style (e.g. the ACL
+% `acl.sty` / `acl_natbib.bst` bundle for LREC-COLING / *SEM, or the IEEE class
+% for a Q2 journal) — section structure and \cite keys carry over unchanged.
+% Build: pdflatex main && bibtex main && pdflatex main && pdflatex main
+% =============================================================================
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{amsmath}
+\usepackage{url}
+\usepackage[hidelinks]{hyperref}
+\graphicspath{{../reports/figures/}}
+
+\title{Leakage-Aware, Interpretable Feature Fusion for Automatic Short Answer
+Grading across Heterogeneous Datasets}
+\author{Ashraf Kahlout}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Automatic short answer grading (ASAG) systems are increasingly accurate but
+opaque, and their reported accuracy is often inflated by an under-examined
+evaluation artifact: when the same \emph{question} appears in both training and
+test folds, models exploit question-specific shortcuts rather than genuine
+answer understanding. We present an interpretable feature-fusion grader---a
+NaN-native gradient-boosted head over lexical, semantic, and rubric-coverage
+branches---and, more importantly, a rigorous evaluation protocol built around
+\textbf{grouped leave-questions-out} cross-validation. Across six heterogeneous
+datasets we quantify the question-leakage inflation directly (up to
+$+0.38$ macro-F1 on Powergrading), show that branch ablations identify the
+linguistic branch as the workhorse, and validate model explanations against
+human gold feedback on the SAF corpus. Our significance analysis uses a
+\textbf{cluster bootstrap over questions} with family-wise correction; under
+this honest protocol the head's gain is significant on four of six datasets and
+\emph{not} significant on two---a conclusion the conventional item-level
+bootstrap would have hidden. We release all code, splits, and reports.
+\textbf{This is the Phase A (feature-only) version; a neural cross-encoder arm
+is added in the extended version (Section~\ref{sec:future}).}
+\end{abstract}
+
+\section{Introduction}
+Short answer grading asks a model to score a free-text student response against a
+question and (often) a reference answer. The task sits between paraphrase
+detection and ordinal regression, and a deployed grader must be both accurate
+\emph{and} trustworthy to a teacher. Two problems motivate this work.
+
+First, \textbf{evaluation honesty}. Many ASAG corpora have no official
+train/test split, so practitioners fall back on stratified $k$-fold CV. But if a
+question's answers are split across folds, the model can memorise the
+question's answer distribution---a shortcut that vanishes on genuinely new
+questions. We show this inflation is large and dataset-dependent.
+
+Second, \textbf{interpretability}. High-capacity encoders grade well but cannot
+tell a teacher \emph{why} a mark was given. A feature-fusion grader whose inputs
+are human-readable (overlap, negation, concept coverage) can, and gradient-boosted
+trees admit exact per-feature attributions via TreeSHAP \cite{lundberg2020treeshap}.
+
+We contribute: (1) a leakage-aware grouped leave-questions-out protocol and an
+explicit audit of the inflation it removes; (2) an interpretable feature-fusion
+head evaluated across six datasets spanning classification, ordinal, and
+regression targets; (3) branch ablations isolating each feature family's
+contribution; (4) an explainability validation against SAF human feedback; and
+(5) a cluster-bootstrap significance analysis with Holm correction that revises
+two ``significant'' results to non-significant.
+
+\section{Related Work}
+ASAG has moved from hand-engineered similarity features
+\cite{mohler2011learning,burrows2015eras} through the SemEval-2013 shared task
+\cite{dzikovska2013semeval} to neural and transformer scorers
+\cite{riordan2017investigating,sung2019pretraining}. Interpretability in this
+setting is comparatively under-explored; we use the model-agnostic SHAP framework
+\cite{lundberg2017shap} in its exact tree form \cite{lundberg2020treeshap}.
+Calibration of classifier confidence follows temperature scaling
+\cite{guo2017calibration}. Our significance methodology follows the cluster
+(block) bootstrap \cite{efron1994bootstrap} with Holm--Bonferroni family-wise
+control \cite{holm1979simple}. The hybrid encoder arm (extended version) builds on
+sentence \cite{reimers2019sbert} and disentangled-attention \cite{he2021deberta}
+transformers.
+
+\section{Data}
+We evaluate on six datasets chosen for task and domain diversity
+(Table~\ref{tab:data}). Each loader emits a unified schema
+(\texttt{question\_id, question, reference\_answer, student\_answer, score,
+label, dataset, domain, split}). SemEval, SAF, and ASAP-SAS carry official
+splits; Mohler, Powergrading, and MIND-CA do not and use grouped CV
+(Section~\ref{sec:protocol}). Two datasets (ASAP-SAS, MIND-CA) have no reference
+answer, so 24 of 31 reference-dependent features are intentionally \texttt{NaN}
+and ignored by the NaN-native tree head.
+
+\begin{table}[t]
+\centering\small
+\begin{tabular}{llll}
+\toprule
+Dataset & Task & Domain & Target \\
+\midrule
+SemEval-2013 T7 & 5-way clf & Science & label \\
+ASAP-SAS (AERA) & ordinal & Biology & score (QWK) \\
+Mohler 2011     & regression & CS & score (Pearson) \\
+SAF             & regression & Networks & score \\
+Powergrading    & binary clf & Civics & label \\
+MIND-CA         & ordinal & Psychology & score (QWK) \\
+\bottomrule
+\end{tabular}
+\caption{The six evaluation datasets. See \texttt{reports/DATASETS.md} for sizes,
+licenses, and acquisition.}
+\label{tab:data}
+\end{table}
+
+\section{Method}
+\paragraph{Two-view preprocessing.} Each answer is normalised twice: an
+\emph{encoder view} (NFKC + whitespace only) for embeddings, and a \emph{feature
+view} (lemmatised, lowercased, stopword-stripped, negators preserved) for the
+linguistic features, plus a negation-scope variant that prefixes tokens inside a
+negator's scope.
+
+\paragraph{Feature branches.} Thirty-one interpretable features in three families:
+\textbf{(A) semantic}---SBERT \cite{reimers2019sbert} cosine and aggregate
+interaction statistics; \textbf{(B) linguistic}---lexical/content overlap,
+TF-IDF, negation cues, named-entity overlap, length ratios; \textbf{(C)
+rubric}---per-reference-sentence concept-coverage proxies.
+
+\paragraph{Fusion head.} A NaN-native LightGBM \cite{ke2017lightgbm} regressor or
+classifier per the dataset's task type; ordinal targets use a
+round-and-clip regression head. Hyperparameters are tuned with Optuna
+\cite{akiba2019optuna} on a dev split (or inner CV), never touching the test
+split. Every learned result is paired with a trivial baseline
+(majority/mean/median).
+
+\section{Evaluation Protocol: Leakage-Aware CV}
+\label{sec:protocol}
+For datasets without an official split we use \textbf{grouped (leave-questions-out)
+$k$-fold} via score-stratified \texttt{StratifiedGroupKFold} on \texttt{question\_id},
+so no question spans train and test---an honest \emph{unseen-question} estimate.
+Alongside it we report the legacy stratified $k$-fold as a \emph{seen-question
+upper bound}; the gap between them is the leakage the grouped protocol removes
+(Table~\ref{tab:leakage}). Powergrading and MIND-CA inflate by $\sim$84--103\%
+relative under the leaky protocol.
+
+\begin{table}[t]
+\centering\small
+\begin{tabular}{llll}
+\toprule
+Dataset & Metric & Stratified (leaky) & Grouped (honest) \\
+\midrule
+Mohler        & Pearson  & 0.570 & 0.430 \\
+Powergrading  & macro-F1 & 0.830 & 0.450 \\
+MIND-CA       & QWK      & 0.121 & 0.059 \\
+\bottomrule
+\end{tabular}
+\caption{Question-leakage inflation: the leaky stratified CV vs the honest grouped
+CV (\texttt{reports/phase4\_audit/}). The grouped numbers are what we report.}
+\label{tab:leakage}
+\end{table}
+
+\section{Results}
+\paragraph{Headline accuracy.} Table~\ref{tab:main} reports the tuned head against
+its baseline on each dataset's headline split. The head improves clearly on
+SemEval, ASAP-SAS, Mohler, and MIND-CA; gains on Powergrading and SAF are small.
+
+\begin{table}[t]
+\centering\small
+\begin{tabular}{lllll}
+\toprule
+Dataset & Metric & Head & Base & $\Delta$ \\
+\midrule
+SemEval (test\_ud)   & macro-F1 & 0.433 & 0.118 & $+0.315$ \\
+ASAP-SAS (test\_ua)  & QWK      & 0.360 & 0.000 & $+0.360$ \\
+Mohler (cv)          & Pearson  & 0.491 & $-0.166$ & $+0.658$ \\
+MIND-CA (cv)         & QWK      & 0.073 & 0.000 & $+0.073$ \\
+Powergrading (cv)    & macro-F1 & 0.471 & 0.392 & $+0.079$ \\
+SAF (test\_uq)       & Pearson  & $-0.018$ & --- & --- \\
+\bottomrule
+\end{tabular}
+\caption{Tuned head vs trivial baseline (\texttt{reports/phase2d/}).}
+\label{tab:main}
+\end{table}
+
+\paragraph{Significance (cluster bootstrap + Holm).} We resample whole
+\emph{questions} with replacement ($10{,}000$ replicates) so within-question
+correlation is respected, and apply Holm--Bonferroni across the six tests
+(Table~\ref{tab:sig}, Fig.~\ref{fig:sig}). The gain is significant on SemEval,
+ASAP-SAS, Mohler, and MIND-CA, and \textbf{not} significant on Powergrading
+($p=0.146$; only 20 questions) or SAF. An item-level bootstrap would have called
+Powergrading significant---the cluster bootstrap is what prevents that error.
+
+\begin{table}[t]
+\centering\small
+\begin{tabular}{lllll}
+\toprule
+Dataset & $\Delta$ & 95\% CI & $p_{\text{Holm}}$ & sig? \\
+\midrule
+SemEval      & 0.315 & [0.257, 0.361]  & $<10^{-3}$ & yes \\
+ASAP-SAS     & 0.360 & [0.318, 0.398]  & $<10^{-3}$ & yes \\
+Mohler       & 0.658 & [0.463, 0.864]  & $<10^{-3}$ & yes \\
+MIND-CA      & 0.073 & [0.017, 0.136]  & 0.011 & yes \\
+Powergrading & 0.079 & [$-0.069$, 0.202] & 0.291 & no \\
+SAF          & $-0.018$ & [$-0.072$, 0.131] & 0.582 & no \\
+\bottomrule
+\end{tabular}
+\caption{Cluster-bootstrap significance with Holm correction
+(\texttt{reports/phase2d/significance.json}). ASAP-SAS resamples within prompt
+(the prompt is the cluster).}
+\label{tab:sig}
+\end{table}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{phase2d_significance.png}
+\caption{Per-dataset $\Delta$ with cluster-bootstrap 95\% CIs; green = survives
+Holm correction, red = not.}
+\label{fig:sig}
+\end{figure}
+
+\paragraph{Ablations.} Removing the linguistic branch (B) collapses every dataset;
+the semantic branch (A) adds little and the rubric branch (C) adds essentially
+nothing to accuracy (Fig.~\ref{fig:abl}). Negation cues give a small consistent
+gain, validating the negation-scope preprocessing.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{phase3_branch_delta.png}
+\caption{Branch ablation $\Delta$ vs the full model. Branch B (linguistic) is the
+workhorse (\texttt{reports/phase3/}).}
+\label{fig:abl}
+\end{figure}
+
+\paragraph{Explainability and faithfulness.} Global TreeSHAP rankings agree with
+the gain-based importance ranking (Spearman $\rho \in [0.65, 0.999]$). On SAF,
+the interpretable signals rise monotonically across the human verdict
+Incorrect$\rightarrow$Partial$\rightarrow$Correct (semantic cosine strongest,
+$\rho \approx 0.26$, AUC $\approx 0.62$), quantitatively linking model
+attributions to teacher judgements (Fig.~\ref{fig:saf}). Notably, the rubric
+branch is \emph{faithful} (its values track grades and push predictions in the
+right direction) yet near-zero accuracy-additive---an explanation layer that does
+not trade accuracy for transparency.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{phase2f_saf_validation.png}
+\caption{SAF: interpretable signals vs human feedback class
+(\texttt{reports/phase2f/}).}
+\label{fig:saf}
+\end{figure}
+
+\paragraph{Calibration and robustness.} Post-hoc temperature scaling
+\cite{guo2017calibration}, fit on a held-out validation slice, roughly halves
+SemEval's expected calibration error ($0.122 \rightarrow 0.059$) and reduces
+Powergrading's severe miscalibration ($0.613 \rightarrow 0.334$,
+Fig.~\ref{fig:cal}). Perturbation tests show the grader is most sensitive to
+negation flips, as intended, but brittle to paraphrase token drop---a documented
+limitation.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{phase4_calibration.png}
+\caption{Reliability before/after temperature scaling
+(\texttt{reports/phase4\_robust/}).}
+\label{fig:cal}
+\end{figure}
+
+\section{Limitations}
+The semantic branch uses a single lightweight bi-encoder, which likely
+under-represents its potential contribution (addressed by the cross-encoder arm
+in the extended version). Mohler and ASAP-SAS are subsets of their original
+corpora, so we report them as internal numbers only and make no head-to-head
+claim against published results (no comparison in this paper is split- and
+metric-matched; see \texttt{reports/phase3/published\_comparison.md}). SAF's
+unseen-question performance collapses to near-zero correlation; we therefore
+treat SAF as an explainability case study rather than an accuracy result. Dataset
+sizes are modest, bounding any deep-learning claim.
+
+\section{Conclusion and Future Work}
+\label{sec:future}
+We presented an interpretable ASAG grader and, centrally, a leakage-aware
+evaluation that quantifies and removes question-level shortcuts, with significance
+established by a cluster bootstrap under family-wise correction. The honest
+picture is that hand-engineered linguistic features carry the model, explanations
+are faithful, and two apparent wins do not survive rigorous testing.
+\textbf{Future work (extended version):} a fine-tuned DeBERTa cross-encoder
+\cite{he2021deberta} whose out-of-fold signals are fused into the same
+interpretable head, evaluated under identical grouped folds, with
+transformer-only and feature-only arms reported side by side; nested CV for the
+$k$-fold datasets; and widening ASAP-SAS to all ten prompts.
+
+\bibliographystyle{plain}
+\bibliography{references}
+\end{document}

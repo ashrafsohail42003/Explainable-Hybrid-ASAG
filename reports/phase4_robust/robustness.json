@@ -1,0 +1,346 @@
+{
+  "datasets": {
+    "semeval": {
+      "perturbations": {
+        "status": "ok",
+        "n_sample": 300,
+        "task_type": "classification",
+        "perturbations": {
+          "length_pad": {
+            "mean_abs_delta": 0.5867,
+            "mean_signed_delta": -0.18,
+            "frac_changed": 0.3167
+          },
+          "paraphrase_drop": {
+            "mean_abs_delta": 0.36,
+            "mean_signed_delta": 0.1533,
+            "frac_changed": 0.1833
+          },
+          "negation_flip": {
+            "mean_abs_delta": 0.8,
+            "mean_signed_delta": -0.48,
+            "frac_changed": 0.4867
+          }
+        }
+      },
+      "calibration": {
+        "status": "ok",
+        "n_test": 4562,
+        "n_val": 1782,
+        "temperature": 1.35,
+        "ece_pre": 0.1224,
+        "ece_post": 0.0592,
+        "reliability_pre": [
+          {
+            "bin": 0.3,
+            "acc": 0.2143,
+            "conf": 0.2893,
+            "weight": 0.0092
+          },
+          {
+            "bin": 0.4,
+            "acc": 0.3118,
+            "conf": 0.3591,
+            "weight": 0.1561
+          },
+          {
+            "bin": 0.5,
+            "acc": 0.3685,
+            "conf": 0.4494,
+            "weight": 0.2308
+          },
+          {
+            "bin": 0.6,
+            "acc": 0.4643,
+            "conf": 0.5465,
+            "weight": 0.1964
+          },
+          {
+            "bin": 0.7,
+            "acc": 0.4751,
+            "conf": 0.646,
+            "weight": 0.1366
+          },
+          {
+            "bin": 0.8,
+            "acc": 0.4862,
+            "conf": 0.7457,
+            "weight": 0.1032
+          },
+          {
+            "bin": 0.9,
+            "acc": 0.5912,
+            "conf": 0.8496,
+            "weight": 0.0649
+          },
+          {
+            "bin": 1.0,
+            "acc": 0.8443,
+            "conf": 0.9668,
+            "weight": 0.1028
+          }
+        ],
+        "reliability_post": [
+          {
+            "bin": 0.3,
+            "acc": 0.2421,
+            "conf": 0.2872,
+            "weight": 0.0208
+          },
+          {
+            "bin": 0.4,
+            "acc": 0.3322,
+            "conf": 0.3557,
+            "weight": 0.2541
+          },
+          {
+            "bin": 0.5,
+            "acc": 0.4115,
+            "conf": 0.4474,
+            "weight": 0.2712
+          },
+          {
+            "bin": 0.6,
+            "acc": 0.4861,
+            "conf": 0.5435,
+            "weight": 0.1817
+          },
+          {
+            "bin": 0.7,
+            "acc": 0.502,
+            "conf": 0.6434,
+            "weight": 0.1083
+          },
+          {
+            "bin": 0.8,
+            "acc": 0.5902,
+            "conf": 0.7476,
+            "weight": 0.0583
+          },
+          {
+            "bin": 0.9,
+            "acc": 0.7486,
+            "conf": 0.8498,
+            "weight": 0.0392
+          },
+          {
+            "bin": 1.0,
+            "acc": 0.8977,
+            "conf": 0.9525,
+            "weight": 0.0664
+          }
+        ],
+        "risk_coverage": [
+          {
+            "coverage": 1.0,
+            "accuracy": 0.4671
+          },
+          {
+            "coverage": 0.9,
+            "accuracy": 0.4853
+          },
+          {
+            "coverage": 0.8,
+            "accuracy": 0.5062
+          },
+          {
+            "coverage": 0.7,
+            "accuracy": 0.5274
+          },
+          {
+            "coverage": 0.5,
+            "accuracy": 0.5747
+          }
+        ]
+      }
+    },
+    "saf": {
+      "perturbations": {
+        "status": "ok",
+        "n_sample": 300,
+        "task_type": "regression",
+        "perturbations": {
+          "length_pad": {
+            "mean_abs_delta": 0.1008,
+            "mean_signed_delta": 0.0632,
+            "frac_changed": 1.0
+          },
+          "paraphrase_drop": {
+            "mean_abs_delta": 0.1538,
+            "mean_signed_delta": -0.0732,
+            "frac_changed": 0.9833
+          },
+          "negation_flip": {
+            "mean_abs_delta": 0.1127,
+            "mean_signed_delta": -0.0383,
+            "frac_changed": 1.0
+          }
+        }
+      },
+      "calibration": {
+        "status": "n/a",
+        "reason": "ECE/abstention implemented for classification heads"
+      }
+    },
+    "asap_sas": {
+      "perturbations": {
+        "status": "skipped",
+        "reason": "no reference answer (lexical features NaN)"
+      },
+      "calibration": {
+        "status": "n/a",
+        "reason": "ECE/abstention implemented for classification heads"
+      }
+    },
+    "mohler": {
+      "perturbations": {
+        "status": "ok",
+        "n_sample": 300,
+        "task_type": "regression",
+        "perturbations": {
+          "length_pad": {
+            "mean_abs_delta": 0.3275,
+            "mean_signed_delta": -0.0163,
+            "frac_changed": 0.9933
+          },
+          "paraphrase_drop": {
+            "mean_abs_delta": 0.3224,
+            "mean_signed_delta": -0.2426,
+            "frac_changed": 0.8033
+          },
+          "negation_flip": {
+            "mean_abs_delta": 0.1637,
+            "mean_signed_delta": 0.0792,
+            "frac_changed": 0.91
+          }
+        }
+      },
+      "calibration": {
+        "status": "n/a",
+        "reason": "ECE/abstention implemented for classification heads"
+      }
+    },
+    "powergrading": {
+      "perturbations": {
+        "status": "ok",
+        "n_sample": 300,
+        "task_type": "classification",
+        "perturbations": {
+          "length_pad": {
+            "mean_abs_delta": 0.2667,
+            "mean_signed_delta": -0.08,
+            "frac_changed": 0.2667
+          },
+          "paraphrase_drop": {
+            "mean_abs_delta": 0.0567,
+            "mean_signed_delta": 0.0167,
+            "frac_changed": 0.0567
+          },
+          "negation_flip": {
+            "mean_abs_delta": 0.18,
+            "mean_signed_delta": 0.1667,
+            "frac_changed": 0.18
+          }
+        }
+      },
+      "calibration": {
+        "status": "ok",
+        "n_test": 812,
+        "n_val": 766,
+        "temperature": 5.95,
+        "ece_pre": 0.6134,
+        "ece_post": 0.3337,
+        "reliability_pre": [
+          {
+            "bin": 0.6,
+            "acc": 0.4167,
+            "conf": 0.5417,
+            "weight": 0.0148
+          },
+          {
+            "bin": 0.7,
+            "acc": 0.625,
+            "conf": 0.6579,
+            "weight": 0.0099
+          },
+          {
+            "bin": 0.8,
+            "acc": 0.4545,
+            "conf": 0.7623,
+            "weight": 0.0406
+          },
+          {
+            "bin": 0.9,
+            "acc": 0.4225,
+            "conf": 0.8579,
+            "weight": 0.0874
+          },
+          {
+            "bin": 1.0,
+            "acc": 0.3169,
+            "conf": 0.9786,
+            "weight": 0.8473
+          }
+        ],
+        "reliability_post": [
+          {
+            "bin": 0.6,
+            "acc": 0.4014,
+            "conf": 0.5646,
+            "weight": 0.181
+          },
+          {
+            "bin": 0.7,
+            "acc": 0.1774,
+            "conf": 0.6539,
+            "weight": 0.5345
+          },
+          {
+            "bin": 0.8,
+            "acc": 0.5587,
+            "conf": 0.7336,
+            "weight": 0.2623
+          },
+          {
+            "bin": 0.9,
+            "acc": 1.0,
+            "conf": 0.8375,
+            "weight": 0.0222
+          }
+        ],
+        "risk_coverage": [
+          {
+            "coverage": 1.0,
+            "accuracy": 0.3362
+          },
+          {
+            "coverage": 0.9,
+            "accuracy": 0.3178
+          },
+          {
+            "coverage": 0.8,
+            "accuracy": 0.3251
+          },
+          {
+            "coverage": 0.7,
+            "accuracy": 0.3609
+          },
+          {
+            "coverage": 0.5,
+            "accuracy": 0.4212
+          }
+        ]
+      }
+    },
+    "mindreading": {
+      "perturbations": {
+        "status": "skipped",
+        "reason": "no reference answer (lexical features NaN)"
+      },
+      "calibration": {
+        "status": "n/a",
+        "reason": "ECE/abstention implemented for classification heads"
+      }
+    }
+  }
+}

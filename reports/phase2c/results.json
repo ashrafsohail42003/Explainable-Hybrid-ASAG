@@ -69,6 +69,23 @@
               "std": 0.0,
               "n": 5
             }
+          },
+          "question_shortcut": {
+            "macro_f1": {
+              "mean": 0.32326701984384243,
+              "std": 0.0,
+              "n": 1
+            },
+            "weighted_f1": {
+              "mean": 0.43697252606790177,
+              "std": 0.0,
+              "n": 1
+            },
+            "accuracy": {
+              "mean": 0.45658835546475995,
+              "std": 0.0,
+              "n": 1
+            }
           }
         },
         "test_uq": {
@@ -105,6 +122,23 @@
               "mean": 0.4155927835051546,
               "std": 5.551115123125783e-17,
               "n": 5
+            }
+          },
+          "question_shortcut": {
+            "macro_f1": {
+              "mean": 0.11743286299499318,
+              "std": 0.0,
+              "n": 1
+            },
+            "weighted_f1": {
+              "mean": 0.24402125203534344,
+              "std": 0.0,
+              "n": 1
+            },
+            "accuracy": {
+              "mean": 0.41559278350515466,
+              "std": 0.0,
+              "n": 1
             }
           }
         },
@@ -143,6 +177,23 @@
               "std": 0.0,
               "n": 5
             }
+          },
+          "question_shortcut": {
+            "macro_f1": {
+              "mean": 0.11835159746874517,
+              "std": 0.0,
+              "n": 1
+            },
+            "weighted_f1": {
+              "mean": 0.24866288069660727,
+              "std": 0.0,
+              "n": 1
+            },
+            "accuracy": {
+              "mean": 0.4202104340201666,
+              "std": 0.0,
+              "n": 1
+            }
           }
         }
       },
@@ -158,7 +209,13 @@
           "mean": 0.11835159746874517,
           "std": 0.0,
           "n": 5
-        }
+        },
+        "question_shortcut": {
+          "mean": 0.11835159746874517,
+          "std": 0.0,
+          "n": 1
+        },
+        "generalization_gap": 0.112
       }
     },
     "saf": {
@@ -221,6 +278,28 @@
               "std": NaN,
               "n": 0
             }
+          },
+          "question_shortcut": {
+            "rmse": {
+              "mean": 0.33060078175227314,
+              "std": 0.0,
+              "n": 1
+            },
+            "mae": {
+              "mean": 0.20942510494000305,
+              "std": 0.0,
+              "n": 1
+            },
+            "pearson": {
+              "mean": 0.8913096814535312,
+              "std": 0.0,
+              "n": 1
+            },
+            "spearman": {
+              "mean": 0.7730614050970304,
+              "std": 0.0,
+              "n": 1
+            }
           }
         },
         "test_uq": {
@@ -268,6 +347,28 @@
               "std": NaN,
               "n": 0
             }
+          },
+          "question_shortcut": {
+            "rmse": {
+              "mean": 0.5427872685626319,
+              "std": 0.0,
+              "n": 1
+            },
+            "mae": {
+              "mean": 0.39991000859634035,
+              "std": 0.0,
+              "n": 1
+            },
+            "pearson": {
+              "mean": NaN,
+              "std": NaN,
+              "n": 0
+            },
+            "spearman": {
+              "mean": NaN,
+              "std": NaN,
+              "n": 0
+            }
           }
         }
       },
@@ -283,7 +384,13 @@
           "mean": NaN,
           "std": NaN,
           "n": 0
-        }
+        },
+        "question_shortcut": {
+          "mean": NaN,
+          "std": NaN,
+          "n": 0
+        },
+        "generalization_gap": 0.8836
       }
     },
     "asap_sas": {
@@ -326,6 +433,18 @@
               "mean": 0.5646299010765987,
               "std": 0.0,
               "n": 5
+            }
+          },
+          "question_shortcut": {
+            "qwk": {
+              "mean": 0.0,
+              "std": 0.0,
+              "n": 1
+            },
+            "accuracy": {
+              "mean": 0.5614880698378195,
+              "std": 0.0,
+              "n": 1
             }
           },
           "per_prompt": {
@@ -392,7 +511,13 @@
           "mean": 0.0,
           "std": 0.0,
           "n": 5
-        }
+        },
+        "question_shortcut": {
+          "mean": 0.0,
+          "std": 0.0,
+          "n": 1
+        },
+        "generalization_gap": null
       }
     },
     "mohler": {
@@ -413,7 +538,74 @@
         "cv": {
           "n_eval": 616,
           "n_folds": 5,
+          "cv_strategy": "grouped_by_question",
           "gbm": {
+            "pearson": {
+              "mean": 0.42965558694649336,
+              "std": 5.551115123125783e-17,
+              "n": 5
+            },
+            "spearman": {
+              "mean": 0.42498631710654144,
+              "std": 0.0,
+              "n": 5
+            },
+            "rmse": {
+              "mean": 1.1105058107294656,
+              "std": 0.0,
+              "n": 5
+            },
+            "mae": {
+              "mean": 0.8229270120646459,
+              "std": 1.1102230246251565e-16,
+              "n": 5
+            }
+          },
+          "baseline": {
+            "pearson": {
+              "mean": -0.16626129647294893,
+              "std": 0.0,
+              "n": 5
+            },
+            "spearman": {
+              "mean": -0.1813546243340702,
+              "std": 0.0,
+              "n": 5
+            },
+            "rmse": {
+              "mean": 1.1640582263776464,
+              "std": 0.0,
+              "n": 5
+            },
+            "mae": {
+              "mean": 0.9588110047867742,
+              "std": 0.0,
+              "n": 5
+            }
+          },
+          "question_shortcut": {
+            "pearson": {
+              "mean": -0.16626129647294893,
+              "std": 0.0,
+              "n": 5
+            },
+            "spearman": {
+              "mean": -0.1813546243340702,
+              "std": 0.0,
+              "n": 5
+            },
+            "rmse": {
+              "mean": 1.1640582263776464,
+              "std": 0.0,
+              "n": 5
+            },
+            "mae": {
+              "mean": 0.9588110047867742,
+              "std": 0.0,
+              "n": 5
+            }
+          },
+          "upper_bound_seen_question": {
             "pearson": {
               "mean": 0.5697617258091682,
               "std": 0.0,
@@ -435,43 +627,50 @@
               "n": 5
             }
           },
-          "baseline": {
+          "upper_bound_question_shortcut": {
             "pearson": {
-              "mean": -0.01990827090033435,
+              "mean": 0.3645830804590064,
               "std": 0.0,
               "n": 5
             },
             "spearman": {
-              "mean": -0.01597736509432719,
+              "mean": 0.3964572223751877,
               "std": 0.0,
               "n": 5
             },
             "rmse": {
-              "mean": 1.155674093011623,
+              "mean": 1.0795710189574932,
               "std": 0.0,
               "n": 5
             },
             "mae": {
-              "mean": 0.9512885416419031,
+              "mean": 0.812743416535524,
               "std": 1.1102230246251565e-16,
               "n": 5
             }
-          }
+          },
+          "generalization_gap": 0.1401
         }
       },
       "headline": {
         "split": "cv",
         "metric": "pearson",
         "gbm": {
-          "mean": 0.5697617258091682,
-          "std": 0.0,
+          "mean": 0.42965558694649336,
+          "std": 5.551115123125783e-17,
           "n": 5
         },
         "baseline": {
-          "mean": -0.01990827090033435,
+          "mean": -0.16626129647294893,
           "std": 0.0,
           "n": 5
-        }
+        },
+        "question_shortcut": {
+          "mean": -0.16626129647294893,
+          "std": 0.0,
+          "n": 5
+        },
+        "generalization_gap": 0.1401
       }
     },
     "powergrading": {
@@ -492,19 +691,20 @@
         "cv": {
           "n_eval": 4941,
           "n_folds": 5,
+          "cv_strategy": "grouped_by_question",
           "gbm": {
             "macro_f1": {
-              "mean": 0.8294552647212774,
-              "std": 0.0,
+              "mean": 0.4499753252665445,
+              "std": 5.551115123125783e-17,
               "n": 5
             },
             "accuracy": {
-              "mean": 0.8451730418943534,
+              "mean": 0.5229710584901842,
               "std": 0.0,
               "n": 5
             },
             "qwk": {
-              "mean": 0.6589716002517204,
+              "mean": -0.09324574928714768,
               "std": 0.0,
               "n": 5
             }
@@ -525,22 +725,80 @@
               "std": 0.0,
               "n": 5
             }
-          }
+          },
+          "question_shortcut": {
+            "macro_f1": {
+              "mean": 0.3922509225092251,
+              "std": 0.0,
+              "n": 5
+            },
+            "accuracy": {
+              "mean": 0.6454159077109897,
+              "std": 0.0,
+              "n": 5
+            },
+            "qwk": {
+              "mean": 0.0,
+              "std": 0.0,
+              "n": 5
+            }
+          },
+          "upper_bound_seen_question": {
+            "macro_f1": {
+              "mean": 0.8294552647212774,
+              "std": 0.0,
+              "n": 5
+            },
+            "accuracy": {
+              "mean": 0.8451730418943534,
+              "std": 0.0,
+              "n": 5
+            },
+            "qwk": {
+              "mean": 0.6589716002517204,
+              "std": 0.0,
+              "n": 5
+            }
+          },
+          "upper_bound_question_shortcut": {
+            "macro_f1": {
+              "mean": 0.8733200419686892,
+              "std": 1.1102230246251565e-16,
+              "n": 5
+            },
+            "accuracy": {
+              "mean": 0.8783647035013156,
+              "std": 0.0,
+              "n": 5
+            },
+            "qwk": {
+              "mean": 0.7488195867773418,
+              "std": 0.0,
+              "n": 5
+            }
+          },
+          "generalization_gap": 0.3795
         }
       },
       "headline": {
         "split": "cv",
         "metric": "macro_f1",
         "gbm": {
-          "mean": 0.8294552647212774,
-          "std": 0.0,
+          "mean": 0.4499753252665445,
+          "std": 5.551115123125783e-17,
           "n": 5
         },
         "baseline": {
           "mean": 0.3922509225092251,
           "std": 0.0,
           "n": 5
-        }
+        },
+        "question_shortcut": {
+          "mean": 0.3922509225092251,
+          "std": 0.0,
+          "n": 5
+        },
+        "generalization_gap": 0.3795
       }
     },
     "mindreading": {
@@ -561,14 +819,15 @@
         "cv": {
           "n_eval": 10543,
           "n_folds": 5,
+          "cv_strategy": "grouped_by_question",
           "gbm": {
             "qwk": {
-              "mean": 0.1205742526326068,
+              "mean": 0.05944155493067094,
               "std": 0.0,
               "n": 5
             },
             "accuracy": {
-              "mean": 0.37219007872522053,
+              "mean": 0.3597647728350564,
               "std": 0.0,
               "n": 5
             }
@@ -584,14 +843,51 @@
               "std": 0.0,
               "n": 5
             }
-          }
+          },
+          "question_shortcut": {
+            "qwk": {
+              "mean": 0.0,
+              "std": 0.0,
+              "n": 5
+            },
+            "accuracy": {
+              "mean": 0.3333965664421891,
+              "std": 0.0,
+              "n": 5
+            }
+          },
+          "upper_bound_seen_question": {
+            "qwk": {
+              "mean": 0.1205742526326068,
+              "std": 0.0,
+              "n": 5
+            },
+            "accuracy": {
+              "mean": 0.37219007872522053,
+              "std": 0.0,
+              "n": 5
+            }
+          },
+          "upper_bound_question_shortcut": {
+            "qwk": {
+              "mean": 0.16362284899068236,
+              "std": 0.0,
+              "n": 5
+            },
+            "accuracy": {
+              "mean": 0.37797590818552596,
+              "std": 0.0,
+              "n": 5
+            }
+          },
+          "generalization_gap": 0.0611
         }
       },
       "headline": {
         "split": "cv",
         "metric": "qwk",
         "gbm": {
-          "mean": 0.1205742526326068,
+          "mean": 0.05944155493067094,
           "std": 0.0,
           "n": 5
         },
@@ -599,7 +895,13 @@
           "mean": 0.0,
           "std": 0.0,
           "n": 5
-        }
+        },
+        "question_shortcut": {
+          "mean": 0.0,
+          "std": 0.0,
+          "n": 5
+        },
+        "generalization_gap": 0.0611
       }
     }
   }
