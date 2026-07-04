@@ -1,143 +1,547 @@
-% --- Datasets ---------------------------------------------------------------
+% =============================================================================
+% References (v2) — verified July 2026 against ACL Anthology / publisher pages / arXiv.
+% Entries marked "% VERIFY:" have confirmed title+venue but the author list or
+% page numbers came from search snippets — open the URL and confirm before
+% camera-ready. Everything else was checked against an authoritative page.
+% =============================================================================
+
+% ---------- datasets & foundations ----------
+
 @inproceedings{dzikovska2013semeval,
-  title     = {{SemEval-2013 Task 7}: The Joint Student Response Analysis and 8th Recognizing Textual Entailment Challenge},
-  author    = {Dzikovska, Myroslava O. and Nielsen, Rodney D. and Brew, Chris and Leacock, Claudia and Giampiccolo, Danilo and Bentivogli, Luisa and Clark, Peter and Dagan, Ido and Dang, Hoa Trang},
-  booktitle = {Proceedings of the Seventh International Workshop on Semantic Evaluation (SemEval 2013)},
+  title     = {{SemEval}-2013 Task 7: The Joint Student Response Analysis and 8th Recognizing Textual Entailment Challenge},
+  author    = {Dzikovska, Myroslava O. and Nielsen, Rodney and Brew, Chris and Leacock, Claudia and Giampiccolo, Danilo and Bentivogli, Luisa and Clark, Peter and Dagan, Ido and Dang, Hoa Trang},
+  booktitle = {Second Joint Conference on Lexical and Computational Semantics (*SEM), Volume 2: Proceedings of the Seventh International Workshop on Semantic Evaluation (SemEval 2013)},
+  year      = {2013},
+  address   = {Atlanta, Georgia, USA},
+  publisher = {Association for Computational Linguistics},
   pages     = {263--274},
-  year      = {2013}
+  url       = {https://aclanthology.org/S13-2045/}
 }
 
 @inproceedings{mohler2011learning,
   title     = {Learning to Grade Short Answer Questions using Semantic Similarity Measures and Dependency Graph Alignments},
   author    = {Mohler, Michael and Bunescu, Razvan and Mihalcea, Rada},
-  booktitle = {Proceedings of the 49th Annual Meeting of the Association for Computational Linguistics (ACL)},
+  booktitle = {Proceedings of the 49th Annual Meeting of the Association for Computational Linguistics: Human Language Technologies},
+  year      = {2011},
+  address   = {Portland, Oregon, USA},
+  publisher = {Association for Computational Linguistics},
   pages     = {752--762},
-  year      = {2011}
+  url       = {https://aclanthology.org/P11-1076/}
 }
 
-@inproceedings{filighera2022saf,
-  title     = {Your Answer is Incorrect... Would you like to know why? Introducing a Bilingual Short Answer Feedback Dataset},
+@article{basu2013powergrading,
+  title   = {Powergrading: a Clustering Approach to Amplify Human Effort for Short Answer Grading},
+  author  = {Basu, Sumit and Jacobs, Chuck and Vanderwende, Lucy},
+  journal = {Transactions of the Association for Computational Linguistics},
+  volume  = {1},
+  pages   = {391--402},
+  year    = {2013},
+  doi     = {10.1162/tacl_a_00236},
+  url     = {https://aclanthology.org/Q13-1032/}
+}
+
+@inproceedings{kovatchev2020mind,
+  title     = {``What is on your mind?'' {A}utomated Scoring of Mindreading in Childhood and Early Adolescence},
+  author    = {Kovatchev, Venelin and Smith, Phillip and Lee, Mark and Grumley Traynor, Imogen and Luque Aguilera, Irene and Devine, Rory},
+  booktitle = {Proceedings of the 28th International Conference on Computational Linguistics},
+  year      = {2020},
+  address   = {Barcelona, Spain (Online)},
+  publisher = {International Committee on Computational Linguistics},
+  pages     = {6217--6228},
+  doi       = {10.18653/v1/2020.coling-main.547},
+  url       = {https://aclanthology.org/2020.coling-main.547/}
+}
+
+@inproceedings{filighera2022your,
+  title     = {Your Answer is Incorrect... Would you like to know why? {I}ntroducing a Bilingual Short Answer Feedback Dataset},
   author    = {Filighera, Anna and Parihar, Siddharth and Steuer, Tim and Meuser, Tobias and Ochs, Sebastian},
-  booktitle = {Proceedings of the 60th Annual Meeting of the Association for Computational Linguistics (ACL)},
-  year      = {2022}
+  booktitle = {Proceedings of the 60th Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)},
+  year      = {2022},
+  address   = {Dublin, Ireland},
+  publisher = {Association for Computational Linguistics},
+  pages     = {8577--8591},
+  doi       = {10.18653/v1/2022.acl-long.587},
+  url       = {https://aclanthology.org/2022.acl-long.587/}
 }
 
-@inproceedings{basu2013powergrading,
-  title     = {Powergrading: a Clustering Approach to Amplify Human Effort for Short Answer Grading},
-  author    = {Basu, Sumit and Jacobs, Chuck and Vanderwende, Lucy},
-  booktitle = {Transactions of the Association for Computational Linguistics (TACL)},
-  volume    = {1},
-  pages     = {391--402},
-  year      = {2013}
+@misc{hewlett2012asapsas,
+  title        = {The {Hewlett} {Foundation}: Short Answer Scoring ({A}utomated {S}tudent {A}ssessment {P}rize, Phase Two)},
+  author       = {{The William and Flora Hewlett Foundation}},
+  year         = {2012},
+  howpublished = {Kaggle competition},
+  url          = {https://www.kaggle.com/c/asap-sas}
 }
 
-@inproceedings{kovatchev2020mindca,
-  title     = {What is on Your Mind? Automated Scoring of Mindreading in Childhood and Early Adolescence},
-  author    = {Kovatchev, Venelin and Smith, Phillip and Lee, Mark and Devine, Rory},
-  booktitle = {Proceedings of the 28th International Conference on Computational Linguistics (COLING)},
-  year      = {2020}
+@inproceedings{meyer2024asag2024,
+  title     = {{ASAG2024}: A Combined Benchmark for Short Answer Grading},
+  author    = {Meyer, G{\'e}r{\^o}me and Breuer, Philip and F{\"u}rst, Jonathan},
+  booktitle = {Proceedings of the 2024 ACM Virtual Global Computing Education Conference V. 2 (SIGCSE Virtual 2024)},
+  year      = {2024},
+  publisher = {ACM},
+  doi       = {10.1145/3649409.3691083},
+  url       = {https://arxiv.org/abs/2409.18596}
 }
 
-% --- Methods / models -------------------------------------------------------
+% ---------- surveys & classic ASAG ----------
+
+@article{burrows2015eras,
+  title   = {The Eras and Trends of Automatic Short Answer Grading},
+  author  = {Burrows, Steven and Gurevych, Iryna and Stein, Benno},
+  journal = {International Journal of Artificial Intelligence in Education},
+  volume  = {25},
+  number  = {1},
+  pages   = {60--117},
+  year    = {2015},
+  doi     = {10.1007/s40593-014-0026-8}
+}
+
+@inproceedings{sultan2016fast,
+  title     = {Fast and Easy Short Answer Grading with High Accuracy},
+  author    = {Sultan, Md Arafat and Salazar, Cristobal and Sumner, Tamara},
+  booktitle = {Proceedings of the 2016 Conference of the North American Chapter of the Association for Computational Linguistics: Human Language Technologies},
+  year      = {2016},
+  address   = {San Diego, California},
+  publisher = {Association for Computational Linguistics},
+  pages     = {1070--1075},
+  doi       = {10.18653/v1/N16-1123},
+  url       = {https://aclanthology.org/N16-1123/}
+}
+
 @inproceedings{riordan2017investigating,
-  title     = {Investigating Neural Architectures for Short Answer Scoring},
+  title     = {Investigating neural architectures for short answer scoring},
   author    = {Riordan, Brian and Horbach, Andrea and Cahill, Aoife and Zesch, Torsten and Lee, Chong Min},
-  booktitle = {Proceedings of the 12th Workshop on Innovative Use of NLP for Building Educational Applications (BEA)},
+  booktitle = {Proceedings of the 12th Workshop on Innovative Use of NLP for Building Educational Applications},
+  year      = {2017},
+  address   = {Copenhagen, Denmark},
+  publisher = {Association for Computational Linguistics},
   pages     = {159--168},
-  year      = {2017}
+  doi       = {10.18653/v1/W17-5017},
+  url       = {https://aclanthology.org/W17-5017/}
 }
 
 @inproceedings{sung2019pretraining,
   title     = {Pre-Training {BERT} on Domain Resources for Short Answer Grading},
-  author    = {Sung, Chul and Dhamecha, Tejas Indulal and Saha, Swarnadeep and Ma, Tengfei and Reddy, Vinay and Arora, Rishi},
-  booktitle = {Proceedings of the 2019 Conference on Empirical Methods in Natural Language Processing (EMNLP-IJCNLP)},
-  year      = {2019}
+  author    = {Sung, Chul and Dhamecha, Tejas and Saha, Swarnadeep and Ma, Tengfei and Reddy, Vinay and Arora, Rishi},
+  booktitle = {Proceedings of the 2019 Conference on Empirical Methods in Natural Language Processing and the 9th International Joint Conference on Natural Language Processing (EMNLP-IJCNLP)},
+  year      = {2019},
+  address   = {Hong Kong, China},
+  publisher = {Association for Computational Linguistics},
+  pages     = {6071--6075},
+  doi       = {10.18653/v1/D19-1628},
+  url       = {https://aclanthology.org/D19-1628/}
 }
 
-@inproceedings{ke2017lightgbm,
-  title     = {{LightGBM}: A Highly Efficient Gradient Boosting Decision Tree},
-  author    = {Ke, Guolin and Meng, Qi and Finley, Thomas and Wang, Taifeng and Chen, Wei and Ma, Weidong and Ye, Qiwei and Liu, Tie-Yan},
-  booktitle = {Advances in Neural Information Processing Systems (NeurIPS)},
-  year      = {2017}
+@inproceedings{sung2019improving,
+  title     = {Improving Short Answer Grading Using Transformer-Based Pre-training},
+  author    = {Sung, Chul and Dhamecha, Tejas Indulal and Mukhi, Nirmal},
+  booktitle = {Artificial Intelligence in Education (AIED 2019)},
+  series    = {Lecture Notes in Computer Science},
+  volume    = {11625},
+  pages     = {469--481},
+  year      = {2019},
+  publisher = {Springer},
+  doi       = {10.1007/978-3-030-23204-7_39}
 }
 
-@inproceedings{reimers2019sbert,
-  title     = {{Sentence-BERT}: Sentence Embeddings using Siamese {BERT}-Networks},
+@inproceedings{camus2020investigating,
+  title     = {Investigating Transformers for Automatic Short Answer Grading},
+  author    = {Camus, Leon and Filighera, Anna},
+  booktitle = {Artificial Intelligence in Education (AIED 2020), Part II},
+  series    = {Lecture Notes in Computer Science},
+  volume    = {12164},
+  pages     = {43--48},
+  year      = {2020},
+  publisher = {Springer},
+  doi       = {10.1007/978-3-030-52240-7_8}
+}
+
+@article{haller2022survey,
+  title   = {Survey on Automated Short Answer Grading with Deep Learning: from Word Embeddings to Transformers},
+  author  = {Haller, Stefan and Aldea, Adina and Seifert, Christin and Strisciuglio, Nicola},
+  journal = {arXiv preprint arXiv:2204.03503},
+  year    = {2022},
+  url     = {https://arxiv.org/abs/2204.03503}
+}
+
+% VERIFY: volume/number/pages on the IEEE page before camera-ready.
+@article{putnikovic2023embeddings,
+  title   = {Embeddings for Automatic Short Answer Grading: A Scoping Review},
+  author  = {Putnikovic, Marko and Jovanovic, Jelena},
+  journal = {IEEE Transactions on Learning Technologies},
+  year    = {2023},
+  doi     = {10.1109/TLT.2023.3253239},
+  url     = {https://ieeexplore.ieee.org/document/10061232/}
+}
+
+% ---------- evaluation protocols, generalization, leakage ----------
+
+% VERIFY: exact author order and pages on the EDM/ERIC page.
+@inproceedings{condor2021automatic,
+  title     = {Automatic Short Answer Grading with {SBERT} on Out-of-Sample Questions},
+  author    = {Condor, Aubrey and Litster, Max and Pardos, Zachary},
+  booktitle = {Proceedings of the 14th International Conference on Educational Data Mining (EDM 2021)},
+  year      = {2021},
+  url       = {https://eric.ed.gov/?id=ED615495}
+}
+
+@inproceedings{li2024conundrums,
+  title     = {Conundrums in Cross-Prompt Automated Essay Scoring: Making Sense of the State of the Art},
+  author    = {Li, Shengjie and Ng, Vincent},
+  booktitle = {Proceedings of the 62nd Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)},
+  year      = {2024},
+  address   = {Bangkok, Thailand},
+  publisher = {Association for Computational Linguistics},
+  pages     = {7661--7681},
+  url       = {https://aclanthology.org/2024.acl-long.414/}
+}
+
+% VERIFY: arXiv-only at verification time; check for a published version.
+@article{aggarwal2024engsaf,
+  title   = {``I understand why I got this grade'': Automatic Short Answer Grading with Feedback},
+  author  = {Aggarwal, Dishank and Bhattacharyya, Pushpak and Raman, Balasubramanian},
+  journal = {arXiv preprint arXiv:2407.12818},
+  year    = {2024},
+  url     = {https://arxiv.org/abs/2407.12818}
+}
+
+@article{geirhos2020shortcut,
+  title   = {Shortcut learning in deep neural networks},
+  author  = {Geirhos, Robert and Jacobsen, J{\"o}rn-Henrik and Michaelis, Claudio and Zemel, Richard and Brendel, Wieland and Bethge, Matthias and Wichmann, Felix A.},
+  journal = {Nature Machine Intelligence},
+  volume  = {2},
+  pages   = {665--673},
+  year    = {2020},
+  doi     = {10.1038/s42256-020-00257-z}
+}
+
+% ---------- explainable ASAG ----------
+
+% VERIFY: author first names and pages on the ACM page.
+@inproceedings{poulton2021explaining,
+  title     = {Explaining transformer-based models for automatic short answer grading},
+  author    = {Poulton, Andrew and Eliens, Sebas},
+  booktitle = {Proceedings of the 5th International Conference on Digital Technology in Education (ICDTE 2021)},
+  year      = {2021},
+  publisher = {ACM},
+  doi       = {10.1145/3488466.3488479}
+}
+
+% VERIFY: full author list on the Anthology page (2023.bea-1.29).
+@inproceedings{tornqvist2023exasag,
+  title     = {{ExASAG}: Explainable Framework for Automatic Short Answer Grading},
+  author    = {Tornqvist, Maximilian and Mahamud, Mosleh and Mendez Guzman, Erick and Farazouli, Alexandra},
+  booktitle = {Proceedings of the 18th Workshop on Innovative Use of NLP for Building Educational Applications (BEA 2023)},
+  year      = {2023},
+  publisher = {Association for Computational Linguistics},
+  pages     = {361--371},
+  url       = {https://aclanthology.org/2023.bea-1.29/}
+}
+
+@inproceedings{li2023distilling,
+  title     = {Distilling {ChatGPT} for Explainable Automated Student Answer Assessment},
+  author    = {Li, Jiazheng and Gui, Lin and Zhou, Yuxiang and West, David and Aloisi, Cesare and He, Yulan},
+  booktitle = {Findings of the Association for Computational Linguistics: EMNLP 2023},
+  year      = {2023},
+  address   = {Singapore},
+  publisher = {Association for Computational Linguistics},
+  pages     = {6007--6026},
+  doi       = {10.18653/v1/2023.findings-emnlp.399},
+  url       = {https://aclanthology.org/2023.findings-emnlp.399/}
+}
+
+% ---------- hybrid feature+transformer ----------
+
+% VERIFY: volume/pages on the Springer page (KAIS 2023).
+@article{delgobbo2023gradeaid,
+  title   = {{GradeAid}: a framework for automatic short answers grading in educational contexts},
+  author  = {Del Gobbo, Emiliano and Guarino, Alfonso and Cafarelli, Barbara and Grilli, Luca},
+  journal = {Knowledge and Information Systems},
+  year    = {2023},
+  doi     = {10.1007/s10115-023-01892-9}
+}
+
+% ---------- LLM-era grading ----------
+
+% VERIFY: full author list on the Anthology page (2024.bea-1.25).
+@inproceedings{chamieh2024llms,
+  title     = {{LLM}s in Short Answer Scoring: Limitations and Promise of Zero-Shot and Few-Shot Approaches},
+  author    = {Chamieh, Imran and Zesch, Torsten and Giebermann, Klaus},
+  booktitle = {Proceedings of the 19th Workshop on Innovative Use of NLP for Building Educational Applications (BEA 2024)},
+  year      = {2024},
+  publisher = {Association for Computational Linguistics},
+  pages     = {309--315},
+  url       = {https://aclanthology.org/2024.bea-1.25/}
+}
+
+% VERIFY: author list on the ACM page before camera-ready (LAK 2025).
+@inproceedings{ferreiramello2025gpt4,
+  title     = {Automatic Short Answer Grading in the {LLM} Era: Does {GPT-4} with Prompt Engineering beat Traditional Models?},
+  author    = {Ferreira Mello, Rafael and others},
+  booktitle = {Proceedings of the 15th International Learning Analytics and Knowledge Conference (LAK 2025)},
+  year      = {2025},
+  publisher = {ACM},
+  doi       = {10.1145/3706468.3706481}
+}
+
+% ---------- robustness, calibration, deferral ----------
+
+@inproceedings{filighera2020fooling,
+  title     = {Fooling Automatic Short Answer Grading Systems},
+  author    = {Filighera, Anna and Steuer, Tim and Rensing, Christoph},
+  booktitle = {Artificial Intelligence in Education (AIED 2020), Part I},
+  series    = {Lecture Notes in Computer Science},
+  volume    = {12163},
+  pages     = {177--190},
+  year      = {2020},
+  publisher = {Springer},
+  doi       = {10.1007/978-3-030-52237-7_15}
+}
+
+% VERIFY: full author list, volume, pages on the Springer page (IJAIED 2023).
+@article{filighera2023cheating,
+  title   = {Cheating Automatic Short Answer Grading with the Adversarial Usage of Adjectives and Adverbs},
+  author  = {Filighera, Anna and Ochs, Sebastian and Steuer, Tim and Tregel, Thomas},
+  journal = {International Journal of Artificial Intelligence in Education},
+  year    = {2023},
+  doi     = {10.1007/s40593-023-00361-2},
+  url     = {https://arxiv.org/abs/2201.08318}
+}
+
+% VERIFY: exact Anthology ID for the COLING 2020 paper before camera-ready.
+@inproceedings{ding2020dont,
+  title     = {Don't take ``nswvtnvakgxpm'' for an answer --- The surprising vulnerability of automatic content scoring systems to adversarial input},
+  author    = {Ding, Yuning and Riordan, Brian and Horbach, Andrea and Cahill, Aoife and Zesch, Torsten},
+  booktitle = {Proceedings of the 28th International Conference on Computational Linguistics},
+  year      = {2020},
+  publisher = {International Committee on Computational Linguistics},
+  pages     = {882--892}
+}
+
+% VERIFY: full author list on the Anthology page (2020.acl-srw.32).
+@inproceedings{funayama2020preventing,
+  title     = {Preventing Critical Scoring Errors in Short Answer Scoring with Confidence Estimation},
+  author    = {Funayama, Hiroaki and Sasaki, Shota and Matsubayashi, Yuichiroh and Mizumoto, Tomoya and Suzuki, Jun and Mita, Masato and Inui, Kentaro},
+  booktitle = {Proceedings of the 58th Annual Meeting of the Association for Computational Linguistics: Student Research Workshop},
+  year      = {2020},
+  publisher = {Association for Computational Linguistics},
+  url       = {https://aclanthology.org/2020.acl-srw.32/}
+}
+
+% VERIFY: full author list and pages on the Springer page (AIED 2022).
+@inproceedings{funayama2022balancing,
+  title     = {Balancing Cost and Quality: An Exploration of Human-in-the-Loop Frameworks for Automated Short Answer Scoring},
+  author    = {Funayama, Hiroaki and Asazuma, Yuya and Matsubayashi, Yuichiroh and Mizumoto, Tomoya and Inui, Kentaro},
+  booktitle = {Artificial Intelligence in Education (AIED 2022)},
+  series    = {Lecture Notes in Computer Science},
+  year      = {2022},
+  publisher = {Springer},
+  doi       = {10.1007/978-3-031-11644-5_38}
+}
+
+@inproceedings{guo2017calibration,
+  title     = {On Calibration of Modern Neural Networks},
+  author    = {Guo, Chuan and Pleiss, Geoff and Sun, Yu and Weinberger, Kilian Q.},
+  booktitle = {Proceedings of the 34th International Conference on Machine Learning},
+  series    = {Proceedings of Machine Learning Research},
+  volume    = {70},
+  pages     = {1321--1330},
+  year      = {2017},
+  publisher = {PMLR},
+  url       = {https://proceedings.mlr.press/v70/guo17a.html}
+}
+
+% ---------- similarity-based scoring ----------
+
+% VERIFY: pages on the Anthology page (2022.bea-1.16).
+@inproceedings{bexte2022similarity,
+  title     = {Similarity-Based Content Scoring --- How to Make {S-BERT} Keep Up With {BERT}},
+  author    = {Bexte, Marie and Horbach, Andrea and Zesch, Torsten},
+  booktitle = {Proceedings of the 17th Workshop on Innovative Use of NLP for Building Educational Applications (BEA 2022)},
+  year      = {2022},
+  publisher = {Association for Computational Linguistics},
+  url       = {https://aclanthology.org/2022.bea-1.16/}
+}
+
+% VERIFY: pages on the Anthology page (2023.findings-acl.119).
+@inproceedings{bexte2023similarity,
+  title     = {Similarity-Based Content Scoring --- A more Classroom-Suitable Alternative to Instance-Based Scoring?},
+  author    = {Bexte, Marie and Horbach, Andrea and Zesch, Torsten},
+  booktitle = {Findings of the Association for Computational Linguistics: ACL 2023},
+  year      = {2023},
+  publisher = {Association for Computational Linguistics},
+  url       = {https://aclanthology.org/2023.findings-acl.119/}
+}
+
+% ---------- methods toolbox ----------
+
+@inproceedings{reimers2019sentencebert,
+  title     = {Sentence-{BERT}: Sentence Embeddings using {S}iamese {BERT}-Networks},
   author    = {Reimers, Nils and Gurevych, Iryna},
-  booktitle = {Proceedings of the 2019 Conference on Empirical Methods in Natural Language Processing (EMNLP-IJCNLP)},
-  year      = {2019}
+  booktitle = {Proceedings of the 2019 Conference on Empirical Methods in Natural Language Processing and the 9th International Joint Conference on Natural Language Processing (EMNLP-IJCNLP)},
+  year      = {2019},
+  address   = {Hong Kong, China},
+  publisher = {Association for Computational Linguistics},
+  pages     = {3982--3992},
+  doi       = {10.18653/v1/D19-1410},
+  url       = {https://aclanthology.org/D19-1410/}
 }
 
 @inproceedings{he2021deberta,
   title     = {{DeBERTa}: Decoding-enhanced {BERT} with Disentangled Attention},
   author    = {He, Pengcheng and Liu, Xiaodong and Gao, Jianfeng and Chen, Weizhu},
   booktitle = {International Conference on Learning Representations (ICLR)},
-  year      = {2021}
+  year      = {2021},
+  url       = {https://openreview.net/forum?id=XPZIaotutsD}
 }
 
-@inproceedings{lundberg2017shap,
-  title     = {A Unified Approach to Interpreting Model Predictions},
-  author    = {Lundberg, Scott M. and Lee, Su-In},
-  booktitle = {Advances in Neural Information Processing Systems (NeurIPS)},
-  year      = {2017}
+@inproceedings{he2023debertav3,
+  title     = {{DeBERTaV3}: Improving {DeBERTa} using {ELECTRA}-Style Pre-Training with Gradient-Disentangled Embedding Sharing},
+  author    = {He, Pengcheng and Gao, Jianfeng and Chen, Weizhu},
+  booktitle = {International Conference on Learning Representations (ICLR)},
+  year      = {2023},
+  url       = {https://arxiv.org/abs/2111.09543}
 }
 
-@article{lundberg2020treeshap,
-  title     = {From Local Explanations to Global Understanding with Explainable {AI} for Trees},
-  author    = {Lundberg, Scott M. and Erion, Gabriel and Chen, Hugh and DeGrave, Alex and Prutkin, Jordan M. and Nair, Bala and Katz, Ronit and Himmelfarb, Jonathan and Bansal, Nisha and Lee, Su-In},
-  journal   = {Nature Machine Intelligence},
-  volume    = {2},
-  pages     = {56--67},
-  year      = {2020}
-}
-
-@inproceedings{guo2017calibration,
-  title     = {On Calibration of Modern Neural Networks},
-  author    = {Guo, Chuan and Pleiss, Geoff and Sun, Yu and Weinberger, Kilian Q.},
-  booktitle = {Proceedings of the 34th International Conference on Machine Learning (ICML)},
-  year      = {2017}
+@inproceedings{ke2017lightgbm,
+  title     = {{LightGBM}: A Highly Efficient Gradient Boosting Decision Tree},
+  author    = {Ke, Guolin and Meng, Qi and Finley, Thomas and Wang, Taifeng and Chen, Wei and Ma, Weidong and Ye, Qiwei and Liu, Tie-Yan},
+  booktitle = {Advances in Neural Information Processing Systems 30 (NIPS 2017)},
+  year      = {2017},
+  address   = {Long Beach, CA, USA},
+  url       = {https://papers.nips.cc/paper/6907-lightgbm-a-highly-efficient-gradient-boosting-decision-tree}
 }
 
 @inproceedings{akiba2019optuna,
   title     = {Optuna: A Next-generation Hyperparameter Optimization Framework},
   author    = {Akiba, Takuya and Sano, Shotaro and Yanase, Toshihiko and Ohta, Takeru and Koyama, Masanori},
-  booktitle = {Proceedings of the 25th ACM SIGKDD International Conference on Knowledge Discovery and Data Mining},
-  year      = {2019}
+  booktitle = {Proceedings of the 25th ACM SIGKDD International Conference on Knowledge Discovery \& Data Mining (KDD)},
+  year      = {2019},
+  address   = {Anchorage, AK, USA},
+  pages     = {2623--2631},
+  doi       = {10.1145/3292500.3330701}
 }
 
-% --- Background -------------------------------------------------------------
-@article{burrows2015eras,
-  title     = {The Eras and Trends of Automatic Short Answer Grading},
-  author    = {Burrows, Steven and Gurevych, Iryna and Stein, Benno},
-  journal   = {International Journal of Artificial Intelligence in Education},
-  volume    = {25},
-  pages     = {60--117},
-  year      = {2015}
+@inproceedings{lundberg2017unified,
+  title     = {A Unified Approach to Interpreting Model Predictions},
+  author    = {Lundberg, Scott M. and Lee, Su-In},
+  booktitle = {Advances in Neural Information Processing Systems 30 (NIPS 2017)},
+  year      = {2017},
+  pages     = {4765--4774},
+  url       = {https://papers.nips.cc/paper/7062-a-unified-approach-to-interpreting-model-predictions}
 }
 
-@article{cohen1968weighted,
-  title     = {Weighted Kappa: Nominal Scale Agreement Provision for Scaled Disagreement or Partial Credit},
-  author    = {Cohen, Jacob},
-  journal   = {Psychological Bulletin},
-  volume    = {70},
-  number    = {4},
-  pages     = {213--220},
-  year      = {1968}
+@article{lundberg2020local,
+  title   = {From local explanations to global understanding with explainable {AI} for trees},
+  author  = {Lundberg, Scott M. and Erion, Gabriel and Chen, Hugh and DeGrave, Alex and Prutkin, Jordan M. and Nair, Bala and Katz, Ronit and Himmelfarb, Jonathan and Bansal, Nisha and Lee, Su-In},
+  journal = {Nature Machine Intelligence},
+  volume  = {2},
+  number  = {1},
+  pages   = {56--67},
+  year    = {2020},
+  doi     = {10.1038/s42256-019-0138-9}
+}
+
+@article{cao2020coral,
+  title   = {Rank consistent ordinal regression for neural networks with application to age estimation},
+  author  = {Cao, Wenzhi and Mirjalili, Vahid and Raschka, Sebastian},
+  journal = {Pattern Recognition Letters},
+  volume  = {140},
+  pages   = {325--331},
+  year    = {2020},
+  doi     = {10.1016/j.patrec.2020.11.008}
+}
+
+@article{shi2023corn,
+  title   = {Deep neural networks for rank-consistent ordinal regression based on conditional probabilities},
+  author  = {Shi, Xintong and Cao, Wenzhi and Raschka, Sebastian},
+  journal = {Pattern Analysis and Applications},
+  volume  = {26},
+  pages   = {941--955},
+  year    = {2023},
+  doi     = {10.1007/s10044-023-01181-9}
 }
 
 @article{holm1979simple,
-  title     = {A Simple Sequentially Rejective Multiple Test Procedure},
-  author    = {Holm, Sture},
-  journal   = {Scandinavian Journal of Statistics},
-  volume    = {6},
-  number    = {2},
-  pages     = {65--70},
-  year      = {1979}
+  title   = {A Simple Sequentially Rejective Multiple Test Procedure},
+  author  = {Holm, Sture},
+  journal = {Scandinavian Journal of Statistics},
+  volume  = {6},
+  number  = {2},
+  pages   = {65--70},
+  year    = {1979},
+  url     = {https://www.jstor.org/stable/4615733}
 }
 
-@book{efron1994bootstrap,
+@book{efron1993bootstrap,
   title     = {An Introduction to the Bootstrap},
   author    = {Efron, Bradley and Tibshirani, Robert J.},
+  series    = {Monographs on Statistics and Applied Probability},
+  number    = {57},
   publisher = {Chapman \& Hall/CRC},
-  year      = {1994}
+  address   = {New York},
+  year      = {1993},
+  isbn      = {978-0-412-04231-7}
 }
+
+% ---------- software ----------
+
+@software{honnibal2020spacy,
+  title   = {{spaCy}: Industrial-strength Natural Language Processing in Python},
+  author  = {Honnibal, Matthew and Montani, Ines and Van Landeghem, Sofie and Boyd, Adriane},
+  year    = {2020},
+  doi     = {10.5281/zenodo.1212303},
+  url     = {https://spacy.io}
+}
+
+@article{pedregosa2011scikit,
+  title   = {Scikit-learn: Machine Learning in {Python}},
+  author  = {Pedregosa, Fabian and Varoquaux, Ga{\"e}l and Gramfort, Alexandre and Michel, Vincent and Thirion, Bertrand and Grisel, Olivier and Blondel, Mathieu and Prettenhofer, Peter and Weiss, Ron and Dubourg, Vincent and Vanderplas, Jake and Passos, Alexandre and Cournapeau, David and Brucher, Matthieu and Perrot, Matthieu and Duchesnay, {\'E}douard},
+  journal = {Journal of Machine Learning Research},
+  volume  = {12},
+  pages   = {2825--2830},
+  year    = {2011},
+  url     = {https://jmlr.org/papers/v12/pedregosa11a.html}
+}
+
+@inproceedings{mckinney2010pandas,
+  title     = {Data Structures for Statistical Computing in {Python}},
+  author    = {McKinney, Wes},
+  booktitle = {Proceedings of the 9th Python in Science Conference (SciPy 2010)},
+  year      = {2010},
+  pages     = {56--61},
+  doi       = {10.25080/Majora-92bf1922-00a}
+}
+
+@article{shermis2015contrasting,
+  title   = {Contrasting state-of-the-art in the machine scoring of short-form constructed responses},
+  author  = {Shermis, Mark D.},
+  journal = {Educational Assessment},
+  volume  = {20},
+  number  = {1},
+  pages   = {46--65},
+  year    = {2015},
+  doi     = {10.1080/10627197.2015.997617}
+}
+
+% =============================================================================
+% CANDIDATE CITATIONS — existence verified July 2026 but author lists NOT
+% captured from an authoritative page. Do NOT cite until verified:
+%   - Kortemeyer, "Performance of GPT-4 on automated short answer grading",
+%     Discover Artificial Intelligence, 2024 (10.1007/s44163-024-00147-y)
+%   - Schneider et al., "Towards LLM-based Autograding for Short Textual
+%     Answers", arXiv 2309.11508 / CSEDU 2024
+%   - Yancey et al., "Rating Short L2 Essays on the CEFR Scale with GPT-4",
+%     BEA 2023 (2023.bea-1.49)
+%   - Rodrigues et al., "Is GPT-4 fair? ...", Computers & Education: AI, 2025
+%   - "Explainable Automatic Grading with Neural Additive Models", AIED 2024
+%     (arXiv 2405.00489)
+%   - Neuro-symbolic multi-domain ASAG, arXiv 2403.01811
+%   - S-GRADES cross-domain benchmark, arXiv 2603.10233 (2026)
+%   - "ASAG with LLMs: From Memorization to Reasoning", LAK 2026
+%     (10.1145/3785022.3785031)
+%   - Ormerod & Kwako, "Automated Text Scoring ... GPU-poor", arXiv 2407.01873
+%   - Horbach & Zesch, "The Influence of Variance in Learner Answers on
+%     Automatic Content Scoring", Frontiers in Education, 2019
+%   - Funayama et al., "Cross-prompt Pre-finetuning ...", IJAIED 2025
+%     (10.1007/s40593-025-00474-w)
+% =============================================================================

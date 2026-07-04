@@ -1,0 +1,301 @@
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex)
+ restricted \write18 enabled.
+entering extended mode
+(./main.tex
+LaTeX2e <2021-11-15> patch level 1
+L3 programming layer <2022-01-21>
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2021/10/04 v1.4n Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size11.clo))
+(/usr/share/texlive/texmf-dist/tex/latex/geometry/geometry.sty
+(/usr/share/texlive/texmf-dist/tex/latex/graphics/keyval.sty)
+(/usr/share/texlive/texmf-dist/tex/generic/iftex/ifvtex.sty
+(/usr/share/texlive/texmf-dist/tex/generic/iftex/iftex.sty)))
+(/usr/share/texlive/texmf-dist/tex/latex/graphics/graphicx.sty
+(/usr/share/texlive/texmf-dist/tex/latex/graphics/graphics.sty
+(/usr/share/texlive/texmf-dist/tex/latex/graphics/trig.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/graphics-cfg/graphics.cfg)
+(/usr/share/texlive/texmf-dist/tex/latex/graphics-def/pdftex.def)))
+(/usr/share/texlive/texmf-dist/tex/latex/booktabs/booktabs.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsmath.sty
+For additional information on amsmath, use the `?' option.
+(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amstext.sty
+(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsgen.sty))
+(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsbsy.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsopn.sty))
+(/usr/share/texlive/texmf-dist/tex/latex/multirow/multirow.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/url/url.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/hyperref/hyperref.sty
+(/usr/share/texlive/texmf-dist/tex/generic/ltxcmds/ltxcmds.sty)
+(/usr/share/texlive/texmf-dist/tex/generic/pdftexcmds/pdftexcmds.sty
+(/usr/share/texlive/texmf-dist/tex/generic/infwarerr/infwarerr.sty))
+(/usr/share/texlive/texmf-dist/tex/generic/kvsetkeys/kvsetkeys.sty)
+(/usr/share/texlive/texmf-dist/tex/generic/kvdefinekeys/kvdefinekeys.sty)
+(/usr/share/texlive/texmf-dist/tex/generic/pdfescape/pdfescape.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/hycolor/hycolor.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/letltxmacro/letltxmacro.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/auxhook/auxhook.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/kvoptions/kvoptions.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/hyperref/pd1enc.def)
+(/usr/share/texlive/texmf-dist/tex/latex/hyperref/hyperref-langpatches.def)
+(/usr/share/texlive/texmf-dist/tex/generic/intcalc/intcalc.sty)
+(/usr/share/texlive/texmf-dist/tex/generic/etexcmds/etexcmds.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/hyperref/puenc.def)
+(/usr/share/texlive/texmf-dist/tex/generic/bitset/bitset.sty
+(/usr/share/texlive/texmf-dist/tex/generic/bigintcalc/bigintcalc.sty))
+(/usr/share/texlive/texmf-dist/tex/latex/base/atbegshi-ltx.sty))
+(/usr/share/texlive/texmf-dist/tex/latex/hyperref/hpdftex.def
+(/usr/share/texlive/texmf-dist/tex/latex/base/atveryend-ltx.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/rerunfilecheck/rerunfilecheck.sty
+(/usr/share/texlive/texmf-dist/tex/generic/uniquecounter/uniquecounter.sty)))
+(/usr/share/texlive/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def)
+(./main.aux)
+*geometry* driver: auto-detecting
+*geometry* detected driver: pdftex
+(/usr/share/texlive/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
+[Loading MPS to PDF converter (version 2006.09.02).]
+) (/usr/share/texlive/texmf-dist/tex/latex/epstopdf-pkg/epstopdf-base.sty
+(/usr/share/texlive/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg))
+(/usr/share/texlive/texmf-dist/tex/latex/hyperref/nameref.sty
+(/usr/share/texlive/texmf-dist/tex/latex/refcount/refcount.sty)
+(/usr/share/texlive/texmf-dist/tex/generic/gettitlestring/gettitlestring.sty))
+(./main.out) (./main.out)
+
+LaTeX Warning: Citation `burrows2015eras' on page 1 undefined on input line 75.
+
+
+
+LaTeX Warning: Citation `dzikovska2013semeval' on page 1 undefined on input lin
+e 75.
+
+
+LaTeX Warning: Citation `mohler2011learning' on page 1 undefined on input line 
+80.
+
+
+LaTeX Warning: Citation `basu2013powergrading' on page 1 undefined on input lin
+e 81.
+
+
+LaTeX Warning: Citation `kovatchev2020mind' on page 1 undefined on input line 8
+1.
+
+
+LaTeX Warning: Citation `geirhos2020shortcut' on page 1 undefined on input line
+ 86.
+
+
+LaTeX Warning: Citation `dzikovska2013semeval' on page 1 undefined on input lin
+e 89.
+
+
+LaTeX Warning: Citation `condor2021automatic' on page 1 undefined on input line
+ 90.
+
+
+Overfull \hbox (7.81761pt too wide) in paragraph at lines 80--95
+\OT1/cmr/m/n/10.95 that unseen-question gen-er-al-iza-tion is harder (SemEval-2
+013 de-fined unseen-answer/question/domain
+[1{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}]
+
+LaTeX Warning: Citation `poulton2021explaining' on page 2 undefined on input li
+ne 99.
+
+
+LaTeX Warning: Citation `tornqvist2023exasag' on page 2 undefined on input line
+ 99.
+
+
+LaTeX Warning: Citation `lundberg2017unified' on page 2 undefined on input line
+ 102.
+
+
+LaTeX Warning: Citation `lundberg2020local' on page 2 undefined on input line 1
+02.
+
+
+LaTeX Warning: Citation `filighera2022your' on page 2 undefined on input line 1
+04.
+
+
+LaTeX Warning: Reference `sec:protocol' on page 2 undefined on input line 129.
+
+
+LaTeX Warning: Reference `tab:leakage' on page 2 undefined on input line 130.
+
+
+LaTeX Warning: Reference `sec:method' on page 2 undefined on input line 133.
+
+
+LaTeX Warning: Reference `tab:ablations' on page 2 undefined on input line 134.
+
+
+
+LaTeX Warning: Reference `sec:results-xai' on page 2 undefined on input line 13
+7.
+
+
+LaTeX Warning: Reference `tab:sig' on page 2 undefined on input line 139.
+
+
+LaTeX Warning: Reference `sec:results-robust' on page 2 undefined on input line
+ 140.
+
+
+LaTeX Warning: Reference `sec:results-lodo' on page 2 undefined on input line 1
+40.
+
+
+LaTeX Warning: Reference `sec:results-hybrid' on page 2 undefined on input line
+ 142.
+
+
+LaTeX Warning: Citation `mohler2011learning' on page 2 undefined on input line 
+151.
+
+
+LaTeX Warning: Citation `sultan2016fast' on page 2 undefined on input line 151.
+
+
+
+LaTeX Warning: Citation `burrows2015eras' on page 2 undefined on input line 151
+.
+
+
+LaTeX Warning: Citation `dzikovska2013semeval' on page 2 undefined on input lin
+e 152.
+
+
+LaTeX Warning: Citation `riordan2017investigating' on page 2 undefined on input
+ line 153.
+
+
+LaTeX Warning: Citation `sung2019improving' on page 2 undefined on input line 1
+54.
+
+
+LaTeX Warning: Citation `sung2019pretraining' on page 2 undefined on input line
+ 154.
+
+
+LaTeX Warning: Citation `camus2020investigating' on page 2 undefined on input l
+ine 154.
+
+
+LaTeX Warning: Citation `haller2022survey' on page 2 undefined on input line 15
+6.
+
+
+LaTeX Warning: Citation `putnikovic2023embeddings' on page 2 undefined on input
+ line 158.
+
+
+LaTeX Warning: Citation `bexte2022similarity' on page 2 undefined on input line
+ 162.
+
+
+LaTeX Warning: Citation `bexte2023similarity' on page 2 undefined on input line
+ 162.
+
+
+LaTeX Warning: Citation `meyer2024asag2024' on page 2 undefined on input line 1
+64.
+
+[2]
+
+LaTeX Warning: Citation `dzikovska2013semeval' on page 3 undefined on input lin
+e 170.
+
+
+LaTeX Warning: Citation `filighera2022your' on page 3 undefined on input line 1
+71.
+
+
+LaTeX Warning: Citation `condor2021automatic' on page 3 undefined on input line
+ 173.
+
+
+LaTeX Warning: Citation `aggarwal2024engsaf' on page 3 undefined on input line 
+174.
+
+
+LaTeX Warning: Citation `li2024conundrums' on page 3 undefined on input line 17
+6.
+
+
+LaTeX Warning: Citation `geirhos2020shortcut' on page 3 undefined on input line
+ 183.
+
+
+LaTeX Warning: Citation `poulton2021explaining' on page 3 undefined on input li
+ne 187.
+
+
+LaTeX Warning: Citation `tornqvist2023exasag' on page 3 undefined on input line
+ 188.
+
+
+LaTeX Warning: Citation `li2023distilling' on page 3 undefined on input line 19
+0.
+
+
+LaTeX Warning: Citation `lundberg2020local' on page 3 undefined on input line 1
+92.
+
+
+LaTeX Warning: Citation `delgobbo2023gradeaid' on page 3 undefined on input lin
+e 199.
+
+
+LaTeX Warning: Citation `chamieh2024llms' on page 3 undefined on input line 211
+.
+
+
+LaTeX Warning: Citation `ferreiramello2025gpt4' on page 3 undefined on input li
+ne 212.
+
+
+LaTeX Warning: Citation `li2023distilling' on page 3 undefined on input line 21
+3.
+
+[3]
+
+LaTeX Warning: Citation `filighera2020fooling' on page 4 undefined on input lin
+e 222.
+
+
+LaTeX Warning: Citation `filighera2023cheating' on page 4 undefined on input li
+ne 222.
+
+
+LaTeX Warning: Citation `ding2020dont' on page 4 undefined on input line 222.
+
+
+LaTeX Warning: Citation `funayama2020preventing' on page 4 undefined on input l
+ine 224.
+
+
+LaTeX Warning: Citation `funayama2022balancing' on page 4 undefined on input li
+ne 225.
+
+
+LaTeX Warning: Citation `guo2017calibration' on page 4 undefined on input line 
+226.
+
+
+LaTeX Warning: Citation `efron1993bootstrap' on page 4 undefined on input line 
+228.
+
+
+LaTeX Warning: Citation `holm1979simple' on page 4 undefined on input line 228.
+
+
+
+LaTeX Warning: Reference `tab:data' on page 4 undefined on input line 237.
+
+)
+! Emergency stop.
+<*> main
+        
+!  ==> Fatal error occurred, no output PDF file produced!
+Transcript written on main.log.

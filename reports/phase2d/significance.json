@@ -1,5 +1,10 @@
 {
   "schema_version": "2d.1",
+  "family_correction": {
+    "method": "holm_bonferroni",
+    "alpha": 0.050000000000000044,
+    "n_tests": 6
+  },
   "datasets": {
     "semeval": {
       "status": "ok",
@@ -139,10 +144,5 @@
       "p_holm": 0.0111,
       "significant_holm": true
     }
-  },
-  "family_correction": {
-    "method": "holm_bonferroni",
-    "alpha": 0.050000000000000044,
-    "n_tests": 6
   }
 }

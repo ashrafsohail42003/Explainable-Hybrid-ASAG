@@ -32,7 +32,11 @@ class CrossEncoderGrader(nn.Module):
         self.pooling = pooling
         self.ordinal_head = ordinal_head
         self.num_classes = num_classes
-        self.encoder = AutoModel.from_pretrained(backbone)
+        # Force fp32: newer transformers (5.x) load the deberta-v3 checkpoint in its
+        # native fp16, but the task head below is fp32 — mixing them raises
+        # "mat1 and mat2 must have the same dtype (Half vs Float)". .float() is a
+        # no-op on the older fp32-loading transformers, so it is safe either way.
+        self.encoder = AutoModel.from_pretrained(backbone).float()
         h = self.encoder.config.hidden_size
         self.dropout = nn.Dropout(dropout)
 
