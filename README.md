@@ -94,12 +94,11 @@ redistributed** here; each dataset is acquired under its own license (see
 If you use this work, please cite (see [`CITATION.cff`](CITATION.cff)):
 
 ```bibtex
-@article{alkahlout2026leakage,
-  title   = {Leakage-Aware, Interpretable Feature Fusion for Automatic Short
-             Answer Grading across Heterogeneous Datasets},
-  author  = {Alkahlout, Ashraf Sohail and Lubbad, Abdulaziz Mahmoud and
-             Abu Samra, Aiman Ahmed},
-  year    = {2026}
+@unpublished{alkahlout2026,
+  author = {Ashraf Sohail Al-Kahlout and Abdulaziz Lubbad and Aiman Ahmed Abu Samra},
+  title = {Leakage-Aware, Interpretable Feature Fusion for Automatic Short Answer Grading across Heterogeneous Datasets},
+  note = {Manuscript in preparation},
+  year = {2026}
 }
 ```
 
