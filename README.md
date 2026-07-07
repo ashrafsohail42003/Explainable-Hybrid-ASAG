@@ -1,108 +1,109 @@
-# ASAG Research Project — Phase 1 (Data & Environment)
+# Leakage-Aware, Interpretable Feature Fusion for Automatic Short Answer Grading
 
-Research-grade **Automatic Short Answer Grading (ASAG)** system targeting publication (Q2/Q3).
-Methodology: SBERT/DeBERTa semantic representations + interpretable linguistic features + rubric-aware concept coverage → **ordinal-regression** head. Cross-domain evaluation with telecommunications/networking (SAF) as the explainability case study.
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Python 3.11](https://img.shields.io/badge/python-3.11-blue.svg)](https://www.python.org/)
+[![Paper](https://img.shields.io/badge/paper-PDF-b31b1b.svg)](paper/main_ieee.pdf)
 
-**Scope (fixed):** short English answers (1–5 lines), content questions with reference answer + rubric, text-only (no OCR).
+A research-grade, **explainable hybrid** Automatic Short Answer Grading (ASAG) system evaluated
+honestly across **six heterogeneous datasets**. The project pairs a rigorous **question-leakage
+audit** with an **interpretable gradient-boosted fusion grader** and an **explainability study
+validated against human gold feedback** — and fuses a DeBERTa cross-encoder as an *out-of-fold,
+fully attributable* feature.
 
-This branch covers **Phase 1 only**: reproducible environment, dataset acquisition (free sources), EDA, validation, and a two-view preprocessing pipeline. No modeling/training yet.
+> **Paper:** [`paper/main_ieee.pdf`](paper/main_ieee.pdf) &nbsp;•&nbsp;
+> **Authors:** Ashraf Sohail Alkahlout, Abdulaziz Mahmoud Lubbad &nbsp;•&nbsp;
+> **Supervisor:** Prof. Aiman Ahmed Abu Samra &nbsp;•&nbsp;
+> Department of Computer Engineering, Islamic University of Gaza
 
 ---
 
-## Repository Layout
+## Highlights
+
+- **Evaluation honesty (RQ1).** Replacing stratified *k*-fold with **grouped leave-questions-out**
+  cross-validation collapses apparent performance by up to **38 macro-F1 points**
+  (Powergrading `0.830 → 0.450`). A control model that sees **only the question identity** scores
+  `0.873` under the leaky protocol — *above* the full model — exposing question memorization.
+- **Interpretable fusion grader (RQ2).** A NaN-native LightGBM head over lexical, semantic, and
+  rubric-coverage branches spans classification, ordinal, and regression targets. Linguistic
+  features are the accuracy workhorse; significance is established by a **question-clustered
+  bootstrap under Holm correction** (significant on 4/6 datasets).
+- **Faithful, human-validated explanations (RQ3).** Exact TreeSHAP rankings match gain importance
+  (Spearman ρ = 0.65–0.999); rubric coverage rises monotonically with SAF human verdicts
+  (Incorrect `0.224` → Partial `0.476` → Correct `0.547`).
+- **Deployment (RQ4).** Temperature scaling halves SemEval ECE (`0.122 → 0.059`); perturbation and
+  leave-one-dataset-out transfer reported.
+- **Transformer-as-feature hybrid (RQ5).** A DeBERTa-v3 cross-encoder fused as an out-of-fold
+  feature gives a large, significant gain where its signal is discriminative
+  (**Powergrading `+0.231` macro-F1**), while preserving exact TreeSHAP attributions.
+
+## Headline results (grouped leave-questions-out)
+
+| Dataset | Metric | Feature-only | Hybrid | Tuned | Significant |
+|---|---|---|---|---|:--:|
+| SemEval-2013 | macro-F1 | 0.415 | 0.427 | 0.430 | ✅ |
+| ASAP-SAS | QWK | 0.340 | 0.383 | 0.385 | ✅ |
+| Mohler | Pearson | 0.439 | 0.425 | 0.488 | ✅ |
+| Powergrading | macro-F1 | 0.473 | **0.704** | **0.729** | ✅ |
+| SAF | Pearson | 0.024 | 0.026 | 0.007 | — |
+| MIND-CA | QWK | 0.063 | 0.017 | −0.009 | — |
+
+ASAP-SAS human inter-annotator ceiling: **QWK 0.942** (the model is honestly below human parity).
+
+## Repository structure
 
 ```
-configs/                  # data.yaml: paths + seed + per-dataset flags
-data/{raw,interim,processed,external}/   # gitignored; populated by `make download`
-src/asag/
-  config.py               # pydantic config loader
-  data/
-    download.py           # idempotent acquisition + sha256
-    loaders.py            # unified-schema loaders
-    preprocess.py         # two-views pipeline
-    validate.py           # leakage/dup/missing/schema checks
-    splits.py             # official splits + stratified k=5 scaffold
-  utils/{seed.py, logging.py}
-notebooks/01_eda.ipynb
-reports/{phase1_report.md, DATASETS.md, figures/}
-tests/test_loaders.py
+src/asag/           # library: data, features, models, neural, xai
+configs/data.yaml   # single source of truth (paths, branches, model, neural)
+notebooks/          # 01 EDA; 02 neural (Colab); Kaggle variant
+experiments/        # LLM zero-shot baseline, audit + migration scripts
+paper/              # main_ieee.tex + main_ieee.pdf + references.bib
+reports/            # all JSON reports + figures (phase2a…phase4, phase_hybrid)
+tests/              # pytest suites (loaders, features, models, xai, neural)
+Makefile            # reproducible pipeline targets
 ```
 
-## Reproducible Setup (from scratch)
+## Reproducing the results
 
-### Requirements
-- **Python 3.11** (installed automatically by `uv`)
-- **uv** (https://docs.astral.sh/uv/ — install via `pipx install uv` or `winget install astral-sh.uv`)
-- ~3 GB free disk for datasets + venv
-
-### One-time setup
-
-**With make (preferred):**
+The interpretable pipeline is CPU-only and needs no GPU:
 
 ```bash
-make setup
+make setup        # Python 3.11 env + deps + spaCy model
+make download     # acquire the six datasets under their own licenses
+make preprocess   # two-view preprocessing
+make features     # build interpretable feature matrices
+make train        # Phase 2C: LightGBM fusion head
+make train2d      # Phase 2D: Optuna HPO + cluster-bootstrap significance
+make ablations    # Phase 3: branch ablations (A/B/C/D + negation)
+make xai          # Phase 2F: TreeSHAP + concept coverage + SAF validation
+make audit lodo robustness   # Phase 4: leakage audit, LODO, calibration
 ```
 
-**Without make (Windows PowerShell equivalent):**
+The DeBERTa hybrid arm needs a GPU; run it on Colab/Kaggle/RunPod (see
+[`notebooks/02_neural_colab.ipynb`](notebooks/02_neural_colab.ipynb)), which writes
+`data/processed/<ds>/neural_oof.parquet` for the LightGBM head to auto-fuse.
 
-```powershell
-$env:UV_PROJECT_ENVIRONMENT = "$env:USERPROFILE\.cache\asag-venvs\asag-py311"
-$env:PYTHONUTF8 = "1"
-$env:PYTHONIOENCODING = "utf-8"
-uv python install 3.11
-uv venv --python 3.11 $env:UV_PROJECT_ENVIRONMENT
-uv pip install . --python "$env:UV_PROJECT_ENVIRONMENT\Scripts\python.exe"
-& "$env:UV_PROJECT_ENVIRONMENT\Scripts\python.exe" -m spacy download en_core_web_sm
+## Datasets
+
+Six English ASAG corpora — SemEval-2013 Task 7, SAF, ASAP-SAS, Mohler (2011), Powergrading (2013),
+and MIND-CA — spanning classification, ordinal, and regression targets. **Raw data is never
+redistributed** here; each dataset is acquired under its own license (see
+[`reports/DATASETS.md`](reports/DATASETS.md)).
+
+## Citation
+
+If you use this work, please cite (see [`CITATION.cff`](CITATION.cff)):
+
+```bibtex
+@article{alkahlout2026leakage,
+  title   = {Leakage-Aware, Interpretable Feature Fusion for Automatic Short
+             Answer Grading across Heterogeneous Datasets},
+  author  = {Alkahlout, Ashraf Sohail and Lubbad, Abdulaziz Mahmoud and
+             Abu Samra, Aiman Ahmed},
+  year    = {2026}
+}
 ```
-
-> **Why the venv lives outside the project on Windows**: this project's path
-> includes Arabic characters. Python 3.11 reads venv `.pth` files via the
-> system code page (cp1252) and fails on non-cp1252 bytes — the venv won't
-> start. Keeping `.venv` at an ASCII path (under `~/.cache/asag-venvs/`)
-> avoids the bug. `make setup` does this automatically.
-
-### Dataset acquisition
-
-```bash
-make download
-```
-
-This downloads **SemEval-2013 Task 7**, **SAF Communication Networks English**, and **Mohler 2011** with `sha256` verification. Re-running is a no-op if checksums match.
-
-**ASAP-SAS (optional, stretch goal)** — gated by Kaggle:
-
-1. Create a Kaggle account at https://www.kaggle.com/
-2. Accept competition rules at https://www.kaggle.com/competitions/asap-sas/rules
-3. Place credentials at `~/.kaggle/kaggle.json` (chmod 600)
-4. Flip `asap_sas.enabled: true` in `configs/data.yaml`
-5. Re-run `make download`
-
-### Validation, EDA, tests
-
-```bash
-make validate   # emits JSON reports under reports/
-make eda        # executes notebooks/01_eda.ipynb
-make test       # pytest smoke tests
-```
-
-## Reproducibility Notes
-
-- Global seed `42` set in `src/asag/utils/seed.py` (covers `random`, `numpy`, `PYTHONHASHSEED`).
-- All downloaded files have sha256 logged at `data/raw/CHECKSUMS.txt`.
-- Dependencies pinned in `pyproject.toml`.
-- See [reports/DATASETS.md](reports/DATASETS.md) for verified-link table, licenses, and citations.
-- See [reports/phase1_report.md](reports/phase1_report.md) for decisions, EDA highlights, and risks.
-
-## Datasets (Phase 1 stack)
-
-| Dataset | Role | License |
-|---|---|---|
-| SemEval-2013 Task 7 (Beetle + SciEntsBank) | core + official UA/UQ/UD cross-domain splits | CC-BY-SA |
-| SAF Communication Networks English | explainability case study (gold feedback) | CC-BY-4.0 |
-| Mohler 2011 (CS data structures) | ordinal 0–5 grading; Kaggle mirror | research use |
-| ASAP-SAS (Hewlett, 10 prompts) | rubric / QWK (optional, gated) | Kaggle competition terms |
-| ASAG2024 (Meyerger) | cross-check only, not consumed | per source |
 
 ## License
 
-This code is MIT licensed. **Each dataset retains its original license** — see [reports/DATASETS.md](reports/DATASETS.md).
+Code released under the [MIT License](LICENSE). Dataset licenses vary and are the responsibility
+of the user (see `reports/DATASETS.md`).

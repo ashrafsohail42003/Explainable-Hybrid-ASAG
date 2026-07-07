@@ -62,3 +62,20 @@ reports/*.html
 reports/*.pdf
 _demo_*
 _smoke*
+
+# --- Publication cleanup: exclude scratch / internal / build artifacts ---
+_demo_neural.py
+_demo_neural.log
+_smoke_neural.py
+_smoke.log
+run_runpod.sh
+run_runpod_v2.sh
+CLAUDE.md
+README.md.bak
+Explainable-Hybrid-ASAG*.zip
+results_bundle*.zip
+# LaTeX build artifacts (keep .tex, .bbl, .pdf)
+paper/*.aux
+paper/*.blg
+paper/*.out
+paper/*.log
