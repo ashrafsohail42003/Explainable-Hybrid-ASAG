@@ -1,0 +1,49 @@
+This is BibTeX, Version 0.99d (TeX Live 2022/dev/Debian)
+Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
+The top-level auxiliary file: main_ieee.aux
+The style file: ieeetr.bst
+Database file #1: references.bib
+Warning--entry type for "honnibal2020spacy" isn't style-file defined
+--line 488 of file references.bib
+You've used 39 entries,
+            1876 wiz_defined-function locations,
+            694 strings with 13354 characters,
+and the built_in function-call counts, 12028 in all, are:
+= -- 1108
+> -- 561
+< -- 0
++ -- 201
+- -- 162
+* -- 906
+:= -- 1670
+add.period$ -- 40
+call.type$ -- 39
+change.case$ -- 38
+chr.to.int$ -- 0
+cite$ -- 39
+duplicate$ -- 636
+empty$ -- 1165
+format.name$ -- 162
+if$ -- 2897
+int.to.chr$ -- 0
+int.to.str$ -- 39
+missing$ -- 38
+newline$ -- 121
+num.names$ -- 39
+pop$ -- 190
+preamble$ -- 1
+purify$ -- 0
+quote$ -- 0
+skip$ -- 400
+stack$ -- 0
+substring$ -- 803
+swap$ -- 240
+text.length$ -- 0
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 0
+warning$ -- 0
+while$ -- 111
+width$ -- 41
+write$ -- 381
+(There was 1 warning)

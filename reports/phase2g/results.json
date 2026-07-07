@@ -1,0 +1,510 @@
+{
+  "backbone": "microsoft/deberta-v3-base",
+  "seeds": [
+    42
+  ],
+  "datasets": {
+    "semeval": {
+      "task_type": "classification",
+      "protocol": "official_split",
+      "target": "label",
+      "per_prompt": false,
+      "backbone": "microsoft/deberta-v3-base",
+      "seeds": [
+        42
+      ],
+      "evaluations": {
+        "test_ua": {
+          "n_eval": 979,
+          "neural": {
+            "macro_f1": {
+              "mean": 0.11786743515850144,
+              "std": 0.0,
+              "n": 1
+            },
+            "weighted_f1": {
+              "mean": 0.246209300203407,
+              "std": 0.0,
+              "n": 1
+            },
+            "accuracy": {
+              "mean": 0.4177732379979571,
+              "std": 0.0,
+              "n": 1
+            }
+          },
+          "baseline": {
+            "macro_f1": {
+              "mean": 0.11786743515850144,
+              "std": 0.0,
+              "n": 1
+            },
+            "weighted_f1": {
+              "mean": 0.246209300203407,
+              "std": 0.0,
+              "n": 1
+            },
+            "accuracy": {
+              "mean": 0.4177732379979571,
+              "std": 0.0,
+              "n": 1
+            }
+          }
+        },
+        "test_uq": {
+          "n_eval": 1552,
+          "neural": {
+            "macro_f1": {
+              "mean": 0.11743286299499318,
+              "std": 0.0,
+              "n": 1
+            },
+            "weighted_f1": {
+              "mean": 0.24402125203534344,
+              "std": 0.0,
+              "n": 1
+            },
+            "accuracy": {
+              "mean": 0.41559278350515466,
+              "std": 0.0,
+              "n": 1
+            }
+          },
+          "baseline": {
+            "macro_f1": {
+              "mean": 0.11743286299499318,
+              "std": 0.0,
+              "n": 1
+            },
+            "weighted_f1": {
+              "mean": 0.24402125203534344,
+              "std": 0.0,
+              "n": 1
+            },
+            "accuracy": {
+              "mean": 0.41559278350515466,
+              "std": 0.0,
+              "n": 1
+            }
+          }
+        },
+        "test_ud": {
+          "n_eval": 4562,
+          "neural": {
+            "macro_f1": {
+              "mean": 0.11835159746874517,
+              "std": 0.0,
+              "n": 1
+            },
+            "weighted_f1": {
+              "mean": 0.24866288069660727,
+              "std": 0.0,
+              "n": 1
+            },
+            "accuracy": {
+              "mean": 0.4202104340201666,
+              "std": 0.0,
+              "n": 1
+            }
+          },
+          "baseline": {
+            "macro_f1": {
+              "mean": 0.11835159746874517,
+              "std": 0.0,
+              "n": 1
+            },
+            "weighted_f1": {
+              "mean": 0.24866288069660727,
+              "std": 0.0,
+              "n": 1
+            },
+            "accuracy": {
+              "mean": 0.4202104340201666,
+              "std": 0.0,
+              "n": 1
+            }
+          }
+        }
+      },
+      "headline": {
+        "split": "test_ud",
+        "metric": "macro_f1",
+        "neural": {
+          "mean": 0.11835159746874517,
+          "std": 0.0,
+          "n": 1
+        },
+        "baseline": {
+          "mean": 0.11835159746874517,
+          "std": 0.0,
+          "n": 1
+        }
+      }
+    },
+    "asap_sas": {
+      "task_type": "ordinal",
+      "protocol": "official_split",
+      "target": "score",
+      "per_prompt": true,
+      "backbone": "microsoft/deberta-v3-base",
+      "seeds": [
+        42
+      ],
+      "evaluations": {
+        "test_ua": {
+          "n_eval": 2180,
+          "neural": {
+            "qwk": {
+              "mean": 0.0,
+              "std": 0.0,
+              "n": 1
+            },
+            "accuracy": {
+              "mean": 0.535079619133594,
+              "std": 0.0,
+              "n": 1
+            }
+          },
+          "baseline": {
+            "qwk": {
+              "mean": 0.0,
+              "std": 0.0,
+              "n": 1
+            },
+            "accuracy": {
+              "mean": 0.5646299010765987,
+              "std": 0.0,
+              "n": 1
+            }
+          }
+        }
+      },
+      "headline": {
+        "split": "test_ua",
+        "metric": "qwk",
+        "neural": {
+          "mean": 0.0,
+          "std": 0.0,
+          "n": 1
+        },
+        "baseline": {
+          "mean": 0.0,
+          "std": 0.0,
+          "n": 1
+        }
+      }
+    },
+    "saf": {
+      "task_type": "regression",
+      "protocol": "official_split",
+      "target": "score",
+      "per_prompt": false,
+      "backbone": "microsoft/deberta-v3-base",
+      "seeds": [
+        42
+      ],
+      "evaluations": {
+        "test_ua": {
+          "n_eval": 375,
+          "neural": {
+            "rmse": {
+              "mean": 0.7520976138760156,
+              "std": 0.0,
+              "n": 1
+            },
+            "mae": {
+              "mean": 0.4691982920964559,
+              "std": 0.0,
+              "n": 1
+            },
+            "pearson": {
+              "mean": -0.13972061404016406,
+              "std": 0.0,
+              "n": 1
+            },
+            "spearman": {
+              "mean": -0.1293051850205138,
+              "std": 0.0,
+              "n": 1
+            }
+          },
+          "baseline": {
+            "rmse": {
+              "mean": 0.7275857378188475,
+              "std": 0.0,
+              "n": 1
+            },
+            "mae": {
+              "mean": 0.47022955301747044,
+              "std": 0.0,
+              "n": 1
+            },
+            "pearson": {
+              "mean": NaN,
+              "std": NaN,
+              "n": 0
+            },
+            "spearman": {
+              "mean": NaN,
+              "std": NaN,
+              "n": 0
+            }
+          }
+        },
+        "test_uq": {
+          "n_eval": 479,
+          "neural": {
+            "rmse": {
+              "mean": 0.5373561954188893,
+              "std": 0.0,
+              "n": 1
+            },
+            "mae": {
+              "mean": 0.3808052731456239,
+              "std": 0.0,
+              "n": 1
+            },
+            "pearson": {
+              "mean": -0.02205460628784537,
+              "std": 0.0,
+              "n": 1
+            },
+            "spearman": {
+              "mean": -0.10559080143562535,
+              "std": 0.0,
+              "n": 1
+            }
+          },
+          "baseline": {
+            "rmse": {
+              "mean": 0.5427872685626319,
+              "std": 0.0,
+              "n": 1
+            },
+            "mae": {
+              "mean": 0.39991000859634035,
+              "std": 0.0,
+              "n": 1
+            },
+            "pearson": {
+              "mean": NaN,
+              "std": NaN,
+              "n": 0
+            },
+            "spearman": {
+              "mean": NaN,
+              "std": NaN,
+              "n": 0
+            }
+          }
+        }
+      },
+      "headline": {
+        "split": "test_uq",
+        "metric": "pearson",
+        "neural": {
+          "mean": -0.02205460628784537,
+          "std": 0.0,
+          "n": 1
+        },
+        "baseline": {
+          "mean": NaN,
+          "std": NaN,
+          "n": 0
+        }
+      }
+    },
+    "mindreading": {
+      "task_type": "ordinal",
+      "protocol": "kfold",
+      "target": "score",
+      "per_prompt": false,
+      "backbone": "microsoft/deberta-v3-base",
+      "seeds": [
+        42
+      ],
+      "evaluations": {
+        "cv": {
+          "n_eval": 10543,
+          "n_folds": 5,
+          "neural": {
+            "qwk": {
+              "mean": 0.0,
+              "std": 0.0,
+              "n": 1
+            },
+            "accuracy": {
+              "mean": 0.3333965664421891,
+              "std": 0.0,
+              "n": 1
+            }
+          },
+          "baseline": {
+            "qwk": {
+              "mean": 0.0,
+              "std": 0.0,
+              "n": 1
+            },
+            "accuracy": {
+              "mean": 0.3333965664421891,
+              "std": 0.0,
+              "n": 1
+            }
+          }
+        }
+      },
+      "headline": {
+        "split": "cv",
+        "metric": "qwk",
+        "neural": {
+          "mean": 0.0,
+          "std": 0.0,
+          "n": 1
+        },
+        "baseline": {
+          "mean": 0.0,
+          "std": 0.0,
+          "n": 1
+        }
+      }
+    },
+    "powergrading": {
+      "task_type": "classification",
+      "protocol": "kfold",
+      "target": "label",
+      "per_prompt": false,
+      "backbone": "microsoft/deberta-v3-base",
+      "seeds": [
+        42
+      ],
+      "evaluations": {
+        "cv": {
+          "n_eval": 4941,
+          "n_folds": 5,
+          "neural": {
+            "macro_f1": {
+              "mean": 0.3922509225092251,
+              "std": 0.0,
+              "n": 1
+            },
+            "accuracy": {
+              "mean": 0.6454159077109897,
+              "std": 0.0,
+              "n": 1
+            },
+            "qwk": {
+              "mean": 0.0,
+              "std": 0.0,
+              "n": 1
+            }
+          },
+          "baseline": {
+            "macro_f1": {
+              "mean": 0.3922509225092251,
+              "std": 0.0,
+              "n": 1
+            },
+            "accuracy": {
+              "mean": 0.6454159077109897,
+              "std": 0.0,
+              "n": 1
+            },
+            "qwk": {
+              "mean": 0.0,
+              "std": 0.0,
+              "n": 1
+            }
+          }
+        }
+      },
+      "headline": {
+        "split": "cv",
+        "metric": "macro_f1",
+        "neural": {
+          "mean": 0.3922509225092251,
+          "std": 0.0,
+          "n": 1
+        },
+        "baseline": {
+          "mean": 0.3922509225092251,
+          "std": 0.0,
+          "n": 1
+        }
+      }
+    },
+    "mohler": {
+      "task_type": "regression",
+      "protocol": "kfold",
+      "target": "score",
+      "per_prompt": false,
+      "backbone": "microsoft/deberta-v3-base",
+      "seeds": [
+        42
+      ],
+      "evaluations": {
+        "cv": {
+          "n_eval": 616,
+          "n_folds": 5,
+          "neural": {
+            "pearson": {
+              "mean": 0.04753196223831392,
+              "std": 0.0,
+              "n": 1
+            },
+            "spearman": {
+              "mean": 0.08155546252421075,
+              "std": 0.0,
+              "n": 1
+            },
+            "rmse": {
+              "mean": 3.8763651193653623,
+              "std": 0.0,
+              "n": 1
+            },
+            "mae": {
+              "mean": 3.7125343046114816,
+              "std": 0.0,
+              "n": 1
+            }
+          },
+          "baseline": {
+            "pearson": {
+              "mean": -0.1662612964729489,
+              "std": 0.0,
+              "n": 1
+            },
+            "spearman": {
+              "mean": -0.1813546243340702,
+              "std": 0.0,
+              "n": 1
+            },
+            "rmse": {
+              "mean": 1.1640582263776464,
+              "std": 0.0,
+              "n": 1
+            },
+            "mae": {
+              "mean": 0.9588110047867742,
+              "std": 0.0,
+              "n": 1
+            }
+          }
+        }
+      },
+      "headline": {
+        "split": "cv",
+        "metric": "pearson",
+        "neural": {
+          "mean": 0.04753196223831392,
+          "std": 0.0,
+          "n": 1
+        },
+        "baseline": {
+          "mean": -0.1662612964729489,
+          "std": 0.0,
+          "n": 1
+        }
+      }
+    }
+  }
+}

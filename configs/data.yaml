@@ -226,3 +226,30 @@ model:
     n_boot: 10000
     ci: 0.95
     seed: 42
+
+# Phase 2G/4 — neural slice (DeBERTa-v3 cross-encoder + CORAL/CORN + hybrid OOF).
+# Tuned for a GPU (Colab) run; `device: cuda` falls back to CPU automatically when no
+# CUDA is present (see asag.neural.trainer._device), so this is safe on the dev box.
+# LoRA trains <1% of params, protecting the small corpora (Mohler ~616 / SAF ~1.7k).
+neural:
+  enabled: true
+  backbone: microsoft/deberta-v3-base
+  device: cuda
+  epochs: 4
+  batch_size: 16
+  lr: 2.0e-5
+  warmup_ratio: 0.1
+  dropout: 0.1
+  ordinal_head: corn        # corn | coral
+  pooling: cls              # cls | mean
+  seeds: [42, 1, 2]         # >=3 seeds -> publication-grade mean +/- std
+  num_workers: 2
+  select_on_dev: true
+  save_predictions: true
+  lora_enabled: true
+  lora_r: 8
+  lora_alpha: 16
+  lora_dropout: 0.1
+  max_len: 128
+  max_len_overrides:
+    saf: 256

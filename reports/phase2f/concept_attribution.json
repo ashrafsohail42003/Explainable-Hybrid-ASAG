@@ -109,41 +109,41 @@
       "n_examples": 6,
       "examples": [
         {
-          "question_id": "968ce1d4aa187606",
+          "question_id": "1278a94fdfbdd5fb",
           "score": 0.0,
-          "student_answer": "1.0.0.0-126.255.255.255",
-          "n_concepts": 1,
-          "n_covered": 0,
-          "coverage_fraction": 0.0,
+          "student_answer": "Two modes of control plane distribution: [1] Distributed Routing. Downside: It requires time to converge to optimum route with lower resource utilization. [2] Logically Centralized Routing. Downside: Added extra redundan\u2026",
+          "n_concepts": 3,
+          "n_covered": 1,
+          "coverage_fraction": 0.333,
           "concepts": [
             {
-              "concept": "126 Class A nets can be addressed in classful IP addressing (1.xx.yy.zz - 126.xx.yy.zz) 127.xx.yy.zz is reserved for loopback testing 0.xx.yy.zz can be accepted if stated accordingly (definitions defer whether this is in Class A)",
-              "similarity": 0.464,
+              "concept": "Two modes of physical distribution of control plane and associated drawbacks are: Replication \u25cf Issue of scalability \u25cf More resources, more cost \u25cf Wastage of resources as the replicated node is on standby and no actual load distribution occurs.",
+              "similarity": 0.6348,
+              "covered": true
+            },
+            {
+              "concept": "\u25cf The problem to keep the data consistent in the replicated node is hard and complex.",
+              "similarity": 0.1304,
+              "covered": false
+            },
+            {
+              "concept": "Partitioning \u25cf Raises issues similar to P2P networks \u25cf Knowledge about neighborhood \u25cf Coordination and consistency \u25cf Lower availability",
+              "similarity": 0.4197,
               "covered": false
             }
           ]
         },
         {
-          "question_id": "78333444ba985906",
+          "question_id": "568a3f0e797eaddc",
           "score": 0.5,
-          "student_answer": "Frame bursting is a communication protocol feature for the principle of shared broadcast mode in gigabit ethernet. Advantage: frame bursting has a better efficiency than carrier extension. Disadvantage: needs frames wait\u2026",
-          "n_concepts": 3,
-          "n_covered": 3,
+          "student_answer": "The receiver does not know which \"data\" it should use and will probably re-execute the transfer, which could lead to more network traffic.",
+          "n_concepts": 1,
+          "n_covered": 1,
           "coverage_fraction": 1.0,
           "concepts": [
             {
-              "concept": "Frame bursting reduces the overhead for transmitting small frames by concatenating a sequence of multiple frames in one single transmission, without ever releasing control of the channel.",
-              "similarity": 0.7672,
-              "covered": true
-            },
-            {
-              "concept": "Advantage :it is more efficient than carrier extension as single frames not filled up with garbage.",
-              "similarity": 0.52,
-              "covered": true
-            },
-            {
-              "concept": "Disadvantage :need frames waiting for transmission or buffering and delay of frames",
-              "similarity": 0.5963,
+              "concept": "if the receiver is not capable of differentiating between valid and duplicated packets it may act on the same information twice.",
+              "similarity": 0.5758,
               "covered": true
             }
           ]
@@ -151,94 +151,134 @@
         {
           "question_id": "33bbf981951d8613",
           "score": 0.88,
-          "student_answer": "Phase 1: Slow start(getting to equilibrium) Phase 2: Congestion Avoidence In both phases,when timeout occurs, ss_thresh is set to 50% of the current size of the congestion window, cwnd is reset to one, and slow-start is \u2026",
+          "student_answer": "Phase 1: Slow start(getting to equilibrium) Phase 2: Congestion Avoidance. In phase 1, cwnd is < ss_thresh, and initialize cwnd=1, and then it increases expotentially until reach the ss_thresh, in phase 2, cwnd>=ss_thres\u2026",
           "n_concepts": 1,
           "n_covered": 1,
           "coverage_fraction": 1.0,
           "concepts": [
             {
               "concept": "Slow start: ss_thresh is constant, increment cwnd by one every time a segment is acknowledged until ss_tresh is reached, then slowed increase of cwnd Congestion Avoidance: cwnd is reset to 1 after adjusting ss_tresh = cwnd / 2",
-              "similarity": 0.7033,
+              "similarity": 0.7244,
               "covered": true
             }
           ]
         },
         {
-          "question_id": "92f6ecb00f19c648",
+          "question_id": "1278a94fdfbdd5fb",
           "score": 1.0,
-          "student_answer": "Nein, denn dies f\u00fchrt zu Schwankungen, wenn es mehr als einen Pfad zwischen einem beliebigen Paar von Endsystemen im Netzwerk gibt. Das bedeutet, dass das Routing instabil ist und es gibt uneffiziente Paketumlagerungen.",
-          "n_concepts": 2,
-          "n_covered": 0,
-          "coverage_fraction": 0.0,
+          "student_answer": "Control Plane Distribution: Replication The primary controller controls the entire network. If it fails, the second controller that was on standby the whole time, jumps in and takes over the job of the primary controller\u2026",
+          "n_concepts": 3,
+          "n_covered": 1,
+          "coverage_fraction": 0.333,
           "concepts": [
             {
-              "concept": "Yes, using the current load to find the best path can lead to fluctuations/oscillations when there is more than one path between any pair of end systems in the network (here: CF and EI).",
-              "similarity": 0.2909,
+              "concept": "Two modes of physical distribution of control plane and associated drawbacks are: Replication \u25cf Issue of scalability \u25cf More resources, more cost \u25cf Wastage of resources as the replicated node is on standby and no actual load distribution occurs.",
+              "similarity": 0.7456,
+              "covered": true
+            },
+            {
+              "concept": "\u25cf The problem to keep the data consistent in the replicated node is hard and complex.",
+              "similarity": 0.2792,
               "covered": false
             },
             {
-              "concept": "This can cause packet reorderings at the receiving side.",
-              "similarity": 0.1323,
+              "concept": "Partitioning \u25cf Raises issues similar to P2P networks \u25cf Knowledge about neighborhood \u25cf Coordination and consistency \u25cf Lower availability",
+              "similarity": 0.4478,
               "covered": false
             }
           ]
         },
         {
-          "question_id": "07ead61b58876f50",
+          "question_id": "090d61404aaa8247",
           "score": 1.0,
-          "student_answer": "The control plane defines the routes and manages the network graphs. The data plane is responsible for forwarding the packets. The SDN controllers implements the control plane and the southbound interface to switches.",
-          "n_concepts": 6,
-          "n_covered": 5,
-          "coverage_fraction": 0.833,
+          "student_answer": "* * Hidden Terminals: * Hidden terminal problem occurs when a node can communicate with another node (x) but is not able to communicate directly with other nodes that are also able to communicate with that certain node (\u2026",
+          "n_concepts": 13,
+          "n_covered": 4,
+          "coverage_fraction": 0.308,
           "concepts": [
             {
-              "concept": "Control Plane: The control plane is logically centralized, but can be physically distributed (multiple coordinating control servers for higher availability and scalability).",
-              "similarity": 0.6435,
-              "covered": true
-            },
-            {
-              "concept": "One of the following responsibilities should be given: \u25cf decides the route for the packet/data \u25cb Control servers manage the network graph, define routes, and update the flow tables of connected switches.",
-              "similarity": 0.6203,
-              "covered": true
-            },
-            {
-              "concept": "\u25cf handles unprocessed packets coming in from the data plane Data plane: Responsible for packet forwarding.",
-              "similarity": 0.5492,
-              "covered": true
-            },
-            {
-              "concept": "Individual switches just execute actions according to their flow tables decided upon by the control plane.",
-              "similarity": 0.4162,
+              "concept": "Possible Challenges: 1.Adaptation: The network has to handle the dynamic positioning of the nodes/topology changes.",
+              "similarity": 0.3623,
               "covered": false
             },
             {
-              "concept": "The following are the tasks taken care of by the controller: \u25cf Configuration of forwarding tables \u25cf Injecting packets \u25cf Events from switch (packet-in) \u25cf Collection/Monitoring of traffic statistics \u25cf Discovery of topology \u25cf Inventorying what devices are within the network and the capabilities of each device \u25cf Interfaces with control logic (control \u201capplication\u201d) via the northbound interface(s) \u25cf Implements a southbound interface to interact with the data plane.",
-              "similarity": 0.6547,
+              "concept": "Additionally, nodes can leave or join the network anywhere (within signal range) at any time.",
+              "similarity": 0.4496,
+              "covered": false
+            },
+            {
+              "concept": "2.Security: Interception of packets or injection of faulty packages is easily possible in wireless networks.",
+              "similarity": 0.4524,
+              "covered": false
+            },
+            {
+              "concept": "This may necessitate encryption and authentication.",
+              "similarity": 0.0984,
+              "covered": false
+            },
+            {
+              "concept": "3.Medium Access Control: Wireless networks feature new possibilities for inference and collisions of the transmitted signals.",
+              "similarity": 0.5351,
               "covered": true
             },
             {
-              "concept": "\u25cf Implements the control plane.",
-              "similarity": 0.5384,
+              "concept": "See the following correct example challenges: i)Hidden Terminal: Nodes\u2019 transmissions may collide at other nodes without them noticing, because they are out of detection range of each other (A and C in this example) and therefore sense the medium to be free even though there is an overlap of the transmission ranges.",
+              "similarity": 0.6931,
               "covered": true
+            },
+            {
+              "concept": "ii)Exposed Terminal: Nodes (C in this example) may not realize they could send collision-free, because a node in their detection range (B) is sending and they, therefore, detect the medium as busy, but the sending node (B) is out of the detection range of the destination node (D) so that no collision would occur.",
+              "similarity": 0.7489,
+              "covered": true
+            },
+            {
+              "concept": "iii)Near and Far Terminals: Signal strength decreases proportionally to the square of distance, so closer nodes may drown out the weaker signals of nodes farther away.",
+              "similarity": 0.5707,
+              "covered": true
+            },
+            {
+              "concept": "4.Quality of Service (QoS): Due to the rapidly changing network topology, imprecise network information, and resource constraints of participating nodes, it is challenging to provide the desired QoS. Additionally, signal quality may also decline due to noise and occlusion.",
+              "similarity": 0.3015,
+              "covered": false
+            },
+            {
+              "concept": "5.Scalability: Since it is not possible to know the number of participating nodes beforehand, it is vital that routing protocols, etc.",
+              "similarity": 0.3068,
+              "covered": false
+            },
+            {
+              "concept": "are capable of dealing with increasing network sizes and workloads.",
+              "similarity": 0.2249,
+              "covered": false
+            },
+            {
+              "concept": "6.Heterogeneity: Nodes may have different capabilities, responsibilities, and constraints, e.g. processing capacity, transmission ranges 7.Dependability: Providing consistent, performant, and reliable routing behavior that higher-level services can trust is challenging in such a dynamic environment.",
+              "similarity": 0.3659,
+              "covered": false
+            },
+            {
+              "concept": "8.Power Consumption: As most mobile devices are battery-powered, power consumption becomes an important optimization factor in routing, etc.",
+              "similarity": 0.1734,
+              "covered": false
             }
           ]
         },
         {
           "question_id": "aa335ad4bb22ea34",
           "score": 3.5,
-          "student_answer": "Token Ring Reasons:1. Good throughput - even during increased utilization 2. Deterministic behavior (max. waiting time),you will know after which time, you get the axis again to the data.You are really real-time. potenti\u2026",
+          "student_answer": "I would choose non-persistent CSMA with Collision Detection (CD). The first reason is that CSMA procedure is costly efficient, so that would help the company, since the funding is tight. Secondly, CSMA procedure allows t\u2026",
           "n_concepts": 2,
-          "n_covered": 0,
-          "coverage_fraction": 0.0,
+          "n_covered": 1,
+          "coverage_fraction": 0.5,
           "concepts": [
             {
               "concept": "0.5 P for a sensible choice out of: Token Ring, p-persistent or non-persistent CSMA, CSMA/CD or TDMA with reservation 1P for the drawback and 1P for an advantage.",
-              "similarity": 0.4474,
-              "covered": false
+              "similarity": 0.5219,
+              "covered": true
             },
             {
               "concept": "The following properties may be considered: Scalability, waiting time, extendability, cost effectiveness, constraints, hardware requirements, compatibility, throughput, overhead, complexity and prioritization capabilities",
-              "similarity": 0.2656,
+              "similarity": 0.308,
               "covered": false
             }
           ]
@@ -255,7 +295,7 @@
       "n_examples": 6,
       "examples": [
         {
-          "question_id": "cfe7b3269a041a6f",
+          "question_id": "fe6f57bbd3f02bdf",
           "score": 0.0,
           "student_answer": "not answered",
           "n_concepts": 1,
@@ -263,8 +303,8 @@
           "coverage_fraction": 0.0,
           "concepts": [
             {
-              "concept": "It makes a copy of the function code in every place where a function call is made.",
-              "similarity": 0.0653,
+              "concept": "They both involve repetition; they both have termination tests; they can both occur infinitely.",
+              "similarity": 0.0549,
               "covered": false
             }
           ]
@@ -310,21 +350,31 @@
           ]
         },
         {
-          "question_id": "ee79f4744cf4e479",
+          "question_id": "0a166a459f0d0ac1",
           "score": 5.0,
-          "student_answer": "Compiler selects proper function to execute based on number, types and order of arguments in the function call.",
-          "n_concepts": 2,
+          "student_answer": "Either omitting the base case, or writing the recursion step incorrectly so the it does not reach the base case can cause infinite recursion.",
+          "n_concepts": 1,
           "n_covered": 1,
-          "coverage_fraction": 0.5,
+          "coverage_fraction": 1.0,
           "concepts": [
             {
-              "concept": "Based on the function signature.",
-              "similarity": 0.4079,
-              "covered": false
-            },
+              "concept": "If the recursion step is defined incorrectly, or if the base case is not included.",
+              "similarity": 0.8918,
+              "covered": true
+            }
+          ]
+        },
+        {
+          "question_id": "cfe7b3269a041a6f",
+          "score": 5.0,
+          "student_answer": "The inline keyword advises the compiler to copy the function's code in place to avoid function calls; however the compiler can and typically does ignore the inline qualifier for all but the smallest functions.",
+          "n_concepts": 1,
+          "n_covered": 1,
+          "coverage_fraction": 1.0,
+          "concepts": [
             {
-              "concept": "When an overloaded function is called, the compiler will find the function whose signature is closest to the given function call.",
-              "similarity": 0.6118,
+              "concept": "It makes a copy of the function code in every place where a function call is made.",
+              "similarity": 0.5011,
               "covered": true
             }
           ]
@@ -332,29 +382,14 @@
         {
           "question_id": "0a166a459f0d0ac1",
           "score": 5.0,
-          "student_answer": "No base case, or an incorrectly written recursion step that does not converge on the base case will lead to infinite recursion.",
-          "n_concepts": 1,
-          "n_covered": 1,
-          "coverage_fraction": 1.0,
-          "concepts": [
-            {
-              "concept": "If the recursion step is defined incorrectly, or if the base case is not included.",
-              "similarity": 0.838,
-              "covered": true
-            }
-          ]
-        },
-        {
-          "question_id": "7024dc2bed723eec",
-          "score": 5.0,
-          "student_answer": "any number you want",
+          "student_answer": "A base case that is the simplest case for a problem so that the function will lead to it, if this does not happen then it will end up as an infinite loop. And a condition to know when to terminate.",
           "n_concepts": 1,
           "n_covered": 0,
           "coverage_fraction": 0.0,
           "concepts": [
             {
-              "concept": "Unlimited number.",
-              "similarity": 0.482,
+              "concept": "If the recursion step is defined incorrectly, or if the base case is not included.",
+              "similarity": 0.4522,
               "covered": false
             }
           ]
@@ -367,76 +402,61 @@
       "n_examples": 6,
       "examples": [
         {
-          "question_id": "18",
-          "score": 0.0,
-          "student_answer": "ohio, mississippi",
-          "n_concepts": 1,
-          "n_covered": 1,
-          "coverage_fraction": 1.0,
-          "concepts": [
-            {
-              "concept": "Missouri",
-              "similarity": 0.5871,
-              "covered": true
-            }
-          ]
-        },
-        {
-          "question_id": "9",
-          "score": 0.0,
-          "student_answer": "the power to coin money",
-          "n_concepts": 1,
-          "n_covered": 1,
-          "coverage_fraction": 1.0,
-          "concepts": [
-            {
-              "concept": "to print money",
-              "similarity": 0.5406,
-              "covered": true
-            }
-          ]
-        },
-        {
           "question_id": "10",
           "score": 0.0,
-          "student_answer": "to over see voting",
+          "student_answer": "any not specifically assigned to the federal government.",
           "n_concepts": 1,
           "n_covered": 0,
           "coverage_fraction": 0.0,
           "concepts": [
             {
               "concept": "provide schooling and education",
-              "similarity": 0.1057,
+              "similarity": 0.1361,
               "covered": false
             }
           ]
         },
         {
-          "question_id": "13",
+          "question_id": "11",
+          "score": 0.0,
+          "student_answer": "voting in elections, lobbying for bills",
+          "n_concepts": 1,
+          "n_covered": 1,
+          "coverage_fraction": 1.0,
+          "concepts": [
+            {
+              "concept": "vote",
+              "similarity": 0.5027,
+              "covered": true
+            }
+          ]
+        },
+        {
+          "question_id": "14",
+          "score": 0.0,
+          "student_answer": "unfair laws, high taxes, wanted to be a separate country.",
+          "n_concepts": 1,
+          "n_covered": 1,
+          "coverage_fraction": 1.0,
+          "concepts": [
+            {
+              "concept": "because of high taxes",
+              "similarity": 0.5953,
+              "covered": true
+            }
+          ]
+        },
+        {
+          "question_id": "6",
           "score": 0.5,
-          "student_answer": "expansion and imperialism",
+          "student_answer": "executive",
           "n_concepts": 1,
           "n_covered": 0,
           "coverage_fraction": 0.0,
           "concepts": [
             {
-              "concept": "freedom",
-              "similarity": 0.282,
-              "covered": false
-            }
-          ]
-        },
-        {
-          "question_id": "7",
-          "score": 1.0,
-          "student_answer": "they're more populated",
-          "n_concepts": 1,
-          "n_covered": 0,
-          "coverage_fraction": 0.0,
-          "concepts": [
-            {
-              "concept": "the state's population",
-              "similarity": 0.4528,
+              "concept": "Congress",
+              "similarity": 0.4163,
               "covered": false
             }
           ]
@@ -444,14 +464,29 @@
         {
           "question_id": "3",
           "score": 1.0,
-          "student_answer": "declared the independence of the 13 colonies from the british.",
+          "student_answer": "declare the colonies to no longer be under the control of great britain",
+          "n_concepts": 1,
+          "n_covered": 0,
+          "coverage_fraction": 0.0,
+          "concepts": [
+            {
+              "concept": "announced our independence",
+              "similarity": 0.3244,
+              "covered": false
+            }
+          ]
+        },
+        {
+          "question_id": "1",
+          "score": 1.0,
+          "student_answer": "bill of right",
           "n_concepts": 1,
           "n_covered": 1,
           "coverage_fraction": 1.0,
           "concepts": [
             {
-              "concept": "announced our independence",
-              "similarity": 0.5688,
+              "concept": "the Bill of Rights",
+              "similarity": 0.805,
               "covered": true
             }
           ]

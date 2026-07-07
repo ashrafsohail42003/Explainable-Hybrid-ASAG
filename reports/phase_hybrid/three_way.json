@@ -1,0 +1,148 @@
+{
+  "schema_version": "hybrid.1",
+  "seeds": [
+    42,
+    1,
+    2,
+    3,
+    4
+  ],
+  "head": {
+    "n_estimators": 300,
+    "learning_rate": 0.05,
+    "num_leaves": 31,
+    "min_child_samples": 20,
+    "subsample": 0.8,
+    "colsample_bytree": 0.8,
+    "reg_alpha": 0.0,
+    "reg_lambda": 0.0
+  },
+  "datasets": {
+    "semeval": {
+      "status": "ok",
+      "metric": "macro_f1",
+      "headline_split": "test_ud",
+      "neural_only": {
+        "metric": "macro_f1",
+        "mean": 0.1184
+      },
+      "feature_only": {
+        "metric": "macro_f1",
+        "mean": 0.41511963931313894,
+        "std": 0.006532088798576265
+      },
+      "hybrid": {
+        "metric": "macro_f1",
+        "mean": 0.42689973967703276,
+        "std": 0.007621283620716153
+      },
+      "fusion_gain": 0.0118,
+      "interpretability_cost": 0.3085
+    },
+    "saf": {
+      "status": "ok",
+      "metric": "pearson",
+      "headline_split": "test_uq",
+      "neural_only": {
+        "metric": "pearson",
+        "mean": -0.0221
+      },
+      "feature_only": {
+        "metric": "pearson",
+        "mean": 0.02382390789153608,
+        "std": 0.021296960204370798
+      },
+      "hybrid": {
+        "metric": "pearson",
+        "mean": 0.02578187463380105,
+        "std": 0.008321485939908
+      },
+      "fusion_gain": 0.002,
+      "interpretability_cost": 0.0479
+    },
+    "asap_sas": {
+      "status": "ok",
+      "metric": "qwk",
+      "headline_split": "test_ua",
+      "neural_only": {
+        "metric": "qwk",
+        "mean": 0.1957
+      },
+      "feature_only": {
+        "metric": "qwk",
+        "mean": 0.3399602451137115,
+        "std": 0.005347444763896817
+      },
+      "hybrid": {
+        "metric": "qwk",
+        "mean": 0.3834681109464908,
+        "std": 0.0073655607614989925
+      },
+      "fusion_gain": 0.0435,
+      "interpretability_cost": 0.1878
+    },
+    "mohler": {
+      "status": "ok",
+      "metric": "pearson",
+      "headline_split": "cv",
+      "neural_only": {
+        "metric": "pearson",
+        "mean": 0.0475
+      },
+      "feature_only": {
+        "metric": "pearson",
+        "mean": 0.43923723251441693,
+        "std": 0.0038365866342009577
+      },
+      "hybrid": {
+        "metric": "pearson",
+        "mean": 0.42451235585976976,
+        "std": 0.0041421832631984455
+      },
+      "fusion_gain": -0.0147,
+      "interpretability_cost": 0.377
+    },
+    "powergrading": {
+      "status": "ok",
+      "metric": "macro_f1",
+      "headline_split": "cv",
+      "neural_only": {
+        "metric": "macro_f1",
+        "mean": 0.3923
+      },
+      "feature_only": {
+        "metric": "macro_f1",
+        "mean": 0.4728129474150743,
+        "std": 0.001964970779069251
+      },
+      "hybrid": {
+        "metric": "macro_f1",
+        "mean": 0.7039927736296739,
+        "std": 0.0030007285467420408
+      },
+      "fusion_gain": 0.2312,
+      "interpretability_cost": 0.3117
+    },
+    "mindreading": {
+      "status": "ok",
+      "metric": "qwk",
+      "headline_split": "cv",
+      "neural_only": {
+        "metric": "qwk",
+        "mean": 0.0
+      },
+      "feature_only": {
+        "metric": "qwk",
+        "mean": 0.06260757960120178,
+        "std": 0.0005855341074034665
+      },
+      "hybrid": {
+        "metric": "qwk",
+        "mean": 0.017349373348746533,
+        "std": 0.0027310359613664445
+      },
+      "fusion_gain": -0.0453,
+      "interpretability_cost": 0.0173
+    }
+  }
+}
